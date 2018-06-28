@@ -1,4 +1,4 @@
-package hughes.alex.marinerlicenceprep.entity
+package hughes.alex.marinerlicenceprep
 
 import android.content.Context
 import com.android.volley.Request
@@ -10,8 +10,10 @@ class NetworkSingleton constructor(context: Context) {
         @Volatile
         private var NetworkSingletonInstance: NetworkSingleton? = null
         fun getNetworkSingletonInstance(context: Context) =
-                NetworkSingletonInstance ?: synchronized(this) {
-                    NetworkSingletonInstance ?: NetworkSingleton(context)
+                NetworkSingletonInstance
+                        ?: synchronized(this) {
+                    NetworkSingletonInstance
+                            ?: NetworkSingleton(context)
                 }
     }
     val requestQueue: RequestQueue by lazy {
