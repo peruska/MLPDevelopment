@@ -18,5 +18,4 @@ class HomeFragment : Fragment() {
         view.tabDots.setupWithViewPager(view.viewPager, true)
         return view
     }
-
 }

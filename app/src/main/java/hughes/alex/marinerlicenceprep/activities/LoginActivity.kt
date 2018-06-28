@@ -32,10 +32,10 @@ class LoginActivity : AppCompatActivity() {
     private var transition = Fade()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        supportActionBar!!.hide()
         setContentView(R.layout.activity_login)
+        window.statusBarColor=resources.getColor(R.color.colorPrimary)
         loginScene = Scene.getSceneForLayout(scene_root as ViewGroup, R.layout.login_scene, this)
-        signUpScene = Scene.getSceneForLayout(scene_root as ViewGroup, R.layout.sign_in_scene, this)
+        signUpScene = Scene.getSceneForLayout(scene_root as ViewGroup, R.layout.sign_in_scene,this)
         transition.duration = 300
     }
 

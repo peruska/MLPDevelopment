@@ -6,6 +6,7 @@ import android.support.design.internal.BottomNavigationItemView
 import android.support.design.internal.BottomNavigationMenuView
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.FragmentActivity
+import hughes.alex.marinerlicenceprep.AuthService
 import hughes.alex.marinerlicenceprep.R
 import hughes.alex.marinerlicenceprep.fragments.*
 import kotlinx.android.synthetic.main.activity_home.*
@@ -25,8 +26,7 @@ class Home : FragmentActivity() {
             when (item.itemId) {
                 R.id.menu_home -> {
                     val transactionToHome = supportFragmentManager.beginTransaction()
-                    val homeFragment = HomeFragment()
-                    transactionToHome.replace(R.id.fragmentPlaceholder, homeFragment)
+                    transactionToHome.replace(R.id.fragmentPlaceholder, HomeFragment())
                     transactionToHome.commit()
                 }
                 R.id.menu_study -> {

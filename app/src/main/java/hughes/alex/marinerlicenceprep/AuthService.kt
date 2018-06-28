@@ -15,9 +15,11 @@ import hughes.alex.marinerlicenceprep.MyApp.Companion.BASE_URL
 import hughes.alex.marinerlicenceprep.MyApp.Companion.defaultUser
 import hughes.alex.marinerlicenceprep.activities.Home
 import hughes.alex.marinerlicenceprep.NetworkSingleton.Companion.getNetworkSingletonInstance
+import hughes.alex.marinerlicenceprep.entity.UserEntity
 import org.json.JSONObject
 import uk.me.hardill.volley.multipart.MultipartRequest
 import java.io.ByteArrayOutputStream
+import java.util.*
 
 
 class AuthService(var context: Context) {
@@ -30,6 +32,8 @@ class AuthService(var context: Context) {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
             val signInRequest = object : StringRequest(POST, URL,
                     Response.Listener { response -> Toast.makeText(context, response, Toast.LENGTH_LONG).show()
+                        val dataFromResponse = JSONObject(JSONObject( response).getString("data"))
+                        defaultUser = UserEntity("peruska", "peruskatestira@gmail.com", dataFromResponse.getString("url"))
                         context.startActivity(Intent(context, Home::class.java))
                     },
                     Response.ErrorListener { error -> Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show() }) {
@@ -80,6 +84,11 @@ class AuthService(var context: Context) {
                     val responseInJson = JSONObject(String(response.data))
                     if(responseInJson.getBoolean("success")) {
 
+                        val prefs = context.getSharedPreferences(MyApp.USER_ACCOUNT_PREFERENCES, 0)
+                        val editor = prefs.edit()
+                        editor.putString(MyApp.USER_ACCOUNT_USERNAME, username)
+                        editor.putString(MyApp.USER_ACCOUNT_EMAIL, email)
+                        editor.putString(MyApp.USER_ACCOUNT_PROFILE_PICTURE_URL, "")
                     }
                 },
                 Response.ErrorListener { error ->  println(error)})
@@ -131,6 +140,50 @@ class AuthService(var context: Context) {
                     val params = HashMap<String, String>()
                     params["old_email"] = "peruskatestira@gmail.com"//"defaultUser!!.email
                     params["new_email"] = newEmail
+                    return params
+                }
+            }
+            getNetworkSingletonInstance(context).requestQueue.add(signInRequest)
+        }
+        else {
+            //TODO Implement logic when permission is not granted
+        }
+    }
+
+    fun retrieveUserInfo(){
+        val url = BASE_URL + "Get_User_Info"
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
+            val signInRequest = object : StringRequest(POST, url,
+                    Response.Listener {
+                        response -> Toast.makeText(context, response, Toast.LENGTH_LONG).show()
+                        println(JSONObject(response))
+                    },
+                    Response.ErrorListener { error -> Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show() }) {
+                override fun getParams(): Map<String, String> {
+                    val params = HashMap<String, String>()
+                    params["email"] = "peruskatestira@gmail.com"//defaultUser!!.email
+                    return params
+                }
+            }
+            getNetworkSingletonInstance(context).requestQueue.add(signInRequest)
+        }
+        else {
+            //TODO Implement logic when permission is not granted
+        }
+    }
+
+    fun retrieveProfilePicture(){
+        val url = defaultUser!!.profileImageURL
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
+            val signInRequest = object : StringRequest(POST, url,
+                    Response.Listener {
+                        response -> Toast.makeText(context, response, Toast.LENGTH_LONG).show()
+                        println(JSONObject(response))
+                    },
+                    Response.ErrorListener { error -> Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show() }) {
+                override fun getParams(): Map<String, String> {
+                    val params = HashMap<String, String>()
+                    params["email"] = "peruskatestira@gmail.com"//defaultUser!!.email
                     return params
                 }
             }
