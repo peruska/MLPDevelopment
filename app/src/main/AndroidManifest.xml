@@ -14,7 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.LoginActivity"
+        <activity
+            android:name=".activities.LoginActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,7 +31,12 @@
         <activity android:name=".activities.ChangeEmail" />
         <activity android:name=".activities.ChangePassword" />
         <activity android:name=".activities.TermsOfServices" />
-        <activity android:name=".activities.PrivacyPolicy"/>
+        <activity android:name=".activities.PrivacyPolicy" />
+        <activity
+            android:name=".activities.Study"
+            android:label="@string/title_activity_study"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true"/>
     </application>
 
 </manifest>
