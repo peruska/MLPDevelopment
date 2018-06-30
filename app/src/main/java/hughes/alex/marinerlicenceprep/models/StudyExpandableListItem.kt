@@ -1,5 +1,5 @@
 package hughes.alex.marinerlicenceprep.models
 
-class StudyExpandableListItem(var groupName: String, var categories: ArrayList<CategoryWithSubcategories>) {
+class StudyExpandableListItem(var groupName: String, var childNames: ArrayList<String>) {
 
 }
