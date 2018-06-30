@@ -2,22 +2,24 @@ package hughes.alex.marinerlicenceprep.database
 
 import android.content.Context
 import hughes.alex.marinerlicenceprep.entity.*
+import hughes.alex.marinerlicenceprep.models.CategoryWithSubcategories
 import hughes.alex.marinerlicenceprep.models.StudyExpandableListItem
 import java.util.*
 import kotlin.collections.ArrayList
 
 object Queries {
 
-    private val a = 3
 
     private const val GET_ALL_BOOKS_FROM_CERTAIN_BOOK_CATEGORY = "SELECT ${Book.COLUMN_BOOK_ID}, ${Book.COLUMN_BOOKNAME} " +
             " FROM ${Book.TABLE} WHERE ${Book.COLUMN_PARENT_CATEGORY} = ?"
 
-    private const val GET_ALL_SUBCATEGORIES_FOR_CERTAIN_BOOK = "SELECT DISTINCT(${Subcategory.TABLE}.${Subcategory.COLUMN_SUBCATEGORY_NAME}), ${Subcategory.TABLE}.${Subcategory.COLUMN_SUBCATEGORY_ID}" +
+    private const val GET_ALL_CATEGORIES_FOR_CERTAIN_BOOK = "SELECT ${Category.COLUMN_CATEGORY_NAME}, ${Category.COLUMN_CATEGORY_ID} FROM ${Category.TABLE} WHERE ${Category.COLUMN_BOOK_ID} = ?"
+
+    private const val GET_ALL_SUBCATEGORIES_FOR_CERTAIN_CATEGORY = "SELECT DISTINCT(${Subcategory.TABLE}.${Subcategory.COLUMN_SUBCATEGORY_NAME}), ${Subcategory.TABLE}.${Subcategory.COLUMN_SUBCATEGORY_ID}" +
             " FROM ((${Subcategory.TABLE} INNER JOIN ${CategorySaubcategoryInnerEntity.TABLE}" +
             " ON ${Subcategory.TABLE}.${Subcategory.COLUMN_SUBCATEGORY_ID} = ${CategorySaubcategoryInnerEntity.TABLE}.${CategorySaubcategoryInnerEntity.COLUMN_SUBCATEGORY_ID}) INNER JOIN ${Category.TABLE}" +
             " ON ${CategorySaubcategoryInnerEntity.TABLE}.${CategorySaubcategoryInnerEntity.COLUMN_CATEGORY_ID} = ${Category.TABLE}.${Category.COLUMN_CATEGORY_ID}) WHERE " +
-            " ${Category.TABLE}.${Category.COLUMN_BOOK_ID} = ? "
+            " ${Category.TABLE}.${Category.COLUMN_BOOK_ID} = ? AND ${Category.TABLE}.${Category.COLUMN_CATEGORY_ID} = ? "
 
     //FUNCTION TO LOAD THE RATINGS
     private const val LOAD_RATINGS_DECK = "SELECT ${License.COLUMN_DISPLAY_ORDER_NUMBER} from ${License.TABLE} INNER JOIN ${BookCategory.TABLE} ON ${License.TABLE}.${License.COLUMN_BOOK_CATEGORY_ID} = ${BookCategory.TABLE}.${BookCategory.COLUMN_BOOK_CATEGORY_ID}" +
@@ -41,13 +43,21 @@ object Queries {
             val bookID = cursor.getString(0)
             val bookName = cursor.getString(1)
             if(bookName == "All Engine") continue
-            val cursor2 =databaseAccess.executeRawQuery(GET_ALL_SUBCATEGORIES_FOR_CERTAIN_BOOK, arrayOf(bookID))
-            val subcategories = ArrayList<String>()
+            val cursor2 =databaseAccess.executeRawQuery(GET_ALL_CATEGORIES_FOR_CERTAIN_BOOK, arrayOf(bookID))
+            val categoriesWithSubcategories = ArrayList<CategoryWithSubcategories>()
             while (cursor2.moveToNext()){
-                subcategories.add(cursor2.getString(0))
+                val categoryOfBook = cursor2.getString(0)
+                val bookCategoryID = cursor2.getString(1)
+                val cursor3 = databaseAccess.executeRawQuery(GET_ALL_SUBCATEGORIES_FOR_CERTAIN_CATEGORY, arrayOf(bookID, bookCategoryID))
+                val subcategoriesOfCategory = ArrayList<String>()
+                while (cursor3.moveToNext()) {
+                    val subcategory = cursor3.getString(0)
+                    subcategoriesOfCategory.add(subcategory)
+                }
+                Collections.sort(subcategoriesOfCategory, String.CASE_INSENSITIVE_ORDER)
+                categoriesWithSubcategories.add(CategoryWithSubcategories(categoryOfBook, subcategoriesOfCategory))
             }
-            Collections.sort(subcategories, String.CASE_INSENSITIVE_ORDER)
-            list.add(StudyExpandableListItem(bookName, subcategories))
+            list.add(StudyExpandableListItem(bookName, categoriesWithSubcategories))
         }
         databaseAccess.close()
         return list.sortedWith(compareBy({ it.groupName }))

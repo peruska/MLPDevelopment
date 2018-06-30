@@ -8,6 +8,7 @@ import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.FragmentActivity
 import hughes.alex.marinerlicenceprep.AuthService
 import hughes.alex.marinerlicenceprep.R
+import hughes.alex.marinerlicenceprep.database.Queries
 import hughes.alex.marinerlicenceprep.fragments.*
 import kotlinx.android.synthetic.main.activity_home.*
 
@@ -17,6 +18,9 @@ class Home : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+
+        Queries.getBooksWithSubcategories(this, 1)
+
         navigationView.disableShiftMode()
         val firstTransition = supportFragmentManager.beginTransaction()
         firstTransition.replace(R.id.fragmentPlaceholder, HomeFragment())
