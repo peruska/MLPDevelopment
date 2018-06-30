@@ -36,8 +36,10 @@ object Queries {
         val cursor = databaseAccess.executeRawQuery(GET_ALL_BOOKS_FROM_CERTAIN_BOOK_CATEGORY, arrayOf(bookCategory.toString()))
 
         while (cursor.moveToNext()){
+
             val bookID = cursor.getString(0)
             val bookName = cursor.getString(1)
+            if(bookName == "All Engine") continue
             val cursor2 =databaseAccess.executeRawQuery(GET_ALL_SUBCATEGORIES_FOR_CERTAIN_BOOK, arrayOf(bookID))
             val subcategories = ArrayList<String>()
             while (cursor2.moveToNext()){
@@ -48,5 +50,32 @@ object Queries {
         }
         databaseAccess.close()
         return list.sortedWith(compareBy({ it.groupName }))
+    }
+
+
+    fun loadQuestions(context: Context, parentSection: String, shufle: Boolean, subCategory : Int, dlNumber: Int): ArrayList<Questions>{
+        val databaseAccess = DatabaseAccess.getInstance(context)
+        val LOAD_THE_QUESTIONS = "SELECT ${Questions.COLUMN_QUESTION}, ${Questions.COLUMN_ANSWER_ONE}, ${Questions.COLUMN_ANSWER_TWO}, ${Questions.COLUMN_ANSWER_THREE}, ${Questions.COLUMN_ANSWER_FOUR}, ${Questions.COLUMN_ANSWER}, ${Questions.COLUMN_NUMBER}, " +
+                " ${Questions.COLUMN_SUBCATEGORY_NAME} FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOK_CATEGORY_ID} = ? AND ZDL" + dlNumber + " = 0 "
+        databaseAccess.open()
+        val loadedQuestions = ArrayList<Questions>()
+        if(parentSection.contains("All")){
+            val cursor = databaseAccess.executeRawQuery(LOAD_THE_QUESTIONS, arrayOf(1.toString()))
+            while (cursor.moveToNext()){
+                val question = cursor.getString(0)
+                val answerOne = cursor.getString(1)
+                val answerTwo = cursor.getString(2)
+                val answerThree = cursor.getString(3)
+                val answerFour = cursor.getString(4)
+                val rightAnswer = cursor.getString(5)
+                val questionNumber = cursor.getString(6)
+                val subcategoryName = cursor.getString(7)
+                loadedQuestions.add(Questions(question, answerOne, answerTwo, answerThree, answerFour, rightAnswer, questionNumber, subcategoryName))
+            }
+        }else{
+            //TODO Deck deo
+        }
+        databaseAccess.close()
+        return loadedQuestions
     }
 }

@@ -1,6 +1,8 @@
 package hughes.alex.marinerlicenceprep.entity
 
-class Questions {
+class Questions(var question: String, var answerOne: String, var answerTwo: String,
+                var answerThree: String, var answerFour: String, var correctAnswer: String,
+                var questionNumber: String, var subcategory: String) {
     companion object {
         const val TABLE = "ZQUESTIONS"
 
@@ -58,8 +60,6 @@ class Questions {
         const val COLUMN_REFERENCE_NUMBER = "ZREFERENCENUM"
         const val COLUMN_SOLUTION = "ZSOLUTION"
         const val COLUMN_SUBCATEGORY_NAME = "ZSUBCATEGORYNAME"
-
-
-
     }
+
 }

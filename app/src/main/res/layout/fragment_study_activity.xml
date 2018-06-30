@@ -8,6 +8,7 @@
     tools:context=".activities.Study$PlaceholderFragment">
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -18,9 +19,10 @@
         <TextView
             android:id="@+id/answer1"
             android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:text="TextView"
+            android:layout_height="40dp"
             android:background="@color/lightGray"
+            android:text="TextView"
+            android:onClick="answerQuestion"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -28,10 +30,11 @@
         <TextView
             android:id="@+id/answer2"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
             android:layout_marginTop="8dp"
-            android:text="TextView"
             android:background="@color/lightGray"
+            android:text="TextView"
+            android:onClick="answerQuestion"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/answer1" />
@@ -39,10 +42,11 @@
         <TextView
             android:id="@+id/answer3"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
             android:layout_marginTop="8dp"
-            android:text="TextView"
             android:background="@color/lightGray"
+            android:text="TextView"
+            android:onClick="answerQuestion"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/answer2" />
@@ -50,23 +54,26 @@
         <TextView
             android:id="@+id/answer4"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
             android:layout_marginTop="8dp"
             android:background="@color/lightGray"
             android:text="TextView"
+            android:onClick="answerQuestion"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/answer3" />
     </android.support.constraint.ConstraintLayout>
 
     <TextView
-        android:id="@+id/textView25"
+        android:id="@+id/questionText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="24dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
         android:text="TextView"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/questionTitle" />
