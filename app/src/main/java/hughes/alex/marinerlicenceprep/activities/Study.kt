@@ -54,7 +54,7 @@ class Study : AppCompatActivity() {
             return questions.size
         }
     }
-
+    val s = 2
     class PlaceholderFragment : Fragment() {
 
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
