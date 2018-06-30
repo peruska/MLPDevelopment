@@ -34,10 +34,11 @@ class Study : AppCompatActivity() {
     }
 
     fun answerQuestion(view: View) {
-        if ((view.background as ColorDrawable).color == Color.RED)
-            view.setBackgroundColor(Color.YELLOW)
+
+        if ((view.background as ColorDrawable).color == resources.getColor(R.color.questionsRed))
+            view.setBackgroundColor(resources.getColor(R.color.questionsGreen))
         else
-            view.setBackgroundColor(Color.RED)
+            view.setBackgroundColor(resources.getColor(R.color.questionsRed))
     }
 
     fun moveToNextQuestion(view: View) {
@@ -54,7 +55,7 @@ class Study : AppCompatActivity() {
             return questions.size
         }
     }
-    val s = 2
+
     class PlaceholderFragment : Fragment() {
 
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
