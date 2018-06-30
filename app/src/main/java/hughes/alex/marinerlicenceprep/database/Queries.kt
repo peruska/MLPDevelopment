@@ -33,18 +33,18 @@ object Queries {
 
 
 
-    fun getBooksCategoriesSubcategories(context: Context, bookCategory: Int): ArrayList<BooksCategoriesSubcategories> {
+    fun getBooksCategoriesSubcategories(context: Context): ArrayList<BooksCategoriesSubcategories> {
         val list: ArrayList<BooksCategoriesSubcategories> = ArrayList()
         val databaseAccess = DatabaseAccess.getInstance(context)
 
         databaseAccess.open()
-        val cursor = databaseAccess.executeRawQuery(GET_ALL_BOOKS_FROM_CERTAIN_BOOK_CATEGORY, arrayOf(bookCategory.toString()))
+        val cursor = databaseAccess.executeRawQuery(GET_ALL_BOOKS_FROM_CERTAIN_BOOK_CATEGORY, arrayOf(2.toString()))
 
         while (cursor.moveToNext()) {
 
             val bookID = cursor.getString(0)
             val bookName = cursor.getString(1)
-            if (bookName == "All Engine") continue
+            if (bookName == "All Deck") continue
             val cursor2 = databaseAccess.executeRawQuery(GET_ALL_CATEGORIES_FOR_CERTAIN_BOOK, arrayOf(bookID))
             val categoriesWithSubcategories = ArrayList<CategoryWithSubcategories>()
             while (cursor2.moveToNext()) {
@@ -74,6 +74,7 @@ object Queries {
         while (cursor.moveToNext()) {
             val bookName = cursor.getString(1)
             val bookID = cursor.getString(0)
+            if(bookName == "All Engine") continue
             val cursor2 = databaseAccess.executeRawQuery(GET_ALL_SUBCATEGORIES_FOR_CERTAIN_BOOK, arrayOf(bookID))
             val subcategories = ArrayList<String>()
             while (cursor2.moveToNext()) {
