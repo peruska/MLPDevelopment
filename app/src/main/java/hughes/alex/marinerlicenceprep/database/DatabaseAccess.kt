@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteOpenHelper
 class DatabaseAccess {
     private var openHelper: SQLiteOpenHelper
     private var database : SQLiteDatabase? = null
-    private lateinit var cursor: Cursor
     companion object {
         private var instance: DatabaseAccess? = null
 
@@ -35,8 +34,7 @@ class DatabaseAccess {
     }
 
     fun executeRawQuery(queryString: String, parameters: Array<String>): Cursor{
-        val cursor = database!!.rawQuery(queryString, parameters)
-        return cursor
+        return database!!.rawQuery(queryString, parameters)
     }
 
 }
