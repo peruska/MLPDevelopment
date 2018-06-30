@@ -1,6 +1,7 @@
 package hughes.alex.marinerlicenceprep.database
 
 import android.content.Context
+import android.database.Cursor
 import hughes.alex.marinerlicenceprep.entity.*
 import hughes.alex.marinerlicenceprep.models.BooksCategoriesSubcategories
 import hughes.alex.marinerlicenceprep.models.CategoryWithSubcategories
@@ -28,31 +29,25 @@ object Queries {
             " ON ${CategorySaubcategoryInnerEntity.TABLE}.${CategorySaubcategoryInnerEntity.COLUMN_CATEGORY_ID} = ${Category.TABLE}.${Category.COLUMN_CATEGORY_ID}) WHERE " +
             " ${Category.TABLE}.${Category.COLUMN_BOOK_ID} = ? "
 
-    //FUNCTION TO LOAD THE RATINGS
-    private const val LOAD_RATINGS_DECK = "SELECT ${License.COLUMN_DISPLAY_ORDER_NUMBER} from ${License.TABLE} INNER JOIN ${BookCategory.TABLE} ON ${License.TABLE}.${License.COLUMN_BOOK_CATEGORY_ID} = ${BookCategory.TABLE}.${BookCategory.COLUMN_BOOK_CATEGORY_ID}" +
-            " WHERE ${BookCategory.TABLE}.${BookCategory.COLUMN_NAME} = 'Deck' ORDER BY ${License.COLUMN_DISPLAY_ORDER_NUMBER} "
-    private const val LOAD_RATINGS_ENGINE = "SELECT ${License.COLUMN_DISPLAY_ORDER_NUMBER} from ${License.TABLE} INNER JOIN ${BookCategory.TABLE} ON ${License.TABLE}.${License.COLUMN_BOOK_CATEGORY_ID} = ${BookCategory.TABLE}.${BookCategory.COLUMN_BOOK_CATEGORY_ID}" +
-            " WHERE ${BookCategory.TABLE}.${BookCategory.COLUMN_NAME} = 'Engine' ORDER BY ${License.COLUMN_DISPLAY_ORDER_NUMBER} "
-
-    //FUNCTION TO LOAD THE TESTS
-    private const val LOAD_THE_TESTS = "SELECT "
+    private const val GET_BOOK_CATEGORY_ID = "SELECT ${BookCategory.COLUMN_BOOK_CATEGORY_ID} FROM ${BookCategory.TABLE} WHERE ${BookCategory.COLUMN_NAME} = ? "
 
 
-    fun getBooksCategoriesSubcategories(context: Context, bookCategory: Int): List<BooksCategoriesSubcategories> {
+
+    fun getBooksCategoriesSubcategories(context: Context): ArrayList<BooksCategoriesSubcategories> {
         val list: ArrayList<BooksCategoriesSubcategories> = ArrayList()
         val databaseAccess = DatabaseAccess.getInstance(context)
 
         databaseAccess.open()
-        val cursor = databaseAccess.executeRawQuery(GET_ALL_BOOKS_FROM_CERTAIN_BOOK_CATEGORY, arrayOf(bookCategory.toString()))
+        val cursor = databaseAccess.executeRawQuery(GET_ALL_BOOKS_FROM_CERTAIN_BOOK_CATEGORY, arrayOf(2.toString()))
 
-        while (cursor.moveToNext()){
+        while (cursor.moveToNext()) {
 
             val bookID = cursor.getString(0)
             val bookName = cursor.getString(1)
-            if(bookName == "All Engine") continue
-            val cursor2 =databaseAccess.executeRawQuery(GET_ALL_CATEGORIES_FOR_CERTAIN_BOOK, arrayOf(bookID))
+            if (bookName == "All Deck") continue
+            val cursor2 = databaseAccess.executeRawQuery(GET_ALL_CATEGORIES_FOR_CERTAIN_BOOK, arrayOf(bookID))
             val categoriesWithSubcategories = ArrayList<CategoryWithSubcategories>()
-            while (cursor2.moveToNext()){
+            while (cursor2.moveToNext()) {
                 val categoryOfBook = cursor2.getString(0)
                 val bookCategoryID = cursor2.getString(1)
                 val cursor3 = databaseAccess.executeRawQuery(GET_ALL_SUBCATEGORIES_FOR_CERTAIN_CATEGORY, arrayOf(bookID, bookCategoryID))
@@ -70,18 +65,19 @@ object Queries {
         return list
     }
 
-    fun getBooksWithSubcategories(context: Context, bookCategory: Int): List<StudyExpandableListItem>{
+    fun getBooksWithSubcategories(context: Context, bookCategory: Int): List<StudyExpandableListItem> {
         val listOfGroups = ArrayList<StudyExpandableListItem>()
         val databaseAccess = DatabaseAccess.getInstance(context)
 
         databaseAccess.open()
         val cursor = databaseAccess.executeRawQuery(GET_ALL_BOOKS_FROM_CERTAIN_BOOK_CATEGORY, arrayOf(bookCategory.toString()))
-        while (cursor.moveToNext()){
+        while (cursor.moveToNext()) {
             val bookName = cursor.getString(1)
             val bookID = cursor.getString(0)
+            if(bookName == "All Engine") continue
             val cursor2 = databaseAccess.executeRawQuery(GET_ALL_SUBCATEGORIES_FOR_CERTAIN_BOOK, arrayOf(bookID))
             val subcategories = ArrayList<String>()
-            while (cursor2.moveToNext()){
+            while (cursor2.moveToNext()) {
                 val subcategoryName = cursor2.getString(0)
                 subcategories.add(subcategoryName)
             }
@@ -93,29 +89,37 @@ object Queries {
     }
 
 
-    fun loadQuestions(context: Context, parentSection: String, shufle: Boolean, subCategory : Int, dlNumber: Int): ArrayList<Questions>{
+    fun loadQuestions(context: Context, parentSection: String, shuffle: Boolean, subCategory: Int, dlNumber: Int): ArrayList<Questions> {
         val databaseAccess = DatabaseAccess.getInstance(context)
-        val LOAD_THE_QUESTIONS = "SELECT ${Questions.COLUMN_QUESTION}, ${Questions.COLUMN_ANSWER_ONE}, ${Questions.COLUMN_ANSWER_TWO}, ${Questions.COLUMN_ANSWER_THREE}, ${Questions.COLUMN_ANSWER_FOUR}, ${Questions.COLUMN_ANSWER}, ${Questions.COLUMN_NUMBER}, " +
-                " ${Questions.COLUMN_SUBCATEGORY_NAME} FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOK_CATEGORY_ID} = ? AND ZDL" + dlNumber + " = 0 "
         databaseAccess.open()
         val loadedQuestions = ArrayList<Questions>()
-        if(parentSection.contains("All")){
-            val cursor = databaseAccess.executeRawQuery(LOAD_THE_QUESTIONS, arrayOf(1.toString()))
-            while (cursor.moveToNext()){
-                val question = cursor.getString(0)
-                val answerOne = cursor.getString(1)
-                val answerTwo = cursor.getString(2)
-                val answerThree = cursor.getString(3)
-                val answerFour = cursor.getString(4)
-                val rightAnswer = cursor.getString(5)
-                val questionNumber = cursor.getString(6)
-                val subcategoryName = cursor.getString(7)
-                loadedQuestions.add(Questions(question, answerOne, answerTwo, answerThree, answerFour, rightAnswer, questionNumber, subcategoryName))
-            }
-        }else{
-            //TODO Deck deo
+        val columnBookCategory: String
+        val cursor1 = if (parentSection.contains("Engine")) {
+            databaseAccess.executeRawQuery(GET_BOOK_CATEGORY_ID, arrayOf("Engine"))
+        } else {
+            databaseAccess.executeRawQuery(GET_BOOK_CATEGORY_ID, arrayOf("Deck"))
+        }
+        cursor1.moveToNext()
+        columnBookCategory = cursor1.getString(0)
+        val LOAD_THE_QUESTIONS = "SELECT ${Questions.COLUMN_QUESTION}, ${Questions.COLUMN_ANSWER_ONE}, ${Questions.COLUMN_ANSWER_TWO}, ${Questions.COLUMN_ANSWER_THREE}, " +
+                " ${Questions.COLUMN_ANSWER_FOUR}, ${Questions.COLUMN_ANSWER}, ${Questions.COLUMN_NUMBER}, " +
+                " ${Questions.COLUMN_SUBCATEGORY_NAME} FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOK_CATEGORY_ID} = ? AND ZDL" + dlNumber + " = 0 "
+        val cursor = databaseAccess.executeRawQuery(LOAD_THE_QUESTIONS, arrayOf(columnBookCategory))
+        while (cursor.moveToNext()) {
+            val question = cursor.getString(0)
+            val answerOne = cursor.getString(1)
+            val answerTwo = cursor.getString(2)
+            val answerThree = cursor.getString(3)
+            val answerFour = cursor.getString(4)
+            val rightAnswer = cursor.getString(5)
+            val questionNumber = cursor.getString(6)
+            val subcategoryName = cursor.getString(7)
+            loadedQuestions.add(Questions(question, answerOne, answerTwo, answerThree, answerFour, rightAnswer, questionNumber, subcategoryName))
         }
         databaseAccess.close()
+        if(shuffle){
+            loadedQuestions.shuffle()
+        }
         return loadedQuestions
     }
 }
