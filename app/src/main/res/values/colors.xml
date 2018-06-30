@@ -6,4 +6,6 @@
     <color name="colorInputBackground">#608491</color>
     <color name="colorLoginInputBackground">#0a5069</color>
     <color name="lightGray">#EEE</color>
+    <color name="questionsRed">#77FF0000</color>
+    <color name="questionsGreen">#7700FF00</color>
 </resources>
