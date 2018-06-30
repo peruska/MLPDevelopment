@@ -8,6 +8,7 @@ import kotlin.collections.ArrayList
 
 object Queries {
 
+    private val a = 3
 
     private const val GET_ALL_BOOKS_FROM_CERTAIN_BOOK_CATEGORY = "SELECT ${Book.COLUMN_BOOK_ID}, ${Book.COLUMN_BOOKNAME} " +
             " FROM ${Book.TABLE} WHERE ${Book.COLUMN_PARENT_CATEGORY} = ?"
