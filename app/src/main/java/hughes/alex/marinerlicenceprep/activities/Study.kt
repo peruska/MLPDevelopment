@@ -31,7 +31,7 @@ class Study : AppCompatActivity() {
         shuffleQuestions = intent.extras.getBoolean("shuffleQuestions")
         logAnswers = intent.extras.getBoolean("logAnswers")
         showAnswers = intent.extras.getBoolean("showAnswers")
-        PlaceholderFragment.questions = Queries.loadQuestions(this, "All Engine", shuffleQuestions, 1, 1)
+        PlaceholderFragment.questions = Queries.loadQuestions(this, "All Deck", true, 74.toString(), 21, 4.toString())
         mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
         container.adapter = mSectionsPagerAdapter
         numberLabel.text = "Num " + (container.currentItem + 1) + "/" + container.adapter?.count
