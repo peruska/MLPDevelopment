@@ -87,12 +87,14 @@
 
 
             <ImageButton
-                android:id="@+id/imageButton2"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:id="@+id/moveToPreviousQuestionButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="40dp"
+                android:layout_marginTop="8dp"
                 android:background="@android:color/transparent"
+                android:onClick="moveToPreviousQuestion"
                 android:scaleType="centerInside"
                 android:src="@drawable/anchor"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -117,12 +119,13 @@
 
             <ImageButton
                 android:id="@+id/moveToNextQuestionButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_marginStart="40dp"
                 android:background="@android:color/transparent"
-                android:src="@mipmap/right_arrow"
                 android:onClick="moveToNextQuestion"
+                android:scaleType="centerInside"
+                android:src="@mipmap/right_arrow"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -140,7 +143,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/numberLabel"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/imageButton2"
+                app:layout_constraintStart_toEndOf="@+id/moveToPreviousQuestionButton"
                 app:layout_constraintTop_toTopOf="parent" />
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.Toolbar>

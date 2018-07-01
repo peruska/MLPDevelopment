@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.os.Bundle
 import android.support.v4.app.FragmentStatePagerAdapter
+import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,8 +34,19 @@ class Study : AppCompatActivity() {
         PlaceholderFragment.questions = Queries.loadQuestions(this, "All Engine", shuffleQuestions, 1, 1)
         mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
         container.adapter = mSectionsPagerAdapter
+        numberLabel.text = "Num " + (container.currentItem + 1) + "/" + container.adapter?.count
         closeButton.setOnClickListener { finish() }
+        container.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {}
 
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+
+            override fun onPageSelected(position: Int) {
+                numberLabel.text = "Num " + (container.currentItem + 1) + "/" + container.adapter?.count
+                attemped = 0
+            }
+
+        })
     }
 
     private fun compareAnswers(view: View, answer: String): Boolean {
@@ -49,16 +61,45 @@ class Study : AppCompatActivity() {
         return selectedAnswer == answer
     }
 
+    var attemped = 0
+    var correct = 0
+    var total = 0
     fun answerQuestion(view: View) {
+
         if (compareAnswers(view, PlaceholderFragment.questions[container.currentItem].correctAnswer)) {
             view.setBackgroundColor(resources.getColor(R.color.questionsGreen))
+            if (attemped == 0) correct++
             if (autoNext) moveToNextQuestion(view)
-        } else
+        } else {
             view.setBackgroundColor(resources.getColor(R.color.questionsRed))
+        }
+        if (attemped == 0) {
+            total++
+            scoreLabel.text = "Score " + correct + "/" + total
+        }
+        attemped = 1
+    }
+
+    fun moveToPreviousQuestion(view: View) {
+        container.currentItem = container.currentItem - 1
+        if (container.currentItem == 0) {
+            moveToPreviousQuestionButton.setImageResource(R.drawable.anchor)
+        }
+
+        if (container.currentItem == (container.adapter?.count ?: -1) - 2) {
+            moveToNextQuestionButton.setImageResource(R.mipmap.right_arrow)
+        }
     }
 
     fun moveToNextQuestion(view: View) {
         container.currentItem = container.currentItem + 1
+
+        if (container.currentItem == 1) {
+            moveToPreviousQuestionButton.setImageResource(R.mipmap.left)
+        }
+        if (container.currentItem == (container.adapter?.count ?: -1) - 1) {
+            moveToNextQuestionButton.setImageResource(R.drawable.anchor)
+        }
     }
 
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {

@@ -23,7 +23,8 @@ class StudyFragment : Fragment() {
         val view = inflater.inflate(R.layout.study_fragment, container, false)
         val adapter = StudyExpandableListAdapter(context, ArrayList(Queries.getBooksWithSubcategories(context!!, 1)))
         view.expandableListView.setAdapter(adapter)
-        view.expandableListView.setOnGroupClickListener { expandableListView, view, i, l ->
+        view.expandableListView.setOnGroupClickListener { expandableListView, _, i, l ->
+            activeTextView?.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0)
             groupChecked = i
             if(expandableListView.isGroupExpanded(i))
                 expandableListView.collapseGroup(i)
@@ -32,7 +33,11 @@ class StudyFragment : Fragment() {
             startStudying.text = "Study: " + adapter.listOfGroups[i].groupName
             true
         }
-
+        view.allEngineReplacement.setOnClickListener {
+            startStudying.text = "Study: All Engine"
+            view.allEngineReplacement.setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.checked,0)
+            activeTextView = view.allEngineReplacement
+        }
         view.startStudying.setOnClickListener {
             val intent = Intent(context, Study::class.java)
             intent.putExtra("autoNext", autoNextSwitch.isChecked)
