@@ -14,6 +14,12 @@ import hughes.alex.marinerlicenceprep.uiAdapters.StudyExpandableListAdapter
 import hughes.alex.marinerlicenceprep.uiAdapters.StudyExpandableListAdapter.Companion.groupChecked
 import kotlinx.android.synthetic.main.study_fragment.*
 import kotlinx.android.synthetic.main.study_fragment.view.*
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import hughes.alex.marinerlicenceprep.MyApp
+import hughes.alex.marinerlicenceprep.models.BooksCategoriesSubcategories
+import hughes.alex.marinerlicenceprep.models.StudyExpandableListItem
+import hughes.alex.marinerlicenceprep.uiAdapters.ExpandableListAdapterForDeck
 
 
 class StudyFragment : Fragment() {
@@ -21,21 +27,30 @@ class StudyFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.study_fragment, container, false)
-        val adapter = StudyExpandableListAdapter(context, ArrayList(Queries.getBooksWithSubcategories(context!!, 1, 1)))
+        val prefs = context!!.getSharedPreferences(MyApp.USER_LICENSE_DATA, 0)
+        val dlNumber = prefs.getString(MyApp.DL_NUMBER, "")
+        val bookCategory = prefs.getString(MyApp.CATEGORY, "")
+        val json = prefs.getString(MyApp.USER_LICENSE_DATA_VALUES, "")
+        val context = context
+        val adapter =
+                if (bookCategory == "1")
+                    StudyExpandableListAdapter(context, Gson().fromJson<ArrayList<StudyExpandableListItem>>(json, object: TypeToken<ArrayList<StudyExpandableListItem>>(){}.type))
+                else
+                    ExpandableListAdapterForDeck(context!!, Gson().fromJson<ArrayList<BooksCategoriesSubcategories>>(json, object: TypeToken<ArrayList<BooksCategoriesSubcategories>>(){}.type))
         view.expandableListView.setAdapter(adapter)
-        view.expandableListView.setOnGroupClickListener { expandableListView, _, i, l ->
-            activeTextView?.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0)
+        /*view.expandableListView.setOnGroupClickListener { expandableListView, _, i, l ->
+            activeTextView?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
             groupChecked = i
-            if(expandableListView.isGroupExpanded(i))
+            if (expandableListView.isGroupExpanded(i))
                 expandableListView.collapseGroup(i)
             else
                 expandableListView.expandGroup(i)
-            startStudying.text = "Study: " + adapter.listOfGroups[i].groupName
+            // startStudying.text = "Study: " + adapter.listOfGroups[i].groupName
             true
-        }
+        }*/
         view.allEngineReplacement.setOnClickListener {
             startStudying.text = "Study: All Engine"
-            view.allEngineReplacement.setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.checked,0)
+            view.allEngineReplacement.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.mipmap.checked, 0)
             activeTextView = view.allEngineReplacement
         }
         view.startStudying.setOnClickListener {

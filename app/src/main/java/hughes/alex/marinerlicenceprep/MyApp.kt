@@ -11,6 +11,10 @@ class MyApp : Application() {
         var defaultUser: UserEntity? = null
             get() = field
         var uuid: String = ""
+        const val USER_LICENSE_DATA = "user_license_data"
+        const val USER_LICENSE_DATA_VALUES = "user_license_data_values"
+        const val DL_NUMBER = "dl_number"
+        const val CATEGORY = "book_category"
         const val USER_ACCOUNT_PREFERENCES = "user_account"
         const val USER_ACCOUNT_USERNAME = "username"
         const val USER_ACCOUNT_EMAIL = "email"

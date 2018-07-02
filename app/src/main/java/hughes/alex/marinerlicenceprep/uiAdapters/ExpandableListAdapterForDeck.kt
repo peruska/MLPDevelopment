@@ -35,7 +35,7 @@ class ExpandableListAdapterForDeck(var context: Context, var listOfMembers: Arra
     }
 
     override fun getChildrenCount(groupPosition: Int): Int {
-        return listOfMembers[groupPosition].categories.size
+        return 1
     }
 
     override fun getChild(groupPosition: Int, childPosition: Int): Any {
