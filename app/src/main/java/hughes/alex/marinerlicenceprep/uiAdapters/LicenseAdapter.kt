@@ -59,7 +59,7 @@ class LicenseAdapter(val items: ArrayList<LicenseEntity>, val context: Context) 
         holder.tonnageTextView.text = items[position].tonnageGroup
         if (items[position].bookCategoryID == 2) {
             holder.routeTextView.text = items[position].route
-            //holder.licenseImageView.setImageResource(R.drawable.compass_64)
+            holder.licenseImageView.setImageResource(R.drawable.compass_64)
         } else
             holder.licenseImageView.setImageResource(R.mipmap.gear_wheel)
     }
