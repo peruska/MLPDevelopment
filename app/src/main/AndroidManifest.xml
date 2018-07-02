@@ -34,9 +34,10 @@
         <activity android:name=".activities.PrivacyPolicy" />
         <activity
             android:name=".activities.Study"
+            android:exported="true"
             android:label="@string/title_activity_study"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:exported="true"/>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activities.Licence"></activity>
     </application>
 
 </manifest>

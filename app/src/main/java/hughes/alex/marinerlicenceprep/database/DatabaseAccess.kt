@@ -1,5 +1,6 @@
 package hughes.alex.marinerlicenceprep.database
 
+import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
@@ -35,6 +36,14 @@ class DatabaseAccess {
 
     fun executeRawQuery(queryString: String, parameters: Array<String>): Cursor{
         return database!!.rawQuery(queryString, parameters)
+    }
+
+    fun insertTable(tableName: String, fieldHolder: ContentValues){
+        database!!.insert(tableName, null, fieldHolder)
+    }
+
+    fun updateTable(tableName: String, fieldHolder: ContentValues, whereClause: String){
+        database!!.update(tableName, fieldHolder, whereClause, null)
     }
 
 }

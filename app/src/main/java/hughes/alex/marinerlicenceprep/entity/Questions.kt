@@ -2,7 +2,7 @@ package hughes.alex.marinerlicenceprep.entity
 
 class Questions(var question: String, var answerOne: String, var answerTwo: String,
                 var answerThree: String, var answerFour: String, var correctAnswer: String,
-                var questionNumber: String, var subcategory: String) {
+                var questionNumber: String, var subcategory: String, var questionID: String) {
     companion object {
         const val TABLE = "ZQUESTIONS"
 
@@ -44,7 +44,7 @@ class Questions(var question: String, var answerOne: String, var answerTwo: Stri
         const val COLUMN_CATEGORY_ID = "ZINCATEGORY"
         const val COLUMN_SUBCATEGORY_ID = "ZINSUBCATEGORY"
         const val COLUMN_NUMBER_OF_TIMES_ANSWERED = "ZNUMBEROFTIMESANSWERED"
-        const val COLUMN_NUMBER_OF_TIMES_CORRECT = "ZNUMBERPFTIMESCORRECT"
+        const val COLUMN_NUMBER_OF_TIMES_CORRECT = "ZNUMBEROFTIMESCORRECT"
         const val COLUMN_NUMBER_OF_TIMES_WRONG = "ZNUMBEROFTIMESWRONG"
         const val COLUMN_ANSWER = "ZANSWER"
         const val COLUMN_ANSWER_ONE = "ZANSWERONE"

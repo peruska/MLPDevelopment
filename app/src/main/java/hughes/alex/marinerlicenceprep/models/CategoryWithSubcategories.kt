@@ -1,4 +1,6 @@
 package hughes.alex.marinerlicenceprep.models
 
-class CategoryWithSubcategories (var categoryName: String, var subcategories: ArrayList<String>){
+import hughes.alex.marinerlicenceprep.entity.Subcategory
+
+class CategoryWithSubcategories (var categoryName: String, var categoryID: String, var subcategories: ArrayList<Subcategory>){
 }

@@ -103,7 +103,7 @@ class Study : AppCompatActivity() {
     }
 
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
-        var questions = Queries.loadQuestions(this@Study, "All Engine", false, 1, 1)
+        var questions = Queries.loadQuestions(this@Study, "All Deck", true, 74.toString(), 21, 4.toString())
         override fun getItem(position: Int): Fragment {
             return PlaceholderFragment.newInstance(position)
         }

@@ -78,5 +78,6 @@
     <string name="title_activity_study">Study</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
+    <string name="choose_rating_text">Please Choose Your Rating. \n Your App Experience will be \n Customized to this.</string>
 
 </resources>

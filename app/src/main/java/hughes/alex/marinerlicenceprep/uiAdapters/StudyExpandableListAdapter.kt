@@ -64,7 +64,7 @@ class StudyExpandableListAdapter(var context: Context?, val listOfGroups: ArrayL
     override fun getChildView(groupPosition: Int, childPosition: Int, isLastChild: Boolean, convertView: View?, parent: ViewGroup?): View {
         val inflater = context!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = inflater.inflate(R.layout.study_list_child, parent, false)
-        view.childName.text = listOfGroups[groupPosition].childNames[childPosition]
+        view.childName.text = listOfGroups[groupPosition].childNames[childPosition].subcategoryName
 
         view.childName.setOnClickListener {
 
@@ -79,7 +79,7 @@ class StudyExpandableListAdapter(var context: Context?, val listOfGroups: ArrayL
             activeTextView?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
             view.childName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.mipmap.checked, 0)
             activeTextView = view.childName
-            (context as Home).startStudying.text = "Study: " + listOfGroups[groupPosition].childNames[childPosition]
+            (context as Home).startStudying.text = "Study: " + listOfGroups[groupPosition].childNames[childPosition].subcategoryName
         }
         return view
     }

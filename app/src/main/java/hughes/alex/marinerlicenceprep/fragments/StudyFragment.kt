@@ -21,7 +21,7 @@ class StudyFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.study_fragment, container, false)
-        val adapter = StudyExpandableListAdapter(context, ArrayList(Queries.getBooksWithSubcategories(context!!, 1)))
+        val adapter = StudyExpandableListAdapter(context, ArrayList(Queries.getBooksWithSubcategories(context!!, 1, 1)))
         view.expandableListView.setAdapter(adapter)
         view.expandableListView.setOnGroupClickListener { expandableListView, _, i, l ->
             activeTextView?.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0)
