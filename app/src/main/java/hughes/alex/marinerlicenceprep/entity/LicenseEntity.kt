@@ -1,6 +1,7 @@
 package hughes.alex.marinerlicenceprep.entity
 
-class License {
+class LicenseEntity (var licenseID: Int, var dlNumner: Int, var bookCategoryID: Int, var endorsement: String,
+                     var route: String, var tonnageGroup: String) {
     companion object {
         const val TABLE = "ZLICENSE"
 

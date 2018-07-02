@@ -1,6 +1,6 @@
 package hughes.alex.marinerlicenceprep.entity
 
-class Book(var bookID: Int, var ent: Int, var opt: Int, var parentCategory: Int, var refNum: Float, var bookName: String ) {
+class Book(var bookID: Int, var bookName: String ) {
     companion object {
         const val TABLE = "ZBOOK"
 

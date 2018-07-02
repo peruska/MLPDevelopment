@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import hughes.alex.marinerlicenceprep.entity.*
 import hughes.alex.marinerlicenceprep.models.BooksCategoriesSubcategories
+import hughes.alex.marinerlicenceprep.models.BooksWithScores
 import hughes.alex.marinerlicenceprep.models.CategoryWithSubcategories
 import hughes.alex.marinerlicenceprep.models.StudyExpandableListItem
 import kotlin.collections.ArrayList
@@ -27,6 +28,9 @@ object Queries {
             " ON ${Subcategory.TABLE}.${Subcategory.COLUMN_SUBCATEGORY_ID} = ${CategorySaubcategoryInnerEntity.TABLE}.${CategorySaubcategoryInnerEntity.COLUMN_SUBCATEGORY_ID}) INNER JOIN ${Category.TABLE}" +
             " ON ${CategorySaubcategoryInnerEntity.TABLE}.${CategorySaubcategoryInnerEntity.COLUMN_CATEGORY_ID} = ${Category.TABLE}.${Category.COLUMN_CATEGORY_ID}) WHERE " +
             " ${Category.TABLE}.${Category.COLUMN_BOOK_ID} = ? "
+
+    private const val GET_ALL_LICENCE = "SELECT ${LicenseEntity.COLUMN_LICENSE_ID}, ${LicenseEntity.COLUMN_DL_NUMBER}, ${LicenseEntity.COLUMN_BOOK_CATEGORY_ID}, ${LicenseEntity.COLUMN_ENDORSEMENT}, ${LicenseEntity.COLUMN_ROUTE}," +
+            " ${LicenseEntity.COLUMN_TONNAGE_GROUP} FROM ${LicenseEntity.TABLE}"
 
 
     private const val GET_BOOK_CATEGORY_ID = "SELECT ${BookCategory.COLUMN_BOOK_CATEGORY_ID} FROM ${BookCategory.TABLE} WHERE ${BookCategory.COLUMN_NAME} = ? "
@@ -221,17 +225,41 @@ object Queries {
         databaseAccess.close()
     }
 
-    fun getStatisticsForBook(context: Context, bookId: String): Float{
+    fun getStatisticsForBook(context: Context, listOfBooks: ArrayList<Book>): ArrayList<BooksWithScores>{
         val databaseAccess = DatabaseAccess.getInstance(context)
         databaseAccess.open()
-        val cursor = databaseAccess.executeRawQuery(GET_QUESTIONS_STATISTICS_FIELDS_FOR_CERTAIN_BOOK, arrayOf(bookId))
-        var numberOfAnsweres : Float = 0.toFloat()
-        var numberOfCorrectAnswers: Float = 0.toFloat()
-        while (cursor.moveToNext()){
-            numberOfAnsweres += cursor.getFloat(0)
-            numberOfCorrectAnswers += cursor.getFloat(1)
+        val booksWithScores = ArrayList<BooksWithScores>()
+        listOfBooks.forEach {
+            val cursor = databaseAccess.executeRawQuery(GET_QUESTIONS_STATISTICS_FIELDS_FOR_CERTAIN_BOOK, arrayOf(it.bookID.toString()))
+            var numberOfAnsweres : Float = 0.toFloat()
+            var numberOfCorrectAnswers: Float = 0.toFloat()
+            while (cursor.moveToNext()){
+                numberOfAnsweres += cursor.getFloat(0)
+                numberOfCorrectAnswers += cursor.getFloat(1)
+                val scoreOfBook = numberOfCorrectAnswers/numberOfAnsweres*100
+                booksWithScores.add(BooksWithScores(it.bookName, it.bookID, scoreOfBook))
+            }
         }
-        return numberOfCorrectAnswers/numberOfAnsweres*100
+        return booksWithScores
     }
 
+
+    fun getLicense(context: Context): ArrayList<LicenseEntity>{
+        val databaseAccess = DatabaseAccess.getInstance(context)
+        databaseAccess.open()
+        val cursor = databaseAccess.executeRawQuery(GET_ALL_LICENCE, arrayOf())
+        val listOfLicenses = ArrayList<LicenseEntity>()
+        while(cursor.moveToNext()){
+            val licenseID = cursor.getInt(0)
+            val dlNumber = cursor.getInt(1)
+            val bookCategoryID = cursor.getInt(2)
+            val endorsement = cursor.getString(3)
+            val route = cursor.getString(4)
+            val tonnageGroup = cursor.getString(5)
+            listOfLicenses.add(LicenseEntity(licenseID, dlNumber, bookCategoryID, endorsement, route, tonnageGroup))
+        }
+        cursor.close()
+        databaseAccess.close()
+        return listOfLicenses
+    }
 }

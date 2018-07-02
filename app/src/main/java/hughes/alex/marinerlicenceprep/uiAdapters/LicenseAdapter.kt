@@ -6,11 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import hughes.alex.marinerlicenceprep.R
-import hughes.alex.marinerlicenceprep.activities.Licence
+import hughes.alex.marinerlicenceprep.entity.LicenseEntity
 import kotlinx.android.synthetic.main.licence_item.view.*
 
 
-class LicenceAdapter(val items : ArrayList<Licence>, val context: Context) : RecyclerView.Adapter<ViewHolder>() {
+class LicenseAdapter(val items : ArrayList<LicenseEntity>, val context: Context) : RecyclerView.Adapter<ViewHolder>() {
 
     override fun getItemCount(): Int {
         return items.size
@@ -22,14 +22,15 @@ class LicenceAdapter(val items : ArrayList<Licence>, val context: Context) : Rec
 
     // Binds each animal in the ArrayList to a view
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        //holder.endorsmentTextView.text = items[position]
-        //holder.licenceNameTextView.text = items[position]
-        //holder.routeTextView.text = items[position]
+        holder.endorsmentTextView.text = items[position].endorsement
+        holder.tonnageTextView.text = items[position].tonnageGroup
+        if(items[position].bookCategoryID == 2)
+        holder.routeTextView.text = items[position].route
     }
 }
 
 class ViewHolder (view: View) : RecyclerView.ViewHolder(view) {
     val endorsmentTextView = view.endorsmentTextView
-    val licenceNameTextView = view.licenceNameTextView
+    val tonnageTextView = view.tonnageTextView
     val routeTextView = view.routeTextView
 }

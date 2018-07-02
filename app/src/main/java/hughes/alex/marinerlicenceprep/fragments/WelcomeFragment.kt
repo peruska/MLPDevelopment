@@ -26,10 +26,6 @@ class WelcomeFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.welcome_fragment, container, false)
         val entries = ArrayList<PieEntry>()
-        entries.add(PieEntry(20f, Queries.getStatisticsForBook(context!!, 1.toString())))
-        entries.add(PieEntry(30f, Queries.getStatisticsForBook(context!!, 2.toString())))
-        entries.add(PieEntry(40f, Queries.getStatisticsForBook(context!!, 2.toString())))
-        entries.add(PieEntry(50f, Queries.getStatisticsForBook(context!!, 2.toString())))
         val set = PieDataSet(entries, "")
         set.colors = ColorTemplate.JOYFUL_COLORS.asList()
         view.pieChart.data= PieData(set)
