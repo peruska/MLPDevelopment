@@ -2,6 +2,7 @@ package hughes.alex.marinerlicenceprep.database
 
 import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import hughes.alex.marinerlicenceprep.entity.*
 import hughes.alex.marinerlicenceprep.models.BooksCategoriesSubcategories
 import hughes.alex.marinerlicenceprep.models.BooksWithScores
@@ -261,5 +262,70 @@ object Queries {
         cursor.close()
         databaseAccess.close()
         return listOfLicenses
+    }
+
+    fun getQuestions(context: Context, bookCategoryID: String, bookID: String, dlNumber: Int, categoryID: String?, subCategoryID: String?): ArrayList<Questions>{
+        val getAllQuestionsFromBook = "SELECT ${Questions.COLUMN_QUESTION}, ${Questions.COLUMN_ANSWER_ONE}, ${Questions.COLUMN_ANSWER_TWO}, ${Questions.COLUMN_ANSWER_THREE}, " +
+                " ${Questions.COLUMN_ANSWER_FOUR}, ${Questions.COLUMN_ANSWER}, ${Questions.COLUMN_NUMBER}, " +
+                " ${Questions.COLUMN_SUBCATEGORY_NAME}, ${Questions.COLUMN_QUESTIONS_ID} FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOK_CATEGORY_ID} = ? AND ZDL" + dlNumber + " = 1 " +
+                " AND ${Questions.COLUMN_BOOK_ID} = ?"
+        val getAllQuestionsFromCategory = "SELECT ${Questions.COLUMN_QUESTION}, ${Questions.COLUMN_ANSWER_ONE}, ${Questions.COLUMN_ANSWER_TWO}, ${Questions.COLUMN_ANSWER_THREE}, " +
+                " ${Questions.COLUMN_ANSWER_FOUR}, ${Questions.COLUMN_ANSWER}, ${Questions.COLUMN_NUMBER}, " +
+                " ${Questions.COLUMN_SUBCATEGORY_NAME}, ${Questions.COLUMN_QUESTIONS_ID} FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOK_CATEGORY_ID} = ? AND ZDL" + dlNumber + " = 1 " +
+                " AND ${Questions.COLUMN_BOOK_ID} = ? AND ${Questions.COLUMN_CATEGORY_ID} = ?"
+        val getAllQuestionsFromSubcategory = "SELECT ${Questions.COLUMN_QUESTION}, ${Questions.COLUMN_ANSWER_ONE}, ${Questions.COLUMN_ANSWER_TWO}, ${Questions.COLUMN_ANSWER_THREE}, " +
+                " ${Questions.COLUMN_ANSWER_FOUR}, ${Questions.COLUMN_ANSWER}, ${Questions.COLUMN_NUMBER}, " +
+                " ${Questions.COLUMN_SUBCATEGORY_NAME}, ${Questions.COLUMN_QUESTIONS_ID} FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOK_CATEGORY_ID} = ? AND ZDL" + dlNumber + " = 1 " +
+                " AND ${Questions.COLUMN_BOOK_ID} = ? AND ${Questions.COLUMN_CATEGORY_ID} = ? AND ${Questions.COLUMN_SUBCATEGORY_ID} = ?"
+
+        val listOfQuestions: ArrayList<Questions>
+        val databaseAccess = DatabaseAccess.getInstance(context)
+        databaseAccess.open()
+        when {
+            categoryID == null -> {
+                val cursor = databaseAccess.executeRawQuery(getAllQuestionsFromBook, arrayOf(bookCategoryID, bookID))
+                listOfQuestions = dataFetching(cursor)
+                cursor.close()
+            }
+            subCategoryID == null -> {
+                val cursor = databaseAccess.executeRawQuery(getAllQuestionsFromCategory, arrayOf(bookCategoryID, bookID, categoryID))
+                listOfQuestions = dataFetching(cursor)
+                cursor.close()
+            }
+            else -> {
+                val cursor = databaseAccess.executeRawQuery(getAllQuestionsFromSubcategory, arrayOf(bookCategoryID, bookID, categoryID, subCategoryID))
+                listOfQuestions = dataFetching(cursor)
+                cursor.close()
+            }
+        }
+
+        databaseAccess.close()
+        return listOfQuestions
+    }
+
+    private fun dataFetching( cursor: Cursor): ArrayList<Questions>{
+        val list = ArrayList<Questions>()
+        val questionIndex = cursor.getColumnIndex(Questions.COLUMN_QUESTION)
+        val answerOneIndex = cursor.getColumnIndex(Questions.COLUMN_ANSWER_ONE)
+        val answerTwoIndex = cursor.getColumnIndex(Questions.COLUMN_ANSWER_TWO)
+        val answerThreeIndex = cursor.getColumnIndex(Questions.COLUMN_ANSWER_THREE)
+        val answerFourIndex = cursor.getColumnIndex(Questions.COLUMN_ANSWER_FOUR)
+        val correctAnswerIndex = cursor.getColumnIndex(Questions.COLUMN_ANSWER)
+        val numberIndex = cursor.getColumnIndex(Questions.COLUMN_NUMBER)
+        val subcategoryNameIndex = cursor.getColumnIndex(Questions.COLUMN_SUBCATEGORY_NAME)
+        val questionIDIndex = cursor.getColumnIndex(Questions.COLUMN_QUESTIONS_ID)
+        while (cursor.moveToNext()){
+            val question = cursor.getString(questionIndex)
+            val answerOne = cursor.getString(answerOneIndex)
+            val answerTwo = cursor.getString(answerTwoIndex)
+            val answerThree = cursor.getString(answerThreeIndex)
+            val answerFour = cursor.getString(answerFourIndex)
+            val correctAnswer = cursor.getString(correctAnswerIndex)
+            val number = cursor.getString(numberIndex)
+            val subcategoryName = cursor.getString(subcategoryNameIndex)
+            val questionID = cursor.getString(questionIDIndex)
+            list.add(Questions(question, answerOne, answerTwo, answerThree, answerFour, correctAnswer, number, subcategoryName, questionID))
+        }
+        return list
     }
 }
