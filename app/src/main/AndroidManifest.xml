@@ -26,13 +26,17 @@
         <activity
             android:name=".activities.Home"
             android:exported="true" />
-        <activity android:name=".activities.EditSubscriptionProfile" />
+        <activity android:name=".activities.EditSubscriptionProfile"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".activities.EditLicenceRating"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activities.ChangeEmail" />
-        <activity android:name=".activities.ChangePassword" />
+        <activity android:name=".activities.ChangeEmail"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activities.ChangePassword"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.TermsOfServices" />
-        <activity android:name=".activities.PrivacyPolicy" />
+        <activity android:name=".activities.PrivacyPolicy"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.Study"
             android:exported="true"
