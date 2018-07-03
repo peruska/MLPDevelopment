@@ -56,6 +56,7 @@ class StudyFragment : Fragment() {
         view.expandableListView.setAdapter(adapter)
         view.allEngineReplacement.setOnClickListener {
             startStudying.text = "Study: " + allEngineReplacement.text.toString()
+            setValues("-1", "-1", "-1")
         }
         view.startStudying.setOnClickListener {
             val intent = Intent(context, Study::class.java)

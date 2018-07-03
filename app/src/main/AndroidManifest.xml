@@ -41,6 +41,7 @@
             android:name=".activities.Study"
             android:exported="true"
             android:label="@string/title_activity_study"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.License"
             android:exported="true"/>

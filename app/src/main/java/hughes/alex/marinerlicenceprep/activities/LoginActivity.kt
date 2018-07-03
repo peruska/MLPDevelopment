@@ -22,6 +22,10 @@ import org.jetbrains.anko.toast
 import android.widget.EditText
 import hughes.alex.marinerlicenceprep.R
 import kotlinx.android.synthetic.main.login_scene.*
+import android.graphics.BitmapFactory
+import android.provider.MediaStore.MediaColumns
+
+
 
 
 class LoginActivity : AppCompatActivity() {
@@ -51,7 +55,7 @@ class LoginActivity : AppCompatActivity() {
         //TODO ADD PERMISSION CHECK
         val items = arrayOf<CharSequence>("Take Photo", "Choose from Library", "Cancel")
         val builder = android.app.AlertDialog.Builder(this)
-        builder.setItems(items, DialogInterface.OnClickListener { dialog, item ->
+        builder.setItems(items) { dialog, item ->
             when {
                 items[item] == "Take Photo" -> {
                     val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -65,7 +69,7 @@ class LoginActivity : AppCompatActivity() {
                 }
                 items[item] == "Cancel" -> dialog.dismiss()
             }
-        })
+        }
         val dialog = builder.create()
         val listView = dialog.listView
         listView.divider = ColorDrawable(resources.getColor(R.color.colorPrimary))
@@ -77,18 +81,39 @@ class LoginActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, imageReturnedIntent: Intent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent)
         when (requestCode) {
-            0 -> if (resultCode == Activity.RESULT_OK) {
-                val extras = imageReturnedIntent.extras
-                profilePictureBitmap = extras.get("data") as Bitmap
-                profilePictureSignUp.setImageBitmap(profilePictureBitmap)
-            }
             1 -> if (resultCode == Activity.RESULT_OK) {
                 val extras = imageReturnedIntent.extras
                 profilePictureBitmap = extras.get("data") as Bitmap
                 profilePictureSignUp.setImageBitmap(profilePictureBitmap)
             }
+            2 -> if (resultCode == Activity.RESULT_OK) {
+                onSelectFromGalleryResult(imageReturnedIntent)
+            }
         }
     }
+
+    private fun onSelectFromGalleryResult(data: Intent) {
+        val selectedImageUri = data.data
+        val projection = arrayOf(MediaColumns.DATA)
+        val cursor = managedQuery(selectedImageUri, projection, null, null, null)
+        val column_index = cursor.getColumnIndexOrThrow(MediaColumns.DATA)
+        cursor.moveToFirst()
+        val selectedImagePath = cursor.getString(column_index)
+        val bm: Bitmap
+        val options = BitmapFactory.Options()
+        options.inJustDecodeBounds = true
+        BitmapFactory.decodeFile(selectedImagePath, options)
+        val REQUIRED_SIZE = 200
+        var scale = 1
+        while (options.outWidth / scale / 2 >= REQUIRED_SIZE && options.outHeight / scale / 2 >= REQUIRED_SIZE)
+            scale *= 2
+        options.inSampleSize = scale
+        options.inJustDecodeBounds = false
+        bm = BitmapFactory.decodeFile(selectedImagePath, options)
+
+        profilePictureSignUp.setImageBitmap(bm)
+    }
+
 
     fun submitSignUpRequest(view: View) {
         val value = inputsAreInvalid()
@@ -146,7 +171,7 @@ class LoginActivity : AppCompatActivity() {
         return 0
     }
 
-    fun isEmailValid(email: CharSequence): Boolean {
+    private fun isEmailValid(email: CharSequence): Boolean {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 
@@ -157,13 +182,8 @@ class LoginActivity : AppCompatActivity() {
         alert.setTitle("Reset password")
         emailEditText.hint = "Enter email here..."
         alert.setView(emailEditText)
-        alert.setPositiveButton("Reset", { _, _ ->
-            AuthService(this).resetPassword(emailEditText.text.toString())
-        })
-
-        alert.setNegativeButton("Cancel", { dialog, whichButton ->
-
-        })
+        alert.setPositiveButton("Reset") { _, _ -> AuthService(this).resetPassword(emailEditText.text.toString()) }
+        alert.setNegativeButton("Cancel") { _, _ -> }
 
         alert.show()
     }
