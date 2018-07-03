@@ -1,16 +1,10 @@
 package hughes.alex.marinerlicenceprep.activities
 
-import android.graphics.Color
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v7.app.ActionBar
-import android.view.View
+import android.support.v7.app.AppCompatActivity
 import hughes.alex.marinerlicenceprep.AuthService
-import hughes.alex.marinerlicenceprep.MyApp
-import hughes.alex.marinerlicenceprep.MyApp.Companion.defaultUser
 import hughes.alex.marinerlicenceprep.R
 import kotlinx.android.synthetic.main.activity_change_email.*
-import kotlinx.android.synthetic.main.custom_action_bar_change_email.*
 
 class ChangeEmail : AppCompatActivity() {
 
