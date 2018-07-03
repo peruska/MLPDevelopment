@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 
 import hughes.alex.marinerlicenceprep.R
+import hughes.alex.marinerlicenceprep.activities.Study.PlaceholderFragment.Companion.questions
 import hughes.alex.marinerlicenceprep.database.Queries
 import hughes.alex.marinerlicenceprep.entity.Questions
 import kotlinx.android.synthetic.main.activity_study.*
@@ -23,15 +24,26 @@ class Study : AppCompatActivity() {
     private var autoNext: Boolean = true
     private var shuffleQuestions: Boolean = false
     private var logAnswers: Boolean = true
+    private var dlNumber: String? = null
+    private var bookCategoryID: String? = null
+    private var bookID: String? = null
+    private var categoryID: String? = null
+    private var subcategoryID: String? = null
     var showAnswers: Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_study)
-        autoNext = intent.extras.getBoolean("autoNext")
-        shuffleQuestions = intent.extras.getBoolean("shuffleQuestions")
-        logAnswers = intent.extras.getBoolean("logAnswers")
-        showAnswers = intent.extras.getBoolean("showAnswers")
-        PlaceholderFragment.questions = Queries.loadQuestions(this, "All Deck", true, 74.toString(), 21, 4.toString())
+        val extras = intent.extras
+        autoNext = extras.getBoolean("autoNext")
+        shuffleQuestions = extras.getBoolean("shuffleQuestions")
+        logAnswers = extras.getBoolean("logAnswers")
+        showAnswers = extras.getBoolean("showAnswers")
+        dlNumber = extras.getString("dlNumber")
+        bookCategoryID = extras.getString("bookCategoryID")
+        bookID = extras.getString("bookID")
+        categoryID = extras.getString("categoryID")
+        subcategoryID = extras.getString("subcategoryID")
+        PlaceholderFragment.questions = Queries.getQuestions(this, bookCategoryID!!, bookID, dlNumber!!, categoryID, subcategoryID)
         mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
         container.adapter = mSectionsPagerAdapter
         numberLabel.text = "Num " + (container.currentItem + 1) + "/" + container.adapter?.count
@@ -103,7 +115,7 @@ class Study : AppCompatActivity() {
     }
 
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
-        var questions = Queries.loadQuestions(this@Study, "All Deck", true, 74.toString(), 21, 4.toString())
+
         override fun getItem(position: Int): Fragment {
             return PlaceholderFragment.newInstance(position)
         }

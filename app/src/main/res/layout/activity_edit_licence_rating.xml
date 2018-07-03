@@ -6,170 +6,32 @@
     android:layout_height="match_parent"
     tools:context=".activities.EditLicenceRating">
 
-    <LinearLayout
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/editLicenceToolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:contentInsetStart="0dp">
 
         <TextView
-            android:id="@+id/textView7"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="@string/engine"
-            android:background="@color/lightGray"
-            android:gravity="bottom|start"
-            android:paddingBottom="10dp"
-            android:paddingLeft="20dp"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
+            android:id="@+id/button3"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:drawableStart="@mipmap/left"
+            android:text="@string/settings_title"
+            android:gravity="center_vertical"
+            android:onClick="backToSettings"/>
+    </android.support.v7.widget.Toolbar>
 
-            <TextView
-                android:id="@+id/textView9"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/first_assistant_engineer"
-                android:textSize="19sp"
-                android:textStyle="bold"
-                android:drawableLeft="@mipmap/gear_wheel"
-                android:gravity="center|left"/>
 
-            <TextView
-                android:id="@+id/textView10"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:text="Unlimited"
-                android:background="@drawable/textline_engine"
-                android:layout_marginStart="20dp"
-                />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/thirdAssistantEngieneer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/third_assistant_engineer"
-                android:textSize="19sp"
-                android:textStyle="bold"
-                android:drawableLeft="@mipmap/gear_wheel"
-                android:gravity="center|start"/>
-
-            <TextView
-                android:id="@+id/textView11"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:text="Unlimited"
-                android:background="@drawable/textline_engine"
-                android:layout_marginStart="20dp"
-                />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textView12"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/chief_engineer"
-                android:textSize="19sp"
-                android:textStyle="bold"
-                android:drawableLeft="@mipmap/gear_wheel"
-                android:gravity="center|start"/>
-
-            <TextView
-                android:id="@+id/textView13"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:text="Limited"
-                android:background="@drawable/textline_engine"
-                android:layout_marginStart="20dp"
-                />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textView14"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/assistant_engineer"
-                android:textSize="19sp"
-                android:textStyle="bold"
-                android:drawableStart="@mipmap/gear_wheel"
-                android:gravity="center|start"/>
-
-            <TextView
-                android:id="@+id/textView15"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:text="Limited"
-                android:background="@drawable/textline_engine"
-                android:layout_marginStart="20dp"
-                />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textView16"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/designated_duty_engineer"
-                android:textSize="19sp"
-                android:textStyle="bold"
-                android:drawableStart="@mipmap/gear_wheel"
-                android:gravity="center|start"/>
-
-            <TextView
-                android:id="@+id/textView17"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:text="4,000 HP"
-                android:background="@drawable/textline_engine"
-                android:layout_marginStart="20dp"
-                />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textView18"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Ne vidi se na snimku"
-                android:textSize="19sp"
-                android:textStyle="bold"
-                android:drawableLeft="@mipmap/gear_wheel"
-                android:gravity="center|left"/>
-
-            <TextView
-                android:id="@+id/textView19"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:text="Unlimited"
-                android:background="@drawable/textline_engine"
-                android:layout_marginStart="20dp"
-                />
-        </LinearLayout>
-
-    </LinearLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/editLicenseRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editLicenceToolbar" />
 </android.support.constraint.ConstraintLayout>

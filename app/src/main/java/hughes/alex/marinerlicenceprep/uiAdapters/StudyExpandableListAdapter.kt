@@ -1,6 +1,5 @@
 package hughes.alex.marinerlicenceprep.uiAdapters
 
-import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +8,6 @@ import android.widget.BaseExpandableListAdapter
 import android.widget.TextView
 import hughes.alex.marinerlicenceprep.R
 import hughes.alex.marinerlicenceprep.activities.Home
-import hughes.alex.marinerlicenceprep.activities.Study
 import hughes.alex.marinerlicenceprep.fragments.StudyFragment
 import hughes.alex.marinerlicenceprep.models.StudyExpandableListItem
 import kotlinx.android.synthetic.main.study_fragment.*
@@ -21,6 +19,18 @@ class StudyExpandableListAdapter(var context: Context?, val listOfGroups: ArrayL
     companion object {
         var groupChecked: Int = -1
         var uncheckThis: Int = -1
+    }
+
+    override fun onGroupExpanded(groupPosition: Int) {
+        (context as Home).startStudying.text = "Study: " + listOfGroups[groupPosition].groupName
+        StudyFragment.setValues(listOfGroups[groupPosition].bookID)
+        super.onGroupExpanded(groupPosition)
+    }
+
+    override fun onGroupCollapsed(groupPosition: Int) {
+        (context as Home).startStudying.text = "Study: " + listOfGroups[groupPosition].groupName
+        StudyFragment.setValues(listOfGroups[groupPosition].bookID)
+        super.onGroupExpanded(groupPosition)
     }
 
     override fun getGroup(p0: Int): Any {
@@ -43,7 +53,6 @@ class StudyExpandableListAdapter(var context: Context?, val listOfGroups: ArrayL
             view.groupName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.mipmap.checked, 0)
             activeTextView = view.groupName
         } else if (uncheckThis == groupPosition)
-
             view.groupName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
         return view
     }
@@ -67,19 +76,8 @@ class StudyExpandableListAdapter(var context: Context?, val listOfGroups: ArrayL
         view.childName.text = listOfGroups[groupPosition].childNames[childPosition].subcategoryName
 
         view.childName.setOnClickListener {
-
-            uncheckThis = groupChecked
-            groupChecked = -1
-            parent?.forEachChild {
-                try {
-                    it.groupName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-                } catch (e: Exception) {
-                }
-            }
-            activeTextView?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-            view.childName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.mipmap.checked, 0)
-            activeTextView = view.childName
             (context as Home).startStudying.text = "Study: " + listOfGroups[groupPosition].childNames[childPosition].subcategoryName
+            StudyFragment.setValues(listOfGroups[groupPosition].bookID, "-1", listOfGroups[groupPosition].childNames[childPosition].subcategoryID)
         }
         return view
     }

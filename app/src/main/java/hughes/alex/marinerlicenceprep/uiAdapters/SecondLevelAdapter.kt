@@ -6,11 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
 import hughes.alex.marinerlicenceprep.R
+import hughes.alex.marinerlicenceprep.activities.Home
+import hughes.alex.marinerlicenceprep.fragments.StudyFragment
 import hughes.alex.marinerlicenceprep.models.CategoryWithSubcategories
 import kotlinx.android.synthetic.main.study_deck_first_child.view.*
 import kotlinx.android.synthetic.main.study_deck_list_second_child.view.*
+import kotlinx.android.synthetic.main.study_fragment.*
 
-class SecondLevelAdapter(var context: Context, var categoriesWithSubcategories: ArrayList<CategoryWithSubcategories>): BaseExpandableListAdapter() {
+class SecondLevelAdapter(var context: Context, var categoriesWithSubcategories: ArrayList<CategoryWithSubcategories>, var bookID: String) : BaseExpandableListAdapter() {
     override fun getGroup(groupPosition: Int): Any {
         return groupPosition
     }
@@ -23,9 +26,21 @@ class SecondLevelAdapter(var context: Context, var categoriesWithSubcategories: 
         return false
     }
 
+    override fun onGroupExpanded(groupPosition: Int) {
+        (context as Home).startStudying.text = "Study: " + categoriesWithSubcategories[groupPosition].categoryName
+        StudyFragment.setValues(bookID, categoriesWithSubcategories[groupPosition].categoryID)
+        super.onGroupExpanded(groupPosition)
+    }
+
+    override fun onGroupCollapsed(groupPosition: Int) {
+        (context as Home).startStudying.text = "Study: " + categoriesWithSubcategories[groupPosition].categoryName
+        StudyFragment.setValues(bookID, categoriesWithSubcategories[groupPosition].categoryID)
+        super.onGroupExpanded(groupPosition)
+    }
+
     override fun getGroupView(groupPosition: Int, isExpanded: Boolean, convertView: View?, parent: ViewGroup?): View {
         var view = convertView
-        if(view == null){
+        if (view == null) {
             val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             view = inflater.inflate(R.layout.study_deck_first_child, parent, false)
             view.first_child_text.text = categoriesWithSubcategories[groupPosition].categoryName
@@ -45,13 +60,16 @@ class SecondLevelAdapter(var context: Context, var categoriesWithSubcategories: 
         return groupPosition.toLong()
     }
 
+
     override fun getChildView(groupPosition: Int, childPosition: Int, isLastChild: Boolean, convertView: View?, parent: ViewGroup?): View {
-        var view2 = convertView
-        if(view2 == null){
-            val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            view2 = inflater.inflate(R.layout.study_deck_list_second_child, parent, false)
-            view2.second_child_text.text = categoriesWithSubcategories[groupPosition].subcategories[childPosition].subcategoryName
+        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val view2 = inflater.inflate(R.layout.study_deck_list_second_child, parent, false)
+        view2.second_child_text.text = categoriesWithSubcategories[groupPosition].subcategories[childPosition].subcategoryName
+        view2.setOnClickListener {
+            (context as Home).startStudying.text = "Study: " + categoriesWithSubcategories[groupPosition].subcategories[childPosition].subcategoryName
+            StudyFragment.setValues(bookID, categoriesWithSubcategories[groupPosition].categoryID,categoriesWithSubcategories[groupPosition].subcategories[childPosition].subcategoryID)
         }
+
         return view2!!
     }
 

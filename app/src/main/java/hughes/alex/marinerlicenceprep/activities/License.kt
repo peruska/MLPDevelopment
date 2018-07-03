@@ -13,7 +13,6 @@ class License : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_licence)
-        Queries.getLicense(this).forEach { println(it.endorsement) }
         licenceRecycleView.layoutManager = LinearLayoutManager(this)
         licenceRecycleView.adapter = LicenseAdapter(Queries.getLicense(this), this)
     }

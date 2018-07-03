@@ -35,7 +35,7 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.android.volley:volley:1.1.0'
     implementation 'com.github.hardillb:MultiPartVolley:0.0.3'
-    implementation "org.jetbrains.anko:anko-common:0.8.3"
+    implementation "org.jetbrains.anko:anko-common:0.9"
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.chabbal:slidingdotsplash:1.0.2'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'

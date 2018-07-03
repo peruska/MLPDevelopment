@@ -1,6 +1,6 @@
 package hughes.alex.marinerlicenceprep.entity
 
-class Subcategory(var subcategoryName: String, var subcategroyID: String) {
+class Subcategory(var subcategoryName: String, var subcategoryID: String) {
     companion object {
         const val TABLE = "ZSUBCATEGORY"
 
