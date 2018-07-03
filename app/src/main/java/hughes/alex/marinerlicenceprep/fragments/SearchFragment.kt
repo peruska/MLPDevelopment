@@ -37,6 +37,9 @@ class SearchFragment : Fragment() {
         val dlNumber = prefs.getString(MyApp.DL_NUMBER, "")
         var listOfFoundQuestions: ArrayList<Questions>? = null
         var numberOfCalls = 0
+        view.searchRecyclerView.layoutManager = LinearLayoutManager(context)
+        val mSearchAdapter = SearchAdapter(finalListOfQuestions, context!!)
+        view.searchRecyclerView.adapter = mSearchAdapter
 
         if (bookCategory == "1") {
             listBookSubcategory = Gson().fromJson<ArrayList<StudyExpandableListItem>>(json, object : TypeToken<ArrayList<StudyExpandableListItem>>() {}.type)
@@ -54,25 +57,8 @@ class SearchFragment : Fragment() {
             }
         }
 
-
-        val adapter = ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, spinnerArray)
-        val spinner = view.searchSelectionSpinner
-        spinner.adapter = adapter
-        spinner.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                listOfFoundQuestions = if (numberOfCalls == 0) {
-                    Queries.getQuestions(context!!, bookCategory, "-1", dlNumber, "-1", "-1")
-                } else {
-                    Queries.getQuestions(context!!, bookCategory, arrayOfIndexes[spinner.selectedItemId.toInt()], dlNumber, "-1", "-1")
-                }
-                numberOfCalls++
-            }
-
-        }
-
-        view.search_view.setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener {
+        val mSearchView = view.search_view
+        mSearchView.setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener {
 
             override fun onQueryTextChange(newText: String): Boolean {
                 return false
@@ -88,12 +74,33 @@ class SearchFragment : Fragment() {
                         finalListOfQuestions.add(it)
                     }
                 }
-                searchRecyclerView.layoutManager = LinearLayoutManager(context)
-                searchRecyclerView.adapter = SearchAdapter(finalListOfQuestions, context!!)
+                mSearchAdapter.notifyDataSetChanged()
                 return false
             }
 
         })
+
+        val adapter = ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, spinnerArray)
+        val spinner = view.searchSelectionSpinner
+        spinner.adapter = adapter
+        spinner.onItemSelectedListener = object : OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                if (numberOfCalls == 0) {
+                    listOfFoundQuestions = Queries.getQuestions(context!!, bookCategory, "-1", dlNumber, "-1", "-1")
+                } else {
+                    listOfFoundQuestions = Queries.getQuestions(context!!, bookCategory, arrayOfIndexes[spinner.selectedItemId.toInt()], dlNumber, "-1", "-1")
+                    mSearchView.setQuery(mSearchView.query, true)
+                }
+
+                numberOfCalls++
+
+            }
+
+        }
+
+
         return view
     }
 }
