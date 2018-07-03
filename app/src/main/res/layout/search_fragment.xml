@@ -22,6 +22,7 @@
             android:layout_height="match_parent">
 
             <SearchView
+                android:id="@+id/search_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="8dp"
@@ -37,7 +38,6 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:dropDownVerticalOffset="35dp"
-                android:entries="@array/searchSelectionSpinnerItems"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
