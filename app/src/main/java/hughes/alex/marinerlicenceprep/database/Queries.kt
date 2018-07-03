@@ -72,19 +72,19 @@ object Queries {
                     val subcategoryName = cursor3.getString(0)
                     val subcategoryID = cursor3.getString(1)
                     val cursorCheck = databaseAccess.executeRawQuery(getQuestionsForSubcategoryAndLicence, arrayOf(subcategoryID))
-                    if(cursorCheck.count > 0) {
+                    if (cursorCheck.count > 0) {
                         subcategoriesOfCategory.add(Subcategory(subcategoryName, subcategoryID))
                     }
                     cursorCheck.close()
 
                 }
                 cursor3.close()
-                if(subcategoriesOfCategory.size > 0) {
+                if (subcategoriesOfCategory.size > 0) {
                     categoriesWithSubcategories.add(CategoryWithSubcategories(categoryOfBook, bookCategoryID, subcategoriesOfCategory))
                 }
             }
             cursor2.close()
-            if(categoriesWithSubcategories.size > 0) {
+            if (categoriesWithSubcategories.size > 0) {
                 list.add(BooksCategoriesSubcategories(bookName, bookID, categoriesWithSubcategories))
             }
         }
@@ -104,20 +104,20 @@ object Queries {
         while (cursor.moveToNext()) {
             val bookName = cursor.getString(1)
             val bookID = cursor.getString(0)
-            if(bookName == "All Engine") continue
+            if (bookName == "All Engine") continue
             val cursor2 = databaseAccess.executeRawQuery(GET_ALL_SUBCATEGORIES_FOR_CERTAIN_BOOK, arrayOf(bookID))
             val subcategories = ArrayList<Subcategory>()
             while (cursor2.moveToNext()) {
                 val subcategoryName = cursor2.getString(0)
                 val subcategoryID = cursor2.getString(1)
                 val cursorCheck = databaseAccess.executeRawQuery(getQuestionsForSubcategoryAndLicence, arrayOf(subcategoryID))
-                if(cursorCheck.count > 0) {
+                if (cursorCheck.count > 0) {
                     subcategories.add(Subcategory(subcategoryName, subcategoryID))
                 }
                 cursorCheck.close()
             }
             cursor2.close()
-            if(subcategories.size > 0) {
+            if (subcategories.size > 0) {
                 listOfGroups.add(StudyExpandableListItem(bookName, bookID, subcategories))
             }
         }
@@ -159,7 +159,7 @@ object Queries {
         }
         cursor.close()
         databaseAccess.close()
-        if(shuffle){
+        if (shuffle) {
             loadedQuestions.shuffle()
         }
         return loadedQuestions
@@ -197,13 +197,13 @@ object Queries {
         }
         cursor.close()
         databaseAccess.close()
-        if(shuffle){
+        if (shuffle) {
             loadedQuestions.shuffle()
         }
         return loadedQuestions
     }
 
-    fun updateQuestionStatistics(context: Context, questionID: String, correctOrWrongAnswered: Int){
+    fun updateQuestionStatistics(context: Context, questionID: String, correctOrWrongAnswered: Int) {
         val databaseAccess = DatabaseAccess.getInstance(context)
         databaseAccess.open()
         val cursor = databaseAccess.executeRawQuery(GET_QUESTION_STATISTICS_FIELDS, arrayOf(questionID))
@@ -211,9 +211,9 @@ object Queries {
         var numberOfTimesAnswered = cursor.getFloat(0)
         var numberOfTimesAnsweredCorrect = cursor.getFloat(1)
         var numberOfTimesAnsweredWrong = cursor.getFloat(2)
-        if(correctOrWrongAnswered == 1){
+        if (correctOrWrongAnswered == 1) {
             numberOfTimesAnsweredCorrect += 1
-        }else{
+        } else {
             numberOfTimesAnsweredWrong += 1
         }
         numberOfTimesAnswered += 1
@@ -226,18 +226,18 @@ object Queries {
         databaseAccess.close()
     }
 
-    fun getStatisticsForBook(context: Context, listOfBooks: ArrayList<Book>): ArrayList<BooksWithScores>{
+    fun getStatisticsForBook(context: Context, listOfBooks: ArrayList<Book>): ArrayList<BooksWithScores> {
         val databaseAccess = DatabaseAccess.getInstance(context)
         databaseAccess.open()
         val booksWithScores = ArrayList<BooksWithScores>()
         listOfBooks.forEach {
             val cursor = databaseAccess.executeRawQuery(GET_QUESTIONS_STATISTICS_FIELDS_FOR_CERTAIN_BOOK, arrayOf(it.bookID.toString()))
-            var numberOfAnsweres : Float = 0.toFloat()
+            var numberOfAnsweres: Float = 0.toFloat()
             var numberOfCorrectAnswers: Float = 0.toFloat()
-            while (cursor.moveToNext()){
+            while (cursor.moveToNext()) {
                 numberOfAnsweres += cursor.getFloat(0)
                 numberOfCorrectAnswers += cursor.getFloat(1)
-                val scoreOfBook = numberOfCorrectAnswers/numberOfAnsweres*100
+                val scoreOfBook = numberOfCorrectAnswers / numberOfAnsweres * 100
                 booksWithScores.add(BooksWithScores(it.bookName, it.bookID, scoreOfBook))
             }
         }
@@ -245,12 +245,12 @@ object Queries {
     }
 
 
-    fun getLicense(context: Context): ArrayList<LicenseEntity>{
+    fun getLicense(context: Context): ArrayList<LicenseEntity> {
         val databaseAccess = DatabaseAccess.getInstance(context)
         databaseAccess.open()
         val cursor = databaseAccess.executeRawQuery(GET_ALL_LICENCE, arrayOf())
         val listOfLicenses = ArrayList<LicenseEntity>()
-        while(cursor.moveToNext()){
+        while (cursor.moveToNext()) {
             val licenseID = cursor.getInt(0)
             val dlNumber = cursor.getInt(1)
             val bookCategoryID = cursor.getInt(2)
@@ -264,7 +264,10 @@ object Queries {
         return listOfLicenses
     }
 
-    fun getQuestions(context: Context, bookCategoryID: String, bookID: String, dlNumber: Int, categoryID: String?, subCategoryID: String?): ArrayList<Questions>{
+    fun getQuestions(context: Context, bookCategoryID: String, bookID: String?, dlNumber: String, categoryID: String?, subCategoryID: String?): ArrayList<Questions> {
+        val getAllQuestionsFromBookCategory = "SELECT ${Questions.COLUMN_QUESTION}, ${Questions.COLUMN_ANSWER_ONE}, ${Questions.COLUMN_ANSWER_TWO}, ${Questions.COLUMN_ANSWER_THREE}, " +
+                " ${Questions.COLUMN_ANSWER_FOUR}, ${Questions.COLUMN_ANSWER}, ${Questions.COLUMN_NUMBER}, " +
+                " ${Questions.COLUMN_SUBCATEGORY_NAME}, ${Questions.COLUMN_QUESTIONS_ID} FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOK_CATEGORY_ID} = ? AND ZDL" + dlNumber + " = 1 "
         val getAllQuestionsFromBook = "SELECT ${Questions.COLUMN_QUESTION}, ${Questions.COLUMN_ANSWER_ONE}, ${Questions.COLUMN_ANSWER_TWO}, ${Questions.COLUMN_ANSWER_THREE}, " +
                 " ${Questions.COLUMN_ANSWER_FOUR}, ${Questions.COLUMN_ANSWER}, ${Questions.COLUMN_NUMBER}, " +
                 " ${Questions.COLUMN_SUBCATEGORY_NAME}, ${Questions.COLUMN_QUESTIONS_ID} FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOK_CATEGORY_ID} = ? AND ZDL" + dlNumber + " = 1 " +
@@ -273,6 +276,10 @@ object Queries {
                 " ${Questions.COLUMN_ANSWER_FOUR}, ${Questions.COLUMN_ANSWER}, ${Questions.COLUMN_NUMBER}, " +
                 " ${Questions.COLUMN_SUBCATEGORY_NAME}, ${Questions.COLUMN_QUESTIONS_ID} FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOK_CATEGORY_ID} = ? AND ZDL" + dlNumber + " = 1 " +
                 " AND ${Questions.COLUMN_BOOK_ID} = ? AND ${Questions.COLUMN_CATEGORY_ID} = ?"
+        val getAllQuestionsFromSubcategoryWithoutCategory = "SELECT ${Questions.COLUMN_QUESTION}, ${Questions.COLUMN_ANSWER_ONE}, ${Questions.COLUMN_ANSWER_TWO}, ${Questions.COLUMN_ANSWER_THREE}, " +
+                " ${Questions.COLUMN_ANSWER_FOUR}, ${Questions.COLUMN_ANSWER}, ${Questions.COLUMN_NUMBER}, " +
+                " ${Questions.COLUMN_SUBCATEGORY_NAME}, ${Questions.COLUMN_QUESTIONS_ID} FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOK_CATEGORY_ID} = ? AND ZDL" + dlNumber + " = 1 " +
+                " AND ${Questions.COLUMN_BOOK_ID} = ? AND ${Questions.COLUMN_SUBCATEGORY_ID} = ?"
         val getAllQuestionsFromSubcategory = "SELECT ${Questions.COLUMN_QUESTION}, ${Questions.COLUMN_ANSWER_ONE}, ${Questions.COLUMN_ANSWER_TWO}, ${Questions.COLUMN_ANSWER_THREE}, " +
                 " ${Questions.COLUMN_ANSWER_FOUR}, ${Questions.COLUMN_ANSWER}, ${Questions.COLUMN_NUMBER}, " +
                 " ${Questions.COLUMN_SUBCATEGORY_NAME}, ${Questions.COLUMN_QUESTIONS_ID} FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOK_CATEGORY_ID} = ? AND ZDL" + dlNumber + " = 1 " +
@@ -282,18 +289,29 @@ object Queries {
         val databaseAccess = DatabaseAccess.getInstance(context)
         databaseAccess.open()
         when {
-            categoryID == null -> {
-                val cursor = databaseAccess.executeRawQuery(getAllQuestionsFromBook, arrayOf(bookCategoryID, bookID))
+            bookID == "-1" -> {
+                val cursor = databaseAccess.executeRawQuery(getAllQuestionsFromBookCategory, arrayOf(bookCategoryID))
                 listOfQuestions = dataFetching(cursor)
                 cursor.close()
             }
-            subCategoryID == null -> {
-                val cursor = databaseAccess.executeRawQuery(getAllQuestionsFromCategory, arrayOf(bookCategoryID, bookID, categoryID))
+
+            subCategoryID != "-1" && categoryID == "-1" -> {
+                val cursor = databaseAccess.executeRawQuery(getAllQuestionsFromSubcategoryWithoutCategory, arrayOf(bookCategoryID, bookID!!, subCategoryID!!))
+                listOfQuestions = dataFetching(cursor)
+                cursor.close()
+            }
+            categoryID == "-1" -> {
+                val cursor = databaseAccess.executeRawQuery(getAllQuestionsFromBook, arrayOf(bookCategoryID, bookID!!))
+                listOfQuestions = dataFetching(cursor)
+                cursor.close()
+            }
+            subCategoryID == "-1" -> {
+                val cursor = databaseAccess.executeRawQuery(getAllQuestionsFromCategory, arrayOf(bookCategoryID, bookID!!, categoryID!!))
                 listOfQuestions = dataFetching(cursor)
                 cursor.close()
             }
             else -> {
-                val cursor = databaseAccess.executeRawQuery(getAllQuestionsFromSubcategory, arrayOf(bookCategoryID, bookID, categoryID, subCategoryID))
+                val cursor = databaseAccess.executeRawQuery(getAllQuestionsFromSubcategory, arrayOf(bookCategoryID, bookID!!, categoryID!!, subCategoryID!!))
                 listOfQuestions = dataFetching(cursor)
                 cursor.close()
             }
@@ -303,7 +321,7 @@ object Queries {
         return listOfQuestions
     }
 
-    private fun dataFetching( cursor: Cursor): ArrayList<Questions>{
+    private fun dataFetching(cursor: Cursor): ArrayList<Questions> {
         val list = ArrayList<Questions>()
         val questionIndex = cursor.getColumnIndex(Questions.COLUMN_QUESTION)
         val answerOneIndex = cursor.getColumnIndex(Questions.COLUMN_ANSWER_ONE)
@@ -314,7 +332,7 @@ object Queries {
         val numberIndex = cursor.getColumnIndex(Questions.COLUMN_NUMBER)
         val subcategoryNameIndex = cursor.getColumnIndex(Questions.COLUMN_SUBCATEGORY_NAME)
         val questionIDIndex = cursor.getColumnIndex(Questions.COLUMN_QUESTIONS_ID)
-        while (cursor.moveToNext()){
+        while (cursor.moveToNext()) {
             val question = cursor.getString(questionIndex)
             val answerOne = cursor.getString(answerOneIndex)
             val answerTwo = cursor.getString(answerTwoIndex)

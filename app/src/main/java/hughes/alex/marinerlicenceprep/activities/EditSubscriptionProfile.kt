@@ -16,15 +16,8 @@ class EditSubscriptionProfile : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_subscription_profile)
-
         supportActionBar!!.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
         supportActionBar!!.setCustomView(R.layout.custom_action_bar_edit_subscription)
-        Picasso.get()
-                .load(BASE_URL +MyApp.defaultUser!!.profileImageURL)
-                .resize(50, 50)
-                .centerCrop()
-                .into(profilePictureImageView)
-
         custom_back_click.setOnClickListener { v-> finish()}
     }
 }

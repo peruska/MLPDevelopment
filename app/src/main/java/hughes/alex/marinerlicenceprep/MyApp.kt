@@ -11,7 +11,6 @@ class MyApp : Application() {
         var defaultUser: UserEntity? = null
             get() = field
         var uuid: String = ""
-        const val USER_LICENSE_DATA = "user_license_data"
         const val USER_LICENSE_DATA_VALUES = "user_license_data_values"
         const val DL_NUMBER = "dl_number"
         const val CATEGORY = "book_category"
@@ -20,7 +19,6 @@ class MyApp : Application() {
         const val USER_ACCOUNT_EMAIL = "email"
         const val USER_ACCOUNT_PROFILE_PICTURE_URL = "profile_picture"
         const val BASE_URL = "https://marinerlicenseprep.com/api/"
-        const val ALLOWED_URI_CHARS = "@#&=*+-_.,:!?()/~'%"
     }
 
     override fun onCreate() {

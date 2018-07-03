@@ -1,21 +1,31 @@
 package hughes.alex.marinerlicenceprep.uiAdapters
 
-import android.app.ActionBar
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
-import android.widget.RelativeLayout
 import hughes.alex.marinerlicenceprep.R
+import hughes.alex.marinerlicenceprep.activities.Home
+import hughes.alex.marinerlicenceprep.fragments.StudyFragment.Companion.setValues
 import hughes.alex.marinerlicenceprep.models.BooksCategoriesSubcategories
 import kotlinx.android.synthetic.main.study_deck_list_group.view.*
+import kotlinx.android.synthetic.main.study_fragment.*
 
 class ExpandableListAdapterForDeck(var context: Context, var listOfMembers: ArrayList<BooksCategoriesSubcategories>) : BaseExpandableListAdapter() {
     override fun getGroup(groupPosition: Int): Any {
         return listOfMembers[groupPosition]
     }
 
+    override fun onGroupExpanded(groupPosition: Int) {
+        (context as Home).startStudying.text = "Study: " + listOfMembers[groupPosition].groupName
+        setValues(listOfMembers[groupPosition].groupNameID)
+    }
+
+    override fun onGroupCollapsed(groupPosition: Int) {
+        (context as Home).startStudying.text = "Study: " + listOfMembers[groupPosition].groupName
+        setValues(listOfMembers[groupPosition].groupNameID)
+    }
     override fun isChildSelectable(groupPosition: Int, childPosition: Int): Boolean {
         return true
     }
@@ -25,13 +35,10 @@ class ExpandableListAdapterForDeck(var context: Context, var listOfMembers: Arra
     }
 
     override fun getGroupView(groupPosition: Int, isExpanded: Boolean, convertView: View?, parent: ViewGroup?): View {
-        var view = convertView
-        if(view == null) {
-            val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            view = inflater.inflate(R.layout.study_deck_list_group, parent, false)
-            view.deck_group_name.text = listOfMembers[groupPosition].groupName
-        }
-        return  view!!
+        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val view = inflater.inflate(R.layout.study_deck_list_group, parent, false)
+        view.deck_group_name.text = listOfMembers[groupPosition].groupName
+        return view!!
     }
 
     override fun getChildrenCount(groupPosition: Int): Int {
@@ -43,13 +50,20 @@ class ExpandableListAdapterForDeck(var context: Context, var listOfMembers: Arra
     }
 
     override fun getGroupId(groupPosition: Int): Long {
-       return groupPosition.toLong()
+        return groupPosition.toLong()
     }
 
     override fun getChildView(groupPosition: Int, childPosition: Int, isLastChild: Boolean, convertView: View?, parent: ViewGroup?): View {
         val secondLevelExpandableListView = SecondLevelExpandableListView(context)
-        secondLevelExpandableListView.setPadding(20, 0,0,0)
-        secondLevelExpandableListView.setAdapter(SecondLevelAdapter(context, listOfMembers[groupPosition].categories))
+        secondLevelExpandableListView.setPadding(20, 0, 0, 0)
+        secondLevelExpandableListView.setAdapter(
+                SecondLevelAdapter(
+                        context,
+                        listOfMembers[groupPosition].categories,
+                        listOfMembers[groupPosition].groupNameID
+                )
+        )
+
         return secondLevelExpandableListView
     }
 
