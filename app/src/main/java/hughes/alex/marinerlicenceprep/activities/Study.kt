@@ -56,6 +56,8 @@ class Study : AppCompatActivity() {
             override fun onPageSelected(position: Int) {
                 numberLabel.text = "Num " + (container.currentItem + 1) + "/" + container.adapter?.count
                 attemped = 0
+                if(position == 0) moveToPreviousQuestionButton.setImageResource(R.drawable.anchor)
+                if(position == container.adapter!!.count) moveToPreviousQuestionButton.setImageResource(R.drawable.anchor)
             }
 
         })

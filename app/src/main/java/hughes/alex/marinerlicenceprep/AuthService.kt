@@ -23,14 +23,10 @@ import java.util.*
 
 
 class AuthService(var context: Context) {
-
-    companion object {
-        const val URL = MyApp.BASE_URL + "signin"
-    }
-
     fun signIn(email: String, password: String) {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
-            val signInRequest = object : StringRequest(POST, URL,
+            val url = MyApp.BASE_URL + "signin"
+            val signInRequest = object : StringRequest(POST, url,
                     Response.Listener { response -> Toast.makeText(context, response, Toast.LENGTH_LONG).show()
                         val dataFromResponse = JSONObject(JSONObject( response).getString("data"))
                         defaultUser = UserEntity("peruska", "peruskatestira@gmail.com", dataFromResponse.getString("url"))
@@ -89,6 +85,7 @@ class AuthService(var context: Context) {
                         editor.putString(MyApp.USER_ACCOUNT_USERNAME, username)
                         editor.putString(MyApp.USER_ACCOUNT_EMAIL, email)
                         editor.putString(MyApp.USER_ACCOUNT_PROFILE_PICTURE_URL, "")
+                        editor.apply()
                     }
                 },
                 Response.ErrorListener { error ->  println(error)})

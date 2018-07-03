@@ -16,7 +16,7 @@
         app:layout_constraintBottom_toTopOf="@+id/bottomToolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar3" />
+        app:layout_constraintTop_toBottomOf="@+id/button" />
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar3"
@@ -148,4 +148,18 @@
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.Toolbar>
 
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_blue_light"
+        android:text="Upgrade Account To Unlock ALL Questions!"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar3" />
 </android.support.constraint.ConstraintLayout>
