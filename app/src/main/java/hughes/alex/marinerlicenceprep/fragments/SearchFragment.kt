@@ -2,6 +2,7 @@ package hughes.alex.marinerlicenceprep.fragments
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,8 @@ import hughes.alex.marinerlicenceprep.database.Queries
 import hughes.alex.marinerlicenceprep.entity.Questions
 import hughes.alex.marinerlicenceprep.models.BooksCategoriesSubcategories
 import hughes.alex.marinerlicenceprep.models.StudyExpandableListItem
+import hughes.alex.marinerlicenceprep.uiAdapters.SearchAdapter
+import kotlinx.android.synthetic.main.search_fragment.*
 import kotlinx.android.synthetic.main.search_fragment.view.*
 
 
@@ -85,6 +88,8 @@ class SearchFragment : Fragment() {
                         finalListOfQuestions.add(it)
                     }
                 }
+                searchRecyclerView.layoutManager = LinearLayoutManager(context)
+                searchRecyclerView.adapter = SearchAdapter(finalListOfQuestions, context!!)
                 return false
             }
 
