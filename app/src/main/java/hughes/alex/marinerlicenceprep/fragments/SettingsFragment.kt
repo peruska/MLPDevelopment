@@ -9,9 +9,11 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import hughes.alex.marinerlicenceprep.AuthService
 import hughes.alex.marinerlicenceprep.R
 import hughes.alex.marinerlicenceprep.activities.*
 import kotlinx.android.synthetic.main.settings_fragment.view.*
+import org.jetbrains.anko.AlertDialogBuilder
 
 
 class SettingsFragment : Fragment() {
@@ -34,7 +36,15 @@ class SettingsFragment : Fragment() {
         view.reset_scores.setOnClickListener { showDecisionDialog(context as Activity, resetScoresTitle, resetScoreDialog) }
         view.terms_of_service.setOnClickListener { startActivity(Intent(context as Activity, TermsOfServices::class.java)) }
         view.privacy_policy.setOnClickListener { startActivity(Intent(context as Activity, PrivacyPolicy::class.java)) }
-        view.logout.setOnClickListener { showDecisionDialog(context as Activity, logoutTitle, logoutDialog) }
+        view.logout.setOnClickListener {
+            val dialog = AlertDialogBuilder(context!!)
+            dialog.okButton {
+                AuthService(context!!).logOut()
+                startActivity(Intent(context, LoginActivity::class.java))
+                (context as Activity).finish()
+            }
+            dialog.show()
+        }
         return view
     }
 

@@ -6,11 +6,19 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.github.mikephil.charting.animation.Easing
+import com.github.mikephil.charting.data.*
+import com.github.mikephil.charting.utils.ColorTemplate
+import com.google.gson.Gson
 import hughes.alex.marinerlicenceprep.R
 import kotlinx.android.synthetic.main.graph_fragment.view.*
-import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.BarDataSet
-import com.github.mikephil.charting.data.BarEntry
+import com.google.gson.reflect.TypeToken
+import hughes.alex.marinerlicenceprep.MyApp
+import hughes.alex.marinerlicenceprep.database.Queries
+import hughes.alex.marinerlicenceprep.entity.Book
+import hughes.alex.marinerlicenceprep.models.BooksCategoriesSubcategories
+import hughes.alex.marinerlicenceprep.models.StudyExpandableListItem
+import kotlinx.android.synthetic.main.welcome_fragment.view.*
 
 class GraphFragment : Fragment() {
     private var title: String? = null
@@ -37,16 +45,28 @@ class GraphFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.graph_fragment, container, false)
         val entries = ArrayList<BarEntry>()
-
-        entries.add(BarEntry(0f, 30f))
-        entries.add(BarEntry(1f, 80f))
-        entries.add(BarEntry(2f, 60f))
-        entries.add(BarEntry(3f, 50f))
-        entries.add(BarEntry(4f, 70f))
-        entries.add(BarEntry(5f, 60f))
-
-
+        val prefs = context!!.getSharedPreferences(MyApp.USER_LICENSE_DATA_VALUES, 0)
+        StudyFragment.dlNumber = prefs.getString(MyApp.DL_NUMBER, "")
+        StudyFragment.bookCategoryID = prefs.getString(MyApp.CATEGORY, "")
+        val json = prefs.getString(MyApp.USER_LICENSE_DATA_VALUES, "")
+        val bookList: ArrayList<Book> = ArrayList()
+        if (StudyFragment.bookCategoryID == "1") {
+            val list = Gson().fromJson<ArrayList<StudyExpandableListItem>>(json, object : TypeToken<ArrayList<StudyExpandableListItem>>() {}.type)
+            list.forEach { bookList.add(Book(it.bookID.toInt(), it.groupName)) }
+        } else {
+            val list = Gson().fromJson<ArrayList<BooksCategoriesSubcategories>>(json, object : TypeToken<ArrayList<BooksCategoriesSubcategories>>() {}.type)
+            list.forEach { bookList.add(Book(it.groupNameID.toInt(), it.groupName)) }
+        }
+        val results = Queries.getStatisticsForBook(context!!, bookList)
+        var i = 0f
+        results.forEach { println(it.bookScore)
+            if(it.bookScore>0)
+                entries.add(BarEntry( i++, it.bookScore))
+        }
         val set = BarDataSet(entries, "")
+        set.colors = ColorTemplate.JOYFUL_COLORS.asList()
+        view.barChart.setTouchEnabled(false)
+        view.barChart.animateY(1000, Easing.EasingOption.EaseOutBack)
         view.barChart.data=BarData(set)
         return view
     }

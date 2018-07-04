@@ -26,10 +26,9 @@ class MyApp : Application() {
         val username = prefs.getString(USER_ACCOUNT_USERNAME, "")
         val email = prefs.getString(USER_ACCOUNT_EMAIL, "")
         val profilePictureURL = prefs.getString(USER_ACCOUNT_PROFILE_PICTURE_URL, "")
-        if (!(username.isNullOrEmpty() || email.isNullOrEmpty() || profilePictureURL.isNullOrEmpty()))
-            defaultUser = UserEntity(username, email, profilePictureURL)
+        defaultUser = UserEntity(username, email, profilePictureURL)
         uuid = prefs.getString("uuid", "")
-        if(uuid==""){
+        if (uuid == "") {
             val editor = prefs.edit()
             uuid = UUID.randomUUID().toString()
             editor.putString("uuid", uuid)
