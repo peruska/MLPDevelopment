@@ -18,6 +18,9 @@ class Home : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+
+        Queries.bookmarkQuestion(this, "1")
+
         navigationView.disableShiftMode()
         val firstTransition = supportFragmentManager.beginTransaction()
         firstTransition.replace(R.id.fragmentPlaceholder, HomeFragment())

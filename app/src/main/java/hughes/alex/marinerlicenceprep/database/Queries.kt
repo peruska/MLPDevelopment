@@ -367,4 +367,14 @@ object Queries {
         databaseAccess.close()
         return listOfQuestions
     }
+
+    fun bookmarkQuestion(context: Context, questionID: String){
+        val fieldContainer = ContentValues()
+        fieldContainer.put(Questions.COLUMN_BOOKMARKED, "1")
+        val whereClause = Questions.COLUMN_QUESTIONS_ID + " = " + questionID
+        val databaseAccess = DatabaseAccess.getInstance(context)
+        databaseAccess.open()
+        databaseAccess.updateTable(Questions.TABLE, fieldContainer, whereClause)
+        databaseAccess.close()
+    }
 }
