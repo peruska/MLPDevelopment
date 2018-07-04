@@ -82,9 +82,13 @@ class Study : AppCompatActivity() {
 
         if (compareAnswers(view, PlaceholderFragment.questions[container.currentItem].correctAnswer)) {
             view.setBackgroundColor(resources.getColor(R.color.questionsGreen))
-            if (attemped == 0) correct++
+            if (attemped == 0){ correct++
+                Queries.updateQuestionStatistics(this, PlaceholderFragment.questions[container.currentItem].questionID, 1)
+            }
             if (autoNext) moveToNextQuestion(view)
         } else {
+            if(attemped==0)
+                Queries.updateQuestionStatistics(this, PlaceholderFragment.questions[container.currentItem].questionID, 0)
             view.setBackgroundColor(resources.getColor(R.color.questionsRed))
         }
         if (attemped == 0) {

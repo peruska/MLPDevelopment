@@ -15,6 +15,8 @@ import hughes.alex.marinerlicenceprep.MyApp.Companion.BASE_URL
 import hughes.alex.marinerlicenceprep.MyApp.Companion.defaultUser
 import hughes.alex.marinerlicenceprep.activities.Home
 import hughes.alex.marinerlicenceprep.NetworkSingleton.Companion.getNetworkSingletonInstance
+import hughes.alex.marinerlicenceprep.activities.License
+import hughes.alex.marinerlicenceprep.activities.LoginActivity
 import hughes.alex.marinerlicenceprep.entity.UserEntity
 import org.json.JSONObject
 import uk.me.hardill.volley.multipart.MultipartRequest
@@ -23,6 +25,14 @@ import java.util.*
 
 
 class AuthService(var context: Context) {
+    fun saveUserPrefs(username: String, email: String, url: String){
+        val prefs = context.getSharedPreferences(MyApp.USER_ACCOUNT_PREFERENCES, 0)
+        val editor = prefs.edit()
+        editor.putString(MyApp.USER_ACCOUNT_USERNAME, username)
+        editor.putString(MyApp.USER_ACCOUNT_EMAIL, email)
+        editor.putString(MyApp.USER_ACCOUNT_PROFILE_PICTURE_URL, url)
+        editor.commit()
+    }
     fun signIn(email: String, password: String) {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
             val url = MyApp.BASE_URL + "signin"
@@ -30,7 +40,9 @@ class AuthService(var context: Context) {
                     Response.Listener { response -> Toast.makeText(context, response, Toast.LENGTH_LONG).show()
                         val dataFromResponse = JSONObject(JSONObject( response).getString("data"))
                         defaultUser = UserEntity("peruska", "peruskatestira@gmail.com", dataFromResponse.getString("url"))
+                        saveUserPrefs(email, dataFromResponse.getString("username"), dataFromResponse.getString("url"))
                         context.startActivity(Intent(context, Home::class.java))
+                        (context as LoginActivity).finish()
                     },
                     Response.ErrorListener { error -> Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show() }) {
                 override fun getParams(): Map<String, String> {
@@ -79,13 +91,13 @@ class AuthService(var context: Context) {
                     response ->
                     val responseInJson = JSONObject(String(response.data))
                     if(responseInJson.getBoolean("success")) {
-
                         val prefs = context.getSharedPreferences(MyApp.USER_ACCOUNT_PREFERENCES, 0)
                         val editor = prefs.edit()
                         editor.putString(MyApp.USER_ACCOUNT_USERNAME, username)
                         editor.putString(MyApp.USER_ACCOUNT_EMAIL, email)
                         editor.putString(MyApp.USER_ACCOUNT_PROFILE_PICTURE_URL, "")
-                        editor.apply()
+                        editor.commit()
+                        context.startActivity(Intent(context, License::class.java))
                     }
                 },
                 Response.ErrorListener { error ->  println(error)})
@@ -189,5 +201,10 @@ class AuthService(var context: Context) {
         else {
             //TODO Implement logic when permission is not granted
         }
+    }
+
+    fun logOut() {
+        saveUserPrefs("","","")
+        defaultUser = UserEntity("","","")
     }
 }

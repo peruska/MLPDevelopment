@@ -221,6 +221,7 @@ object Queries {
         fieldContainer.put(Questions.COLUMN_NUMBER_OF_TIMES_ANSWERED, numberOfTimesAnswered)
         fieldContainer.put(Questions.COLUMN_NUMBER_OF_TIMES_CORRECT, numberOfTimesAnsweredCorrect)
         fieldContainer.put(Questions.COLUMN_NUMBER_OF_TIMES_WRONG, numberOfTimesAnsweredWrong)
+        fieldContainer.put(Questions.COLUMN_HAS_BEEN_ANSWERED, "1")
         val whereClause = Questions.COLUMN_QUESTIONS_ID + " = " + questionID
         databaseAccess.updateTable(Questions.TABLE, fieldContainer, whereClause)
         databaseAccess.close()
@@ -237,9 +238,9 @@ object Queries {
             while (cursor.moveToNext()) {
                 numberOfAnsweres += cursor.getFloat(0)
                 numberOfCorrectAnswers += cursor.getFloat(1)
-                val scoreOfBook = numberOfCorrectAnswers / numberOfAnsweres * 100
-                booksWithScores.add(BooksWithScores(it.bookName, it.bookID, scoreOfBook))
             }
+            val scoreOfBook = numberOfCorrectAnswers / numberOfAnsweres * 100
+            booksWithScores.add(BooksWithScores(it.bookName, it.bookID, if(scoreOfBook == Float.NaN) 0f else scoreOfBook))
         }
         return booksWithScores
     }

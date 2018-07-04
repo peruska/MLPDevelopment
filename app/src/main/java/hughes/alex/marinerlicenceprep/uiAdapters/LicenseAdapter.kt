@@ -13,6 +13,7 @@ import com.google.gson.Gson
 import android.app.ProgressDialog
 import android.graphics.Color
 import android.widget.ImageView
+import android.widget.TextView
 import hughes.alex.marinerlicenceprep.activities.EditLicenceRating
 import hughes.alex.marinerlicenceprep.database.Queries
 import org.jetbrains.anko.AlertDialogBuilder
@@ -85,20 +86,18 @@ class LicenseAdapter(val items: ArrayList<LicenseEntity>, val context: Context,
                 builder.positiveButton("Save") {
                     val prefs = context.getSharedPreferences(MyApp.USER_LICENSE_DATA_VALUES, 0)
                     val prefsEditor = prefs.edit()
-                    val itemClicked = items.find { it.endorsement == view.endorsmentTextView.text.toString() }
-                    if (itemClicked != null) {
-                        val json = Gson().toJson(
-                                if (itemClicked.bookCategoryID == 1)
-                                    Queries.getBooksWithSubcategories(context, itemClicked.bookCategoryID, itemClicked.dlNumber)
-                                else
-                                    Queries.getBooksCategoriesSubcategories(context, itemClicked.bookCategoryID, itemClicked.dlNumber)
-                        )
-                        prefsEditor.putString(MyApp.USER_LICENSE_DATA_VALUES, json)
-                        prefsEditor.putString(MyApp.DL_NUMBER, itemClicked.dlNumber.toString())
-                        prefsEditor.putString(MyApp.CATEGORY, itemClicked.bookCategoryID.toString())
-                        println(json)
-                        prefsEditor.apply()
-                    }
+                    val itemClicked = items[position]
+                    val json = Gson().toJson(
+                            if (itemClicked.bookCategoryID == 1)
+                                Queries.getBooksWithSubcategories(context, itemClicked.bookCategoryID, itemClicked.dlNumber)
+                            else
+                                Queries.getBooksCategoriesSubcategories(context, itemClicked.bookCategoryID, itemClicked.dlNumber)
+                    )
+                    prefsEditor.putString(MyApp.USER_LICENSE_DATA_VALUES, json)
+                    prefsEditor.putString(MyApp.DL_NUMBER, itemClicked.dlNumber.toString())
+                    prefsEditor.putString(MyApp.CATEGORY, itemClicked.bookCategoryID.toString())
+                    prefsEditor.apply()
+
                 }
                 builder.negativeButton("Cancel") { }
                 builder.show()
@@ -124,10 +123,10 @@ class LicenseAdapter(val items: ArrayList<LicenseEntity>, val context: Context,
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val endorsmentTextView = view.endorsmentTextView
-        val tonnageTextView = view.tonnageTextView
-        val routeTextView = view.routeTextView
-        val licenseImageView = view.licenseImageView
-        val checkMarkImageView = view.imageView
+        val endorsmentTextView: TextView = view.endorsmentTextView
+        val tonnageTextView: TextView = view.tonnageTextView
+        val routeTextView: TextView = view.routeTextView
+        val licenseImageView: ImageView = view.licenseImageView
+        val checkMarkImageView: ImageView = view.imageView
     }
 }

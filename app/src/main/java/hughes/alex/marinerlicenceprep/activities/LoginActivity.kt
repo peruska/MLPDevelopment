@@ -24,8 +24,7 @@ import hughes.alex.marinerlicenceprep.R
 import kotlinx.android.synthetic.main.login_scene.*
 import android.graphics.BitmapFactory
 import android.provider.MediaStore.MediaColumns
-
-
+import hughes.alex.marinerlicenceprep.MyApp
 
 
 class LoginActivity : AppCompatActivity() {
@@ -37,6 +36,10 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+        if(MyApp.defaultUser?.email!!.isNotBlank()){
+            startActivity(Intent(this, Home::class.java))
+            finish()
+        }
         window.statusBarColor=resources.getColor(R.color.colorPrimary)
         loginScene = Scene.getSceneForLayout(scene_root as ViewGroup, R.layout.login_scene, this)
         signUpScene = Scene.getSceneForLayout(scene_root as ViewGroup, R.layout.sign_in_scene,this)
