@@ -2,6 +2,7 @@ package hughes.alex.marinerlicenceprep.activities
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.ContentResolver
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
@@ -23,27 +24,33 @@ import android.widget.EditText
 import hughes.alex.marinerlicenceprep.R
 import kotlinx.android.synthetic.main.login_scene.*
 import android.graphics.BitmapFactory
+import android.net.Uri
+import android.os.Environment
+import android.os.StrictMode
 import android.provider.MediaStore.MediaColumns
-import hughes.alex.marinerlicenceprep.MyApp
+import android.support.v4.content.FileProvider
+import android.util.Log
+import android.widget.ImageView
+import java.io.File
 
 
 class LoginActivity : AppCompatActivity() {
-
+    lateinit var photo: File
+    lateinit var mImageUri: Uri
     private lateinit var profilePictureBitmap: Bitmap
     private lateinit var loginScene: Scene
     private lateinit var signUpScene: Scene
     private var transition = Fade()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        if(MyApp.defaultUser?.email!!.isNotBlank()){
-            startActivity(Intent(this, Home::class.java))
-            finish()
-        }
         window.statusBarColor=resources.getColor(R.color.colorPrimary)
         loginScene = Scene.getSceneForLayout(scene_root as ViewGroup, R.layout.login_scene, this)
         signUpScene = Scene.getSceneForLayout(scene_root as ViewGroup, R.layout.sign_in_scene,this)
         transition.duration = 300
+        photo = createTemporaryFile("picture", ".jpg")
+        photo.delete()
     }
 
     fun transitionToSignUp(view: View) {
@@ -62,7 +69,11 @@ class LoginActivity : AppCompatActivity() {
             when {
                 items[item] == "Take Photo" -> {
                     val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                    startActivityForResult(intent, 1)
+
+                    //mImageUri = Uri.fromFile(photo)
+                    mImageUri = FileProvider.getUriForFile(this, this.applicationContext.packageName + ".my.package.name.provider", photo)
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri)
+                    startActivityForResult(intent, 1 )
                 }
                 items[item] == "Choose from Library" -> {
                     val intent = Intent(
@@ -81,16 +92,18 @@ class LoginActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, imageReturnedIntent: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, imageReturnedIntent: Intent?) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent)
         when (requestCode) {
             1 -> if (resultCode == Activity.RESULT_OK) {
-                val extras = imageReturnedIntent.extras
+                //val extras = imageReturnedIntent.extras
+                grabImage(profilePictureSignUp)
+                /*val extras = imageReturnedIntent.extras
                 profilePictureBitmap = extras.get("data") as Bitmap
-                profilePictureSignUp.setImageBitmap(profilePictureBitmap)
+                profilePictureSignUp.setImageBitmap(profilePictureBitmap)*/
             }
             2 -> if (resultCode == Activity.RESULT_OK) {
-                onSelectFromGalleryResult(imageReturnedIntent)
+                onSelectFromGalleryResult(imageReturnedIntent!!)
             }
         }
     }
@@ -189,5 +202,25 @@ class LoginActivity : AppCompatActivity() {
         alert.setNegativeButton("Cancel") { _, _ -> }
 
         alert.show()
+    }
+
+    private fun createTemporaryFile(part: String, ext: String): File{
+        var tempDir = Environment.getExternalStorageDirectory()
+        tempDir = File(tempDir.absolutePath +"/.temp/")
+        if(!tempDir.exists()){
+            tempDir.mkdirs()
+        }
+        return File.createTempFile(part, ext, tempDir)
+    }
+
+    private fun grabImage(imageView: ImageView){
+        this.contentResolver.notifyChange(mImageUri, null)
+        val contentResolver: ContentResolver = this.contentResolver
+        try {
+            val bitmap = android.provider.MediaStore.Images.Media.getBitmap(contentResolver, mImageUri)
+            imageView.setImageBitmap(bitmap)
+        }catch (ex: Exception){
+            Log.d("Failed to load", ex.toString())
+        }
     }
 }
