@@ -50,7 +50,7 @@ class LoginActivity : AppCompatActivity() {
         signUpScene = Scene.getSceneForLayout(scene_root as ViewGroup, R.layout.sign_in_scene,this)
         transition.duration = 300
         photo = createTemporaryFile("picture", ".jpg")
-        //photo.delete()
+        photo.delete()
     }
 
     fun transitionToSignUp(view: View) {
