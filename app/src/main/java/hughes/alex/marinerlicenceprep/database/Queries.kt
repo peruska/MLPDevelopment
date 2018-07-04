@@ -3,6 +3,7 @@ package hughes.alex.marinerlicenceprep.database
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
+import hughes.alex.marinerlicenceprep.MyApp
 import hughes.alex.marinerlicenceprep.entity.*
 import hughes.alex.marinerlicenceprep.models.BooksCategoriesSubcategories
 import hughes.alex.marinerlicenceprep.models.BooksWithScores
@@ -346,5 +347,24 @@ object Queries {
             list.add(Questions(question, answerOne, answerTwo, answerThree, answerFour, correctAnswer, number, subcategoryName, questionID))
         }
         return list
+    }
+
+    fun getBookmarkedQuestions(context: Context, bookName: String): ArrayList<Questions>{
+        val prefs = context.getSharedPreferences(MyApp.USER_LICENSE_DATA_VALUES, 0)
+        val dlNumber = prefs.getString(MyApp.DL_NUMBER, "")
+        val databaseAccess = DatabaseAccess.getInstance(context)
+        databaseAccess.open()
+        val listOfQuestions : ArrayList<Questions>
+
+        val getAllBookmarkedQuestions = "SELECT ${Questions.COLUMN_QUESTION}, ${Questions.COLUMN_ANSWER_ONE}, ${Questions.COLUMN_ANSWER_TWO}, ${Questions.COLUMN_ANSWER_THREE}, " +
+                " ${Questions.COLUMN_ANSWER_FOUR}, ${Questions.COLUMN_ANSWER}, ${Questions.COLUMN_NUMBER}, " +
+                " ${Questions.COLUMN_SUBCATEGORY_NAME}, ${Questions.COLUMN_QUESTIONS_ID} FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOKMARKED} = 1 AND " +
+                " ZDL" + dlNumber + " = 1 AND ${Questions.COLUMN_BOOK_NAME} = ?"
+
+        val cursor = databaseAccess.executeRawQuery(getAllBookmarkedQuestions, arrayOf(bookName))
+        listOfQuestions = dataFetching(cursor)
+        cursor.close()
+        databaseAccess.close()
+        return listOfQuestions
     }
 }
