@@ -195,6 +195,9 @@ object Queries {
     }
 
     fun getQuestions(context: Context, bookCategoryID: String, bookID: String?, dlNumber: String, categoryID: String?, subCategoryID: String?): ArrayList<Questions> {
+        val getAllQuestionsForWholeBookCategory = "SELECT ${Questions.COLUMN_QUESTION}, ${Questions.COLUMN_ANSWER_ONE}, ${Questions.COLUMN_ANSWER_TWO}, ${Questions.COLUMN_ANSWER_THREE}, " +
+                " ${Questions.COLUMN_ANSWER_FOUR}, ${Questions.COLUMN_ANSWER}, ${Questions.COLUMN_NUMBER}, " +
+                " ${Questions.COLUMN_SUBCATEGORY_NAME}, ${Questions.COLUMN_QUESTIONS_ID}, ${Questions.COLUMN_BOOKMARKED} FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOK_CATEGORY_ID} = ? "
         val getAllQuestionsFromBookCategory = "SELECT ${Questions.COLUMN_QUESTION}, ${Questions.COLUMN_ANSWER_ONE}, ${Questions.COLUMN_ANSWER_TWO}, ${Questions.COLUMN_ANSWER_THREE}, " +
                 " ${Questions.COLUMN_ANSWER_FOUR}, ${Questions.COLUMN_ANSWER}, ${Questions.COLUMN_NUMBER}, " +
                 " ${Questions.COLUMN_SUBCATEGORY_NAME}, ${Questions.COLUMN_QUESTIONS_ID}, ${Questions.COLUMN_BOOKMARKED}, ${Questions.COLUMN_ILLUSTRATION} FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOK_CATEGORY_ID} = ? AND ZDL" + dlNumber + " = 1 "
@@ -219,6 +222,16 @@ object Queries {
         val databaseAccess = DatabaseAccess.getInstance(context)
         databaseAccess.open()
         when {
+            bookID!!.contains("All Engine") ->{
+                val cursor = databaseAccess.executeRawQuery(getAllQuestionsForWholeBookCategory, arrayOf("1"))
+                listOfQuestions = dataFetching(cursor)
+                cursor.close()
+            }
+            bookID.contains("All Deck") ->{
+                val cursor = databaseAccess.executeRawQuery(getAllQuestionsForWholeBookCategory, arrayOf("2"))
+                listOfQuestions = dataFetching(cursor)
+                cursor.close()
+            }
             bookID == "-1" -> {
                 val cursor = databaseAccess.executeRawQuery(getAllQuestionsFromBookCategory, arrayOf(bookCategoryID))
                 listOfQuestions = dataFetching(cursor)
