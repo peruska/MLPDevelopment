@@ -1,23 +1,17 @@
 package hughes.alex.marinerlicenceprep.activities
 
-import android.content.Intent
-import android.support.v7.app.AppCompatActivity
-
+import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
-import android.os.Bundle
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.view.ViewPager
-import android.view.LayoutInflater
+import android.support.v7.app.AppCompatActivity
 import android.view.View
-import android.view.ViewGroup
-
+import hughes.alex.marinerlicenceprep.MyApp
 import hughes.alex.marinerlicenceprep.R
-import hughes.alex.marinerlicenceprep.activities.Study.PlaceholderFragment.Companion.questions
+import hughes.alex.marinerlicenceprep.activities.PlaceholderFragment.Companion.questions
 import hughes.alex.marinerlicenceprep.database.Queries
-import hughes.alex.marinerlicenceprep.entity.Questions
 import kotlinx.android.synthetic.main.activity_study.*
-import kotlinx.android.synthetic.main.fragment_study_activity.view.*
 
 class Study : AppCompatActivity() {
 
@@ -35,20 +29,29 @@ class Study : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_study)
         val extras = intent.extras
-        autoNext = extras.getBoolean("autoNext")
-        shuffleQuestions = extras.getBoolean("shuffleQuestions")
-        logAnswers = extras.getBoolean("logAnswers")
-        showAnswers = extras.getBoolean("showAnswers")
-        dlNumber = extras.getString("dlNumber")
-        bookCategoryID = extras.getString("bookCategoryID")
-        bookID = extras.getString("bookID")
-        categoryID = extras.getString("categoryID")
-        subcategoryID = extras.getString("subcategoryID")
-        PlaceholderFragment.questions = Queries.getQuestions(this, bookCategoryID!!, bookID, dlNumber!!, categoryID, subcategoryID)
+        if (extras.getString("callingIntent") == "Normal") {
+            autoNext = extras.getBoolean("autoNext")
+            shuffleQuestions = extras.getBoolean("shuffleQuestions")
+            logAnswers = extras.getBoolean("logAnswers")
+            showAnswers = extras.getBoolean("showAnswers")
+            dlNumber = extras.getString("dlNumber")
+            bookCategoryID = extras.getString("bookCategoryID")
+            bookID = extras.getString("bookID")
+            categoryID = extras.getString("categoryID")
+            subcategoryID = extras.getString("subcategoryID")
+            PlaceholderFragment.questions = Queries.getQuestions(this, bookCategoryID!!, bookID, dlNumber!!, categoryID, subcategoryID)
+
+        }
+
         mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
         container.adapter = mSectionsPagerAdapter
+        if(extras.getString("callingIntent") != "Normal")
+            container.currentItem = extras.getInt("bookmarkOrSearchSelection")
+        if(extras.getInt("resumeQuestionNumber")>0)
+            container.currentItem = extras.getInt("resumeQuestionNumber")
         numberLabel.text = "Num " + (container.currentItem + 1) + "/" + container.adapter?.count
         closeButton.setOnClickListener { finish() }
+        val prefs = getSharedPreferences(MyApp.RESUME_DATA, 0)
         container.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {}
 
@@ -60,7 +63,14 @@ class Study : AppCompatActivity() {
                 moveToPreviousQuestionButton.setImageResource(if (position == 0) R.drawable.anchor else R.mipmap.left)
                 moveToNextQuestionButton.setImageResource(if (position == container.adapter!!.count - 1) R.drawable.anchor else R.mipmap.right_arrow)
                 bookmarkQuestion.setImageResource(if (questions[position].isBookmarked == "1") R.mipmap.bookmark_empty else R.mipmap.bookmark)
-
+                val editor = prefs.edit()
+                editor.putString("dlNumber", dlNumber)
+                editor.putString("bookCategoryID", bookID)
+                editor.putString("bookID", bookID)
+                editor.putString("categoryID", bookID)
+                editor.putString("subcategoryID", bookID)
+                editor.putInt("resumeQuestionNumber", container.currentItem)
+                editor.commit()
             }
         })
     }
@@ -122,7 +132,7 @@ class Study : AppCompatActivity() {
         container.currentItem = container.currentItem + 1
     }
 
-    inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
+    class SectionsPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
 
         override fun getItem(position: Int): Fragment {
             return PlaceholderFragment.newInstance(position)
@@ -130,54 +140,6 @@ class Study : AppCompatActivity() {
 
         override fun getCount(): Int {
             return questions.size
-        }
-    }
-
-    class PlaceholderFragment : Fragment() {
-
-        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                                  savedInstanceState: Bundle?): View? {
-            val rootView = inflater.inflate(R.layout.fragment_study_activity, container, false)
-            val question = questions[arguments?.getInt(ARG_SECTION_NUMBER)!!]
-            rootView.questionTitle.text = question.subcategory + "\n" + question.questionNumber
-            rootView.questionText.text = question.question
-            rootView.answer1.text = question.answerOne
-            rootView.answer2.text = question.answerTwo
-            rootView.answer3.text = question.answerThree
-            rootView.answer4.text = question.answerFour
-            if ((context as Study).showAnswers)
-                setCorrect(question.correctAnswer, rootView)
-            if (question.illustration.isNotBlank()) {
-                rootView.openIllustration.visibility = View.VISIBLE
-                rootView.openIllustration.setOnClickListener {
-                    val intent = Intent(context, Illustration::class.java)
-                    intent.putExtra("illustrationName", question.illustration)
-                    startActivity(intent)
-                }
-            }
-            return rootView
-        }
-
-        private fun setCorrect(correctAnswer: String, rootView: View) {
-            when (correctAnswer) {
-                "A" -> rootView.answer1
-                "B" -> rootView.answer2
-                "C" -> rootView.answer3
-                "D" -> rootView.answer4
-                else -> rootView.answer1
-            }.setBackgroundColor(resources.getColor(R.color.questionsGreen))
-        }
-
-        companion object {
-            lateinit var questions: ArrayList<Questions>
-            private val ARG_SECTION_NUMBER = "section_number"
-            fun newInstance(sectionNumber: Int): PlaceholderFragment {
-                val fragment = PlaceholderFragment()
-                val args = Bundle()
-                args.putInt(ARG_SECTION_NUMBER, sectionNumber)
-                fragment.arguments = args
-                return fragment
-            }
         }
     }
 }

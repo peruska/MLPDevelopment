@@ -41,6 +41,7 @@ class StudyFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.study_fragment, container, false)
         val prefs = context!!.getSharedPreferences(MyApp.USER_LICENSE_DATA_VALUES, 0)
+        val resumePrefs = context!!.getSharedPreferences(MyApp.RESUME_DATA, 0)
         StudyFragment.dlNumber = prefs.getString(MyApp.DL_NUMBER, "")
         StudyFragment.bookCategoryID = prefs.getString(MyApp.CATEGORY, "")
         val json = prefs.getString(MyApp.USER_LICENSE_DATA_VALUES, "")
@@ -67,6 +68,22 @@ class StudyFragment : Fragment() {
             intent.putExtra("bookID", StudyFragment.bookID)
             intent.putExtra("categoryID", StudyFragment.categoryID)
             intent.putExtra("subcategoryID", StudyFragment.subcategoryID)
+            intent.putExtra("callingIntent", "Normal")
+            context?.startActivity(intent)
+        }
+        view.resumeStudying.setOnClickListener {
+            val intent = Intent(context, Study::class.java)
+            intent.putExtra("autoNext", autoNextSwitch.isChecked)
+            intent.putExtra("shuffleQuestions", shuffleQuestionsSwitch.isChecked)
+            intent.putExtra("logAnswers", logAnswersSwitch.isChecked)
+            intent.putExtra("showAnswers", showAnswersSwitch.isChecked)
+            intent.putExtra("dlNumber", resumePrefs.getString("dlNumber", ""))
+            intent.putExtra("bookCategoryID",  resumePrefs.getString("bookCategoryID", ""))
+            intent.putExtra("bookID",  resumePrefs.getString("bookID", ""))
+            intent.putExtra("categoryID",  resumePrefs.getString("categoryID", ""))
+            intent.putExtra("subcategoryID", resumePrefs.getString("subcategoryID", ""))
+            intent.putExtra("resumeQuestionNumber",  resumePrefs.getInt("resumeQuestionNumber", 0))
+            intent.putExtra("callingIntent", "Normal")
             context?.startActivity(intent)
         }
         return view

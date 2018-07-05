@@ -27,11 +27,13 @@ class Home : FragmentActivity() {
             when (item.itemId) {
                 R.id.menu_home -> {
                     val transactionToHome = supportFragmentManager.beginTransaction()
+                    transactionToHome.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                     transactionToHome.replace(R.id.fragmentPlaceholder, HomeFragment())
                     transactionToHome.commit()
                 }
                 R.id.menu_study -> {
                     val transactionToStudyFragment = supportFragmentManager.beginTransaction()
+                    transactionToStudyFragment.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                     transactionToStudyFragment.replace(R.id.fragmentPlaceholder, StudyFragment())
                     transactionToStudyFragment.commit()
                 }
@@ -42,11 +44,13 @@ class Home : FragmentActivity() {
                 }
                 R.id.menu_bookmarked -> {
                     val transactionToBookmarkedFragment = supportFragmentManager.beginTransaction()
+                    transactionToBookmarkedFragment.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                     transactionToBookmarkedFragment.replace(R.id.fragmentPlaceholder, BookmarkedFragment())
                     transactionToBookmarkedFragment.commit()
                 }
                 R.id.menu_settings -> {
                     val transactionToSettingsFragment = supportFragmentManager.beginTransaction()
+                    transactionToSettingsFragment.setCustomAnimations(android.R.anim.linear_interpolator, android.R.anim.linear_interpolator)
                     transactionToSettingsFragment.replace(R.id.fragmentPlaceholder, SettingsFragment())
                     transactionToSettingsFragment.commit()
                 }

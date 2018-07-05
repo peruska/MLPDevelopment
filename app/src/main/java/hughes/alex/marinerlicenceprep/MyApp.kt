@@ -20,6 +20,7 @@ class MyApp : Application() {
         var defaultUser: UserEntity? = null
         var uuid: String = ""
         const val USER_LICENSE_DATA_VALUES = "user_license_data_values"
+        const val RESUME_DATA = "resume_data"
         const val DL_NUMBER = "dl_number"
         const val CATEGORY = "book_category"
         const val USER_ACCOUNT_PREFERENCES = "user_account"
