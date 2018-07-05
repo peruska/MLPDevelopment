@@ -105,9 +105,11 @@ class Study : AppCompatActivity() {
         if (question.isBookmarked == "1") {
             Queries.changeBookmark(this, question.questionID, "0")
             bookmarkQuestion.setImageResource(R.drawable.bookmark_empty)
+            questions[container.currentItem].isBookmarked = "0"
         } else {
             Queries.changeBookmark(this, question.questionID, "1")
             bookmarkQuestion.setImageResource(R.drawable.bookmarked_navigation_bar)
+            questions[container.currentItem].isBookmarked = "1"
         }
     }
 
