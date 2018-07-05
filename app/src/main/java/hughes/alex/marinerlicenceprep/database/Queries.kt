@@ -60,7 +60,10 @@ object Queries {
 
             val bookID = cursor.getString(0)
             val bookName = cursor.getString(1)
-            //if (bookName == "All Deck") continue
+            if (bookName == "All Deck") {
+                list.add(BooksCategoriesSubcategories(bookName, bookID, ArrayList<CategoryWithSubcategories>()))
+                continue
+            }
             val cursor2 = databaseAccess.executeRawQuery(GET_ALL_CATEGORIES_FOR_CERTAIN_BOOK, arrayOf(bookID))
             val categoriesWithSubcategories = ArrayList<CategoryWithSubcategories>()
             while (cursor2.moveToNext()) {
@@ -104,7 +107,10 @@ object Queries {
         while (cursor.moveToNext()) {
             val bookName = cursor.getString(1)
             val bookID = cursor.getString(0)
-            //if (bookName == "All Engine") continue
+            if (bookName == "All Engine") {
+                listOfGroups.add(StudyExpandableListItem(bookName, bookID, ArrayList()))
+                continue
+            }
             val cursor2 = databaseAccess.executeRawQuery(GET_ALL_SUBCATEGORIES_FOR_CERTAIN_BOOK, arrayOf(bookID))
             val subcategories = ArrayList<Subcategory>()
             while (cursor2.moveToNext()) {
