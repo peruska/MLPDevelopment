@@ -1,5 +1,6 @@
 package hughes.alex.marinerlicenceprep.activities
 
+import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.ContentResolver
@@ -13,6 +14,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.provider.MediaStore.MediaColumns
+import android.support.v4.app.ActivityCompat
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
 import android.transition.Fade
@@ -26,11 +28,13 @@ import android.widget.ImageView
 import hughes.alex.marinerlicenceprep.AuthService
 import hughes.alex.marinerlicenceprep.MyApp
 import hughes.alex.marinerlicenceprep.R
+import hughes.alex.marinerlicenceprep.entity.UserEntity
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.login_scene.*
 import kotlinx.android.synthetic.main.sign_in_scene.*
 import org.jetbrains.anko.toast
 import java.io.File
+import java.util.*
 
 
 class LoginActivity : AppCompatActivity() {
@@ -44,6 +48,26 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        ActivityCompat.requestPermissions(this,
+                arrayOf(
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_PHONE_STATE,
+                        Manifest.permission.INTERNET),
+                1
+        )
+        val prefs = this.getSharedPreferences(MyApp.USER_ACCOUNT_PREFERENCES, 0)
+        val username = prefs.getString(MyApp.USER_ACCOUNT_USERNAME, "")
+        val email = prefs.getString(MyApp.USER_ACCOUNT_EMAIL, "")
+        val profilePictureURL = prefs.getString(MyApp.USER_ACCOUNT_PROFILE_PICTURE_URL, "")
+        MyApp.defaultUser = UserEntity(username, email, profilePictureURL)
+        MyApp.uuid = prefs.getString("uuid", "")
+        if (MyApp.uuid == "") {
+            val editor = prefs.edit()
+            MyApp.uuid = UUID.randomUUID().toString()
+            editor.putString("uuid", MyApp.uuid)
+            editor.commit()
+        }
         if (MyApp.defaultUser?.email!!.isNotBlank()) {
             startActivity(Intent(this, Home::class.java))
             finish()
@@ -52,8 +76,6 @@ class LoginActivity : AppCompatActivity() {
         loginScene = Scene.getSceneForLayout(scene_root as ViewGroup, R.layout.login_scene, this)
         signUpScene = Scene.getSceneForLayout(scene_root as ViewGroup, R.layout.sign_in_scene, this)
         transition.duration = 300
-        photo = createTemporaryFile("picture", ".jpg")
-        photo.delete()
     }
 
     fun transitionToSignUp(view: View) {
@@ -66,6 +88,9 @@ class LoginActivity : AppCompatActivity() {
 
     fun showPhotoDialog(view: View) {
         //TODO ADD PERMISSION CHECK
+
+        photo = createTemporaryFile("picture", ".jpg")
+        photo.delete()
         val items = arrayOf<CharSequence>("Take Photo", "Choose from Library", "Cancel")
         val builder = android.app.AlertDialog.Builder(this)
         builder.setItems(items) { dialog, item ->

@@ -3,42 +3,12 @@ package hughes.alex.marinerlicenceprep.entity
 class Questions(var question: String, var answerOne: String, var answerTwo: String,
                 var answerThree: String, var answerFour: String, var correctAnswer: String,
                 var questionNumber: String, var subcategory: String, var questionID: String,
-                var isBookmarked: String) {
+                var isBookmarked: String, var illustration: String) {
     companion object {
         const val TABLE = "ZQUESTIONS"
 
         const val COLUMN_QUESTIONS_ID = "Z_PK"
-        const val COLUMN_ENT = "Z_ENT"
-        const val COLUMN_OPT = "Z_OPT"
         const val COLUMN_BOOKMARKED = "ZBOOKMARKED"
-        const val COLUMN_DL1 = "ZDL1"
-        const val COLUMN_DL2 = "ZDL2"
-        const val COLUMN_DL3 = "ZDL3"
-        const val COLUMN_DL4 = "ZDL4"
-        const val COLUMN_DL5 = "ZDL5"
-        const val COLUMN_DL6 = "ZDL6"
-        const val COLUMN_DL7 = "ZDL7"
-        const val COLUMN_DL8 = "ZDL8"
-        const val COLUMN_DL9 = "ZDL9"
-        const val COLUMN_DL10 = "ZDL10"
-        const val COLUMN_DL11 = "ZDL11"
-        const val COLUMN_DL12 = "ZDL12"
-        const val COLUMN_DL13 = "ZDL13"
-        const val COLUMN_DL14 = "ZDL14"
-        const val COLUMN_DL15 = "ZDL15"
-        const val COLUMN_DL16 = "ZDL16"
-        const val COLUMN_DL17 = "ZDL17"
-        const val COLUMN_DL18 = "ZDL18"
-        const val COLUMN_DL19 = "ZDL19"
-        const val COLUMN_DL20 = "ZDL20"
-        const val COLUMN_DL21 = "ZDL21"
-        const val COLUMN_DL22 = "ZDL22"
-        const val COLUMN_DL23 = "ZDL23"
-        const val COLUMN_DL24 = "ZDL24"
-        const val COLUMN_DL25 = "ZDL25"
-        const val COLUMN_DL26 = "ZDL26"
-        const val COLUMN_DL27 = "ZDL27"
-        const val COLUMN_DL28 = "ZDL28"
         const val COLUMN_HAS_BEEN_ANSWERED = "ZHASBEENANSWERED"
         const val COLUMN_BOOK_ID = "ZINBOOK"
         const val COLUMN_BOOK_CATEGORY_ID = "ZINBOOKCATEGORY"
