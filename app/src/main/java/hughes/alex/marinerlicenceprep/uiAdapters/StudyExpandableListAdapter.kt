@@ -50,13 +50,15 @@ class StudyExpandableListAdapter(var context: Context?, val listOfGroups: ArrayL
         val inflater = context!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = inflater.inflate(R.layout.study_list_group, parent, false)
         view.groupName.text = listOfGroups[groupPosition].groupName
-        if(groupPosition != 0)
+        if(groupPosition != 0) {
             view.groupImage.setImageResource(R.mipmap.list_view_right_arrow)
+        }
         if (groupChecked == groupPosition) {
             view.groupName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.mipmap.checked, 0)
             activeTextView = view.groupName
-        } else if (uncheckThis == groupPosition)
+        } else if (uncheckThis == groupPosition) {
             view.groupName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+        }
         return view
     }
 

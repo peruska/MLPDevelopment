@@ -1,14 +1,17 @@
 package hughes.alex.marinerlicenceprep.fragments
 
+import android.content.res.Resources
+import android.graphics.Color
+import android.hardware.display.DisplayManager
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
+import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
-import android.widget.ArrayAdapter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import hughes.alex.marinerlicenceprep.MyApp
@@ -51,13 +54,21 @@ class SearchFragment : Fragment() {
         } else {
             listBookCategorySubcategory = Gson().fromJson<ArrayList<BooksCategoriesSubcategories>>(json, object : TypeToken<ArrayList<BooksCategoriesSubcategories>>() {}.type)
             listBookCategorySubcategory.forEach {
-                spinnerArray.add(it.groupName)
+                spinnerArray.add("Search " + it.groupName)
                 arrayOfIndexes.add(it.groupNameID)
 
             }
         }
 
         val mSearchView = view.search_view
+
+        mSearchView.setOnClickListener {
+            if(mSearchView.isIconified){
+                mSearchView.isIconified = false
+            }
+        }
+
+
         mSearchView.setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener {
 
             override fun onQueryTextChange(newText: String): Boolean {
@@ -80,8 +91,9 @@ class SearchFragment : Fragment() {
 
         })
 
-        val adapter = ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, spinnerArray)
+        val adapter = ArrayAdapter<String>(context, R.layout.spinner_item, spinnerArray)
         val spinner = view.searchSelectionSpinner
+        spinner.dropDownWidth = Resources.getSystem().displayMetrics.widthPixels
         spinner.adapter = adapter
         spinner.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -90,17 +102,30 @@ class SearchFragment : Fragment() {
                 if (numberOfCalls == 0) {
                     listOfFoundQuestions = Queries.getQuestions(context!!, bookCategory, "-1", dlNumber, "-1", "-1")
                 } else {
-                    listOfFoundQuestions = Queries.getQuestions(context!!, bookCategory, arrayOfIndexes[spinner.selectedItemId.toInt()], dlNumber, "-1", "-1")
+                    val bookID = if(position == 0){
+                        spinner.selectedItem.toString()
+                    }else {
+                        arrayOfIndexes[spinner.selectedItemId.toInt()]
+                    }
+                    listOfFoundQuestions = Queries.getQuestions(context!!, bookCategory, bookID, dlNumber, "-1", "-1")
                     mSearchView.setQuery(mSearchView.query, true)
                 }
 
                 numberOfCalls++
-
+                (parent!!.getChildAt(0) as TextView).setTextColor(Color.WHITE)
             }
 
         }
-
-
+        val searchCloseButtonId = mSearchView.context.resources
+                .getIdentifier("android:id/search_close_btn", null, null)
+        val searchTextId = mSearchView.context.resources.getIdentifier("android:id/search_src_text", null, null)
+        val searchText = mSearchView.findViewById<EditText>(searchTextId)
+        val closeButton = mSearchView.findViewById<ImageView>(searchCloseButtonId)
+        closeButton.setOnClickListener {
+            searchText.setText("")
+            finalListOfQuestions.clear()
+            mSearchAdapter.notifyDataSetChanged()
+        }
         return view
     }
 }
