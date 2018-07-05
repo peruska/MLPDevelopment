@@ -24,13 +24,11 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:visibility="invisible"
-        android:id="@+id/textView23"
+        android:id="@+id/welcomeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="Welcome,\n P.lukic"
         android:textColor="@android:color/black"
         android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"

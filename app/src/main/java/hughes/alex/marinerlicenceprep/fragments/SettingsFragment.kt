@@ -13,7 +13,8 @@ import hughes.alex.marinerlicenceprep.AuthService
 import hughes.alex.marinerlicenceprep.R
 import hughes.alex.marinerlicenceprep.activities.*
 import kotlinx.android.synthetic.main.settings_fragment.view.*
-import org.jetbrains.anko.AlertDialogBuilder
+import org.jetbrains.anko.*
+import org.jetbrains.anko.design.snackbar
 
 
 class SettingsFragment : Fragment() {
@@ -37,13 +38,14 @@ class SettingsFragment : Fragment() {
         view.terms_of_service.setOnClickListener { startActivity(Intent(context as Activity, TermsOfServices::class.java)) }
         view.privacy_policy.setOnClickListener { startActivity(Intent(context as Activity, PrivacyPolicy::class.java)) }
         view.logout.setOnClickListener {
-            val dialog = AlertDialogBuilder(context!!)
-            dialog.okButton {
-                AuthService(context!!).logOut()
-                startActivity(Intent(context, LoginActivity::class.java))
-                (context as Activity).finish()
-            }
-            dialog.show()
+            context!!.alert(logoutDialog, logoutTitle) {
+                yesButton {
+                    AuthService(context!!).logOut()
+                    startActivity(Intent(context, LoginActivity::class.java))
+                    (context as Activity).finish()
+                }
+                noButton {}
+            }.show()
         }
         return view
     }

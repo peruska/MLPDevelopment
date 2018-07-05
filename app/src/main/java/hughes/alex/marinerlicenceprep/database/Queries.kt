@@ -127,83 +127,6 @@ object Queries {
         return listOfGroups
     }
 
-
-    fun loadQuestions(context: Context, bookCategory: String, shuffle: Boolean, subCategoryID: String, dlNumber: Int, bookID: String): ArrayList<Questions> {
-        val databaseAccess = DatabaseAccess.getInstance(context)
-        databaseAccess.open()
-        val loadedQuestions = ArrayList<Questions>()
-        val columnBookCategoryID: String
-        val cursor1 = if (bookCategory.contains("Engine")) {
-            databaseAccess.executeRawQuery(GET_BOOK_CATEGORY_ID, arrayOf("Engine"))
-        } else {
-            databaseAccess.executeRawQuery(GET_BOOK_CATEGORY_ID, arrayOf("Deck"))
-        }
-        cursor1.moveToNext()
-        columnBookCategoryID = cursor1.getString(0)
-        cursor1.close()
-        val loadTheQuestions = "SELECT ${Questions.COLUMN_QUESTION}, ${Questions.COLUMN_ANSWER_ONE}, ${Questions.COLUMN_ANSWER_TWO}, ${Questions.COLUMN_ANSWER_THREE}, " +
-                " ${Questions.COLUMN_ANSWER_FOUR}, ${Questions.COLUMN_ANSWER}, ${Questions.COLUMN_NUMBER}, " +
-                " ${Questions.COLUMN_SUBCATEGORY_NAME}, ${Questions.COLUMN_QUESTIONS_ID} FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOK_CATEGORY_ID} = ? AND ZDL" + dlNumber + " = 1 " +
-                " AND ${Questions.COLUMN_BOOK_ID} = ? AND ${Questions.COLUMN_SUBCATEGORY_ID} = ?"
-        val cursor = databaseAccess.executeRawQuery(loadTheQuestions, arrayOf(columnBookCategoryID, bookID, subCategoryID))
-        while (cursor.moveToNext()) {
-            val question = cursor.getString(0)
-            val answerOne = cursor.getString(1)
-            val answerTwo = cursor.getString(2)
-            val answerThree = cursor.getString(3)
-            val answerFour = cursor.getString(4)
-            val rightAnswer = cursor.getString(5)
-            val questionNumber = cursor.getString(6)
-            val subcategoryName = cursor.getString(7)
-            val questionID = cursor.getString(8)
-            loadedQuestions.add(Questions(question, answerOne, answerTwo, answerThree, answerFour, rightAnswer, questionNumber, subcategoryName, questionID))
-        }
-        cursor.close()
-        databaseAccess.close()
-        if (shuffle) {
-            loadedQuestions.shuffle()
-        }
-        return loadedQuestions
-    }
-
-    fun loadQuestions(context: Context, bookCategory: String, shuffle: Boolean, subCategoryID: String, dlNumber: Int, bookID: String, categoryID: String): ArrayList<Questions> {
-        val databaseAccess = DatabaseAccess.getInstance(context)
-        databaseAccess.open()
-        val loadedQuestions = ArrayList<Questions>()
-        val columnBookCategoryID: String
-        val cursor1 = if (bookCategory.contains("Engine")) {
-            databaseAccess.executeRawQuery(GET_BOOK_CATEGORY_ID, arrayOf("Engine"))
-        } else {
-            databaseAccess.executeRawQuery(GET_BOOK_CATEGORY_ID, arrayOf("Deck"))
-        }
-        cursor1.moveToNext()
-        columnBookCategoryID = cursor1.getString(0)
-        cursor1.close()
-        val loadTheQuestions = "SELECT ${Questions.COLUMN_QUESTION}, ${Questions.COLUMN_ANSWER_ONE}, ${Questions.COLUMN_ANSWER_TWO}, ${Questions.COLUMN_ANSWER_THREE}, " +
-                " ${Questions.COLUMN_ANSWER_FOUR}, ${Questions.COLUMN_ANSWER}, ${Questions.COLUMN_NUMBER}, " +
-                " ${Questions.COLUMN_SUBCATEGORY_NAME} FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOK_CATEGORY_ID} = ? AND ZDL" + dlNumber + " = 1 " +
-                " AND ${Questions.COLUMN_BOOK_ID} = ? AND ${Questions.COLUMN_SUBCATEGORY_ID} = ? ${Questions.COLUMN_CATEGORY_ID} = ?"
-        val cursor = databaseAccess.executeRawQuery(loadTheQuestions, arrayOf(columnBookCategoryID, bookID, subCategoryID, categoryID))
-        while (cursor.moveToNext()) {
-            val question = cursor.getString(0)
-            val answerOne = cursor.getString(1)
-            val answerTwo = cursor.getString(2)
-            val answerThree = cursor.getString(3)
-            val answerFour = cursor.getString(4)
-            val rightAnswer = cursor.getString(5)
-            val questionNumber = cursor.getString(6)
-            val subcategoryName = cursor.getString(7)
-            val questionID = cursor.getString(8)
-            loadedQuestions.add(Questions(question, answerOne, answerTwo, answerThree, answerFour, rightAnswer, questionNumber, subcategoryName, questionID))
-        }
-        cursor.close()
-        databaseAccess.close()
-        if (shuffle) {
-            loadedQuestions.shuffle()
-        }
-        return loadedQuestions
-    }
-
     fun updateQuestionStatistics(context: Context, questionID: String, correctOrWrongAnswered: Int) {
         val databaseAccess = DatabaseAccess.getInstance(context)
         databaseAccess.open()
@@ -334,6 +257,7 @@ object Queries {
         val numberIndex = cursor.getColumnIndex(Questions.COLUMN_NUMBER)
         val subcategoryNameIndex = cursor.getColumnIndex(Questions.COLUMN_SUBCATEGORY_NAME)
         val questionIDIndex = cursor.getColumnIndex(Questions.COLUMN_QUESTIONS_ID)
+        val isBookmarkedIndex = cursor.getColumnIndex(Questions.COLUMN_BOOKMARKED)
         while (cursor.moveToNext()) {
             val question = cursor.getString(questionIndex)
             val answerOne = cursor.getString(answerOneIndex)
@@ -344,7 +268,8 @@ object Queries {
             val number = cursor.getString(numberIndex)
             val subcategoryName = cursor.getString(subcategoryNameIndex)
             val questionID = cursor.getString(questionIDIndex)
-            list.add(Questions(question, answerOne, answerTwo, answerThree, answerFour, correctAnswer, number, subcategoryName, questionID))
+            val isBookmarked = cursor.getString(isBookmarkedIndex)
+            list.add(Questions(question, answerOne, answerTwo, answerThree, answerFour, correctAnswer, number, subcategoryName, questionID, isBookmarked))
         }
         return list
     }

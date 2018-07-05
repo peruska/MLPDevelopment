@@ -6,19 +6,17 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import hughes.alex.marinerlicenceprep.R
-import hughes.alex.marinerlicenceprep.activities.Study
-import hughes.alex.marinerlicenceprep.uiAdapters.StudyExpandableListAdapter
-import hughes.alex.marinerlicenceprep.uiAdapters.StudyExpandableListAdapter.Companion.groupChecked
-import kotlinx.android.synthetic.main.study_fragment.*
-import kotlinx.android.synthetic.main.study_fragment.view.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import hughes.alex.marinerlicenceprep.MyApp
+import hughes.alex.marinerlicenceprep.R
+import hughes.alex.marinerlicenceprep.activities.Study
 import hughes.alex.marinerlicenceprep.models.BooksCategoriesSubcategories
 import hughes.alex.marinerlicenceprep.models.StudyExpandableListItem
 import hughes.alex.marinerlicenceprep.uiAdapters.ExpandableListAdapterForDeck
+import hughes.alex.marinerlicenceprep.uiAdapters.StudyExpandableListAdapter
+import kotlinx.android.synthetic.main.study_fragment.*
+import kotlinx.android.synthetic.main.study_fragment.view.*
 
 
 class StudyFragment : Fragment() {
