@@ -39,7 +39,13 @@ class Study : AppCompatActivity() {
             bookID = extras.getString("bookID")
             categoryID = extras.getString("categoryID")
             subcategoryID = extras.getString("subcategoryID")
-            PlaceholderFragment.questions = Queries.getQuestions(this, bookCategoryID!!, bookID, dlNumber!!, categoryID, subcategoryID)
+            PlaceholderFragment.questions = Queries.getQuestions(this, bookCategoryID!!,
+                    when(bookCategoryID){
+                        "1"->"All Engine"
+                        "2"->"All Deck"
+                        else -> bookID
+                    }
+                    , dlNumber!!, categoryID, subcategoryID)
 
         }
 
