@@ -131,6 +131,7 @@ class LoginActivity : AppCompatActivity() {
         bm = BitmapFactory.decodeFile(selectedImagePath, options)
 
         profilePictureSignUp.setImageBitmap(bm)
+        profilePictureBitmap = bm
     }
 
 

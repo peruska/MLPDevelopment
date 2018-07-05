@@ -1,5 +1,6 @@
 package hughes.alex.marinerlicenceprep.uiAdapters
 
+import android.app.Activity
 import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -11,10 +12,12 @@ import hughes.alex.marinerlicenceprep.entity.LicenseEntity
 import kotlinx.android.synthetic.main.licence_item.view.*
 import com.google.gson.Gson
 import android.app.ProgressDialog
+import android.content.Intent
 import android.graphics.Color
 import android.widget.ImageView
 import android.widget.TextView
 import hughes.alex.marinerlicenceprep.activities.EditLicenceRating
+import hughes.alex.marinerlicenceprep.activities.Home
 import hughes.alex.marinerlicenceprep.database.Queries
 import org.jetbrains.anko.AlertDialogBuilder
 import org.jetbrains.anko.doAsync
@@ -96,8 +99,9 @@ class LicenseAdapter(val items: ArrayList<LicenseEntity>, val context: Context,
                     prefsEditor.putString(MyApp.USER_LICENSE_DATA_VALUES, json)
                     prefsEditor.putString(MyApp.DL_NUMBER, itemClicked.dlNumber.toString())
                     prefsEditor.putString(MyApp.CATEGORY, itemClicked.bookCategoryID.toString())
-                    prefsEditor.apply()
-
+                    prefsEditor.commit()
+                    context.startActivity(Intent(context, Home::class.java))
+                    (context as Activity).finish()
                 }
                 builder.negativeButton("Cancel") { }
                 builder.show()
