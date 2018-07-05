@@ -47,7 +47,6 @@ object Queries {
             " FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOK_ID} = ?"
 
 
-    //TODO ove dve funkcije se pozivaju u zavisnosti od licence koju je korisnik izabrao
     fun getBooksCategoriesSubcategories(context: Context, bookCategory: Int, licenceNumber: Int): ArrayList<BooksCategoriesSubcategories> {
         val getQuestionsForSubcategoryAndLicence = "SELECT ${Questions.COLUMN_QUESTIONS_ID} FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_SUBCATEGORY_ID} = ? AND ZDL" + licenceNumber + " = 1"
 
@@ -61,7 +60,10 @@ object Queries {
 
             val bookID = cursor.getString(0)
             val bookName = cursor.getString(1)
-            //if (bookName == "All Deck") continue
+            if (bookName == "All Deck") {
+                list.add(BooksCategoriesSubcategories(bookName, bookID, ArrayList<CategoryWithSubcategories>()))
+                continue
+            }
             val cursor2 = databaseAccess.executeRawQuery(GET_ALL_CATEGORIES_FOR_CERTAIN_BOOK, arrayOf(bookID))
             val categoriesWithSubcategories = ArrayList<CategoryWithSubcategories>()
             while (cursor2.moveToNext()) {
@@ -105,7 +107,10 @@ object Queries {
         while (cursor.moveToNext()) {
             val bookName = cursor.getString(1)
             val bookID = cursor.getString(0)
-            //if (bookName == "All Engine") continue
+            if (bookName == "All Engine") {
+                listOfGroups.add(StudyExpandableListItem(bookName, bookID, ArrayList()))
+                continue
+            }
             val cursor2 = databaseAccess.executeRawQuery(GET_ALL_SUBCATEGORIES_FOR_CERTAIN_BOOK, arrayOf(bookID))
             val subcategories = ArrayList<Subcategory>()
             while (cursor2.moveToNext()) {
