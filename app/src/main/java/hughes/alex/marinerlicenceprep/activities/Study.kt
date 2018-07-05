@@ -58,7 +58,7 @@ class Study : AppCompatActivity() {
                 attemped = 0
                 moveToPreviousQuestionButton.setImageResource(if (position == 0) R.drawable.anchor else R.mipmap.left)
                 moveToNextQuestionButton.setImageResource(if (position == container.adapter!!.count - 1) R.drawable.anchor else R.mipmap.right_arrow)
-                bookmarkQuestion.setImageResource(if(questions[position].isBookmarked == "1")R.drawable.bookmark_empty else R.drawable.bookmarked_navigation_bar)
+                bookmarkQuestion.setImageResource(if (questions[position].isBookmarked == "1") R.drawable.bookmark_empty else R.drawable.bookmarked_navigation_bar)
 
             }
         })
@@ -101,7 +101,16 @@ class Study : AppCompatActivity() {
     }
 
     fun bookmarkQuestion(view: View) {
-        Queries.bookmarkQuestion(this, PlaceholderFragment.questions[container.currentItem].questionID)
+        val question = questions[container.currentItem]
+        if (question.isBookmarked == "1") {
+            Queries.changeBookmark(this, question.questionID, "0")
+            bookmarkQuestion.setImageResource(R.drawable.bookmark_empty)
+            questions[container.currentItem].isBookmarked = "0"
+        } else {
+            Queries.changeBookmark(this, question.questionID, "1")
+            bookmarkQuestion.setImageResource(R.drawable.bookmarked_navigation_bar)
+            questions[container.currentItem].isBookmarked = "1"
+        }
     }
 
     fun moveToPreviousQuestion(view: View) {
