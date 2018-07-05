@@ -197,22 +197,22 @@ object Queries {
     fun getQuestions(context: Context, bookCategoryID: String, bookID: String?, dlNumber: String, categoryID: String?, subCategoryID: String?): ArrayList<Questions> {
         val getAllQuestionsFromBookCategory = "SELECT ${Questions.COLUMN_QUESTION}, ${Questions.COLUMN_ANSWER_ONE}, ${Questions.COLUMN_ANSWER_TWO}, ${Questions.COLUMN_ANSWER_THREE}, " +
                 " ${Questions.COLUMN_ANSWER_FOUR}, ${Questions.COLUMN_ANSWER}, ${Questions.COLUMN_NUMBER}, " +
-                " ${Questions.COLUMN_SUBCATEGORY_NAME}, ${Questions.COLUMN_QUESTIONS_ID}, ${Questions.COLUMN_BOOKMARKED} FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOK_CATEGORY_ID} = ? AND ZDL" + dlNumber + " = 1 "
+                " ${Questions.COLUMN_SUBCATEGORY_NAME}, ${Questions.COLUMN_QUESTIONS_ID}, ${Questions.COLUMN_BOOKMARKED}, ${Questions.COLUMN_ILLUSTRATION} FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOK_CATEGORY_ID} = ? AND ZDL" + dlNumber + " = 1 "
         val getAllQuestionsFromBook = "SELECT ${Questions.COLUMN_QUESTION}, ${Questions.COLUMN_ANSWER_ONE}, ${Questions.COLUMN_ANSWER_TWO}, ${Questions.COLUMN_ANSWER_THREE}, " +
                 " ${Questions.COLUMN_ANSWER_FOUR}, ${Questions.COLUMN_ANSWER}, ${Questions.COLUMN_NUMBER}, " +
-                " ${Questions.COLUMN_SUBCATEGORY_NAME}, ${Questions.COLUMN_QUESTIONS_ID}, ${Questions.COLUMN_BOOKMARKED}  FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOK_CATEGORY_ID} = ? AND ZDL" + dlNumber + " = 1 " +
+                " ${Questions.COLUMN_SUBCATEGORY_NAME}, ${Questions.COLUMN_QUESTIONS_ID}, ${Questions.COLUMN_BOOKMARKED}, ${Questions.COLUMN_ILLUSTRATION}  FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOK_CATEGORY_ID} = ? AND ZDL" + dlNumber + " = 1 " +
                 " AND ${Questions.COLUMN_BOOK_ID} = ?"
         val getAllQuestionsFromCategory = "SELECT ${Questions.COLUMN_QUESTION}, ${Questions.COLUMN_ANSWER_ONE}, ${Questions.COLUMN_ANSWER_TWO}, ${Questions.COLUMN_ANSWER_THREE}, " +
                 " ${Questions.COLUMN_ANSWER_FOUR}, ${Questions.COLUMN_ANSWER}, ${Questions.COLUMN_NUMBER}, " +
-                " ${Questions.COLUMN_SUBCATEGORY_NAME}, ${Questions.COLUMN_QUESTIONS_ID}, ${Questions.COLUMN_BOOKMARKED}  FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOK_CATEGORY_ID} = ? AND ZDL" + dlNumber + " = 1 " +
+                " ${Questions.COLUMN_SUBCATEGORY_NAME}, ${Questions.COLUMN_QUESTIONS_ID}, ${Questions.COLUMN_BOOKMARKED}, ${Questions.COLUMN_ILLUSTRATION}  FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOK_CATEGORY_ID} = ? AND ZDL" + dlNumber + " = 1 " +
                 " AND ${Questions.COLUMN_BOOK_ID} = ? AND ${Questions.COLUMN_CATEGORY_ID} = ?"
         val getAllQuestionsFromSubcategoryWithoutCategory = "SELECT ${Questions.COLUMN_QUESTION}, ${Questions.COLUMN_ANSWER_ONE}, ${Questions.COLUMN_ANSWER_TWO}, ${Questions.COLUMN_ANSWER_THREE}, " +
                 " ${Questions.COLUMN_ANSWER_FOUR}, ${Questions.COLUMN_ANSWER}, ${Questions.COLUMN_NUMBER}, " +
-                " ${Questions.COLUMN_SUBCATEGORY_NAME}, ${Questions.COLUMN_QUESTIONS_ID}, ${Questions.COLUMN_BOOKMARKED}  FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOK_CATEGORY_ID} = ? AND ZDL" + dlNumber + " = 1 " +
+                " ${Questions.COLUMN_SUBCATEGORY_NAME}, ${Questions.COLUMN_QUESTIONS_ID}, ${Questions.COLUMN_BOOKMARKED}, ${Questions.COLUMN_ILLUSTRATION}  FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOK_CATEGORY_ID} = ? AND ZDL" + dlNumber + " = 1 " +
                 " AND ${Questions.COLUMN_BOOK_ID} = ? AND ${Questions.COLUMN_SUBCATEGORY_ID} = ?"
         val getAllQuestionsFromSubcategory = "SELECT ${Questions.COLUMN_QUESTION}, ${Questions.COLUMN_ANSWER_ONE}, ${Questions.COLUMN_ANSWER_TWO}, ${Questions.COLUMN_ANSWER_THREE}, " +
                 " ${Questions.COLUMN_ANSWER_FOUR}, ${Questions.COLUMN_ANSWER}, ${Questions.COLUMN_NUMBER}, " +
-                " ${Questions.COLUMN_SUBCATEGORY_NAME}, ${Questions.COLUMN_QUESTIONS_ID}, ${Questions.COLUMN_BOOKMARKED}  FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOK_CATEGORY_ID} = ? AND ZDL" + dlNumber + " = 1 " +
+                " ${Questions.COLUMN_SUBCATEGORY_NAME}, ${Questions.COLUMN_QUESTIONS_ID}, ${Questions.COLUMN_BOOKMARKED}, ${Questions.COLUMN_ILLUSTRATION}  FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOK_CATEGORY_ID} = ? AND ZDL" + dlNumber + " = 1 " +
                 " AND ${Questions.COLUMN_BOOK_ID} = ? AND ${Questions.COLUMN_CATEGORY_ID} = ? AND ${Questions.COLUMN_SUBCATEGORY_ID} = ?"
 
         val listOfQuestions: ArrayList<Questions>
@@ -263,6 +263,7 @@ object Queries {
         val subcategoryNameIndex = cursor.getColumnIndex(Questions.COLUMN_SUBCATEGORY_NAME)
         val questionIDIndex = cursor.getColumnIndex(Questions.COLUMN_QUESTIONS_ID)
         val isBookmarkedIndex = cursor.getColumnIndex(Questions.COLUMN_BOOKMARKED)
+        val illustrationIndex = cursor.getColumnIndex(Questions.COLUMN_ILLUSTRATION)
         while (cursor.moveToNext()) {
             val question = cursor.getString(questionIndex)
             val answerOne = cursor.getString(answerOneIndex)
@@ -274,7 +275,8 @@ object Queries {
             val subcategoryName = cursor.getString(subcategoryNameIndex)
             val questionID = cursor.getString(questionIDIndex)
             val isBookmarked = cursor.getString(isBookmarkedIndex)
-            list.add(Questions(question, answerOne, answerTwo, answerThree, answerFour, correctAnswer, number, subcategoryName, questionID, isBookmarked))
+            val illustration = cursor.getString(illustrationIndex)
+            list.add(Questions(question, answerOne, answerTwo, answerThree, answerFour, correctAnswer, number, subcategoryName, questionID, isBookmarked, illustration))
         }
         return list
     }
@@ -288,7 +290,7 @@ object Queries {
 
         val getAllBookmarkedQuestions = "SELECT ${Questions.COLUMN_QUESTION}, ${Questions.COLUMN_ANSWER_ONE}, ${Questions.COLUMN_ANSWER_TWO}, ${Questions.COLUMN_ANSWER_THREE}, " +
                 " ${Questions.COLUMN_ANSWER_FOUR}, ${Questions.COLUMN_ANSWER}, ${Questions.COLUMN_NUMBER}, " +
-                " ${Questions.COLUMN_SUBCATEGORY_NAME}, ${Questions.COLUMN_QUESTIONS_ID}, ${Questions.COLUMN_BOOKMARKED}  FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOKMARKED} = 1 AND " +
+                " ${Questions.COLUMN_SUBCATEGORY_NAME}, ${Questions.COLUMN_QUESTIONS_ID}, ${Questions.COLUMN_BOOKMARKED}, ${Questions.COLUMN_ILLUSTRATION}  FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOKMARKED} = 1 AND " +
                 " ZDL" + dlNumber + " = 1 AND ${Questions.COLUMN_BOOK_NAME} = ?"
 
         val cursor = databaseAccess.executeRawQuery(getAllBookmarkedQuestions, arrayOf(bookName))

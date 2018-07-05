@@ -1,6 +1,8 @@
 package hughes.alex.marinerlicenceprep
 
+import android.Manifest
 import android.app.Application
+import android.support.v4.app.ActivityCompat
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import hughes.alex.marinerlicenceprep.entity.Book
@@ -25,22 +27,6 @@ class MyApp : Application() {
         const val USER_ACCOUNT_EMAIL = "email"
         const val USER_ACCOUNT_PROFILE_PICTURE_URL = "profile_picture"
         const val BASE_URL = "https://marinerlicenseprep.com/api/"
-    }
-
-    override fun onCreate() {
-        val prefs = this.getSharedPreferences(USER_ACCOUNT_PREFERENCES, 0)
-        val username = prefs.getString(USER_ACCOUNT_USERNAME, "")
-        val email = prefs.getString(USER_ACCOUNT_EMAIL, "")
-        val profilePictureURL = prefs.getString(USER_ACCOUNT_PROFILE_PICTURE_URL, "")
-        defaultUser = UserEntity(username, email, profilePictureURL)
-        uuid = prefs.getString("uuid", "")
-        if (uuid == "") {
-            val editor = prefs.edit()
-            uuid = UUID.randomUUID().toString()
-            editor.putString("uuid", uuid)
-            editor.apply()
-        }
-        super.onCreate()
     }
 
     fun getLicenseBooks(): ArrayList<String>{

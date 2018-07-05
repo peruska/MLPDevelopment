@@ -1,5 +1,6 @@
 package hughes.alex.marinerlicenceprep.activities
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 
 import android.support.v4.app.Fragment
@@ -58,7 +59,7 @@ class Study : AppCompatActivity() {
                 attemped = 0
                 moveToPreviousQuestionButton.setImageResource(if (position == 0) R.drawable.anchor else R.mipmap.left)
                 moveToNextQuestionButton.setImageResource(if (position == container.adapter!!.count - 1) R.drawable.anchor else R.mipmap.right_arrow)
-                bookmarkQuestion.setImageResource(if (questions[position].isBookmarked == "1") R.drawable.bookmark_empty else R.drawable.bookmarked_navigation_bar)
+                bookmarkQuestion.setImageResource(if (questions[position].isBookmarked == "1") R.mipmap.bookmark_empty else R.mipmap.bookmark)
 
             }
         })
@@ -104,11 +105,11 @@ class Study : AppCompatActivity() {
         val question = questions[container.currentItem]
         if (question.isBookmarked == "1") {
             Queries.changeBookmark(this, question.questionID, "0")
-            bookmarkQuestion.setImageResource(R.drawable.bookmark_empty)
+            bookmarkQuestion.setImageResource(R.mipmap.bookmark_empty)
             questions[container.currentItem].isBookmarked = "0"
         } else {
             Queries.changeBookmark(this, question.questionID, "1")
-            bookmarkQuestion.setImageResource(R.drawable.bookmarked_navigation_bar)
+            bookmarkQuestion.setImageResource(R.mipmap.bookmark)
             questions[container.currentItem].isBookmarked = "1"
         }
     }
@@ -146,6 +147,14 @@ class Study : AppCompatActivity() {
             rootView.answer4.text = question.answerFour
             if ((context as Study).showAnswers)
                 setCorrect(question.correctAnswer, rootView)
+            if (question.illustration.isNotBlank()) {
+                rootView.openIllustration.visibility = View.VISIBLE
+                rootView.openIllustration.setOnClickListener {
+                    val intent = Intent(context, Illustration::class.java)
+                    intent.putExtra("illustrationName", question.illustration)
+                    startActivity(intent)
+                }
+            }
             return rootView
         }
 

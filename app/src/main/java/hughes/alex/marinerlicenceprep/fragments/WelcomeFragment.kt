@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.github.mikephil.charting.animation.Easing
+import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
@@ -51,16 +52,24 @@ class WelcomeFragment : Fragment() {
             list.forEach { bookList.add(Book(it.groupNameID.toInt(), it.groupName)) }
         }
         val results = Queries.getStatisticsForBook(context!!, bookList)
-        results.forEach { println(it.bookScore)
-            if(it.bookScore>0)
+        results.forEach {
+            println(it.bookScore)
+            if (it.bookScore > 0)
                 entries.add(PieEntry(it.bookScore, it.bookName))
         }
-        set.valueTextSize = 15f
-        view.pieChart.data = PieData(set)
-        view.pieChart.setEntryLabelColor(Color.BLACK)
-        view.pieChart.setEntryLabelTextSize(12f)
-        view.pieChart.setTouchEnabled(false)
-        view.pieChart.animateY(1000, Easing.EasingOption.EaseOutBack)
+        if (entries.size == 0) {
+            view.noResultsLabel.visibility = View.VISIBLE
+            view.pieChart.visibility = View.INVISIBLE
+        } else {
+            set.valueTextSize = 15f
+            val pieChart = view.pieChart
+            pieChart.data = PieData(set)
+            pieChart.setEntryLabelColor(Color.BLACK)
+            pieChart.setEntryLabelTextSize(12f)
+            pieChart.setTouchEnabled(false)
+            pieChart.animateY(1000, Easing.EasingOption.EaseOutBack)
+            pieChart.description.text = ""
+        }
         return view
     }
 }
