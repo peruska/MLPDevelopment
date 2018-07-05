@@ -3,34 +3,33 @@ package hughes.alex.marinerlicenceprep.activities
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.ContentResolver
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
+import android.provider.MediaStore.MediaColumns
+import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
 import android.transition.Fade
 import android.transition.Scene
 import android.transition.TransitionManager
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.ImageView
 import hughes.alex.marinerlicenceprep.AuthService
+import hughes.alex.marinerlicenceprep.MyApp
+import hughes.alex.marinerlicenceprep.R
 import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.login_scene.*
 import kotlinx.android.synthetic.main.sign_in_scene.*
 import org.jetbrains.anko.toast
-import android.widget.EditText
-import hughes.alex.marinerlicenceprep.R
-import kotlinx.android.synthetic.main.login_scene.*
-import android.graphics.BitmapFactory
-import android.net.Uri
-import android.os.Environment
-import android.os.StrictMode
-import android.provider.MediaStore.MediaColumns
-import android.support.v4.content.FileProvider
-import android.util.Log
-import android.widget.ImageView
 import java.io.File
 
 
@@ -45,9 +44,13 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        window.statusBarColor=resources.getColor(R.color.colorPrimary)
+        if (MyApp.defaultUser?.email!!.isNotBlank()) {
+            startActivity(Intent(this, Home::class.java))
+            finish()
+        }
+        window.statusBarColor = resources.getColor(R.color.colorPrimary)
         loginScene = Scene.getSceneForLayout(scene_root as ViewGroup, R.layout.login_scene, this)
-        signUpScene = Scene.getSceneForLayout(scene_root as ViewGroup, R.layout.sign_in_scene,this)
+        signUpScene = Scene.getSceneForLayout(scene_root as ViewGroup, R.layout.sign_in_scene, this)
         transition.duration = 300
         photo = createTemporaryFile("picture", ".jpg")
         photo.delete()
@@ -73,7 +76,7 @@ class LoginActivity : AppCompatActivity() {
                     //mImageUri = Uri.fromFile(photo)
                     mImageUri = FileProvider.getUriForFile(this, this.applicationContext.packageName + ".my.package.name.provider", photo)
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri)
-                    startActivityForResult(intent, 1 )
+                    startActivityForResult(intent, 1)
                 }
                 items[item] == "Choose from Library" -> {
                     val intent = Intent(
@@ -204,22 +207,22 @@ class LoginActivity : AppCompatActivity() {
         alert.show()
     }
 
-    private fun createTemporaryFile(part: String, ext: String): File{
+    private fun createTemporaryFile(part: String, ext: String): File {
         var tempDir = Environment.getExternalStorageDirectory()
-        tempDir = File(tempDir.absolutePath +"/.temp/")
-        if(!tempDir.exists()){
+        tempDir = File(tempDir.absolutePath + "/.temp/")
+        if (!tempDir.exists()) {
             tempDir.mkdirs()
         }
         return File.createTempFile(part, ext, tempDir)
     }
 
-    private fun grabImage(imageView: ImageView){
+    private fun grabImage(imageView: ImageView) {
         this.contentResolver.notifyChange(mImageUri, null)
         val contentResolver: ContentResolver = this.contentResolver
         try {
             val bitmap = android.provider.MediaStore.Images.Media.getBitmap(contentResolver, mImageUri)
             imageView.setImageBitmap(bitmap)
-        }catch (ex: Exception){
+        } catch (ex: Exception) {
             Log.d("Failed to load", ex.toString())
         }
     }

@@ -1,5 +1,6 @@
 package hughes.alex.marinerlicenceprep.fragments
 
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -33,6 +34,7 @@ class WelcomeFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.welcome_fragment, container, false)
+        view.welcomeText.text = "Welcome,\n${MyApp.defaultUser!!.username}"
         val entries = ArrayList<PieEntry>()
         val set = PieDataSet(entries, "")
         set.colors = ColorTemplate.JOYFUL_COLORS.asList()
@@ -51,9 +53,12 @@ class WelcomeFragment : Fragment() {
         val results = Queries.getStatisticsForBook(context!!, bookList)
         results.forEach { println(it.bookScore)
             if(it.bookScore>0)
-                entries.add(PieEntry(it.bookScore))
+                entries.add(PieEntry(it.bookScore, it.bookName))
         }
+        set.valueTextSize = 15f
         view.pieChart.data = PieData(set)
+        view.pieChart.setEntryLabelColor(Color.BLACK)
+        view.pieChart.setEntryLabelTextSize(12f)
         view.pieChart.setTouchEnabled(false)
         view.pieChart.animateY(1000, Easing.EasingOption.EaseOutBack)
         return view

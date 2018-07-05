@@ -56,10 +56,11 @@ class Study : AppCompatActivity() {
             override fun onPageSelected(position: Int) {
                 numberLabel.text = "Num " + (container.currentItem + 1) + "/" + container.adapter?.count
                 attemped = 0
-                if(position == 0) moveToPreviousQuestionButton.setImageResource(R.drawable.anchor)
-                if(position == container.adapter!!.count) moveToPreviousQuestionButton.setImageResource(R.drawable.anchor)
-            }
+                moveToPreviousQuestionButton.setImageResource(if (position == 0) R.drawable.anchor else R.mipmap.left)
+                moveToNextQuestionButton.setImageResource(if (position == container.adapter!!.count - 1) R.drawable.anchor else R.mipmap.right_arrow)
+                bookmarkQuestion.setImageResource(if(questions[position].isBookmarked == "1")R.drawable.bookmark_empty else R.drawable.bookmarked_navigation_bar)
 
+            }
         })
     }
 
@@ -82,12 +83,13 @@ class Study : AppCompatActivity() {
 
         if (compareAnswers(view, PlaceholderFragment.questions[container.currentItem].correctAnswer)) {
             view.setBackgroundColor(resources.getColor(R.color.questionsGreen))
-            if (attemped == 0){ correct++
+            if (attemped == 0) {
+                correct++
                 Queries.updateQuestionStatistics(this, PlaceholderFragment.questions[container.currentItem].questionID, 1)
             }
             if (autoNext) moveToNextQuestion(view)
         } else {
-            if(attemped==0)
+            if (attemped == 0)
                 Queries.updateQuestionStatistics(this, PlaceholderFragment.questions[container.currentItem].questionID, 0)
             view.setBackgroundColor(resources.getColor(R.color.questionsRed))
         }
@@ -98,26 +100,16 @@ class Study : AppCompatActivity() {
         attemped = 1
     }
 
+    fun bookmarkQuestion(view: View) {
+        Queries.bookmarkQuestion(this, PlaceholderFragment.questions[container.currentItem].questionID)
+    }
+
     fun moveToPreviousQuestion(view: View) {
         container.currentItem = container.currentItem - 1
-        if (container.currentItem == 0) {
-            moveToPreviousQuestionButton.setImageResource(R.drawable.anchor)
-        }
-
-        if (container.currentItem == (container.adapter?.count ?: -1) - 2) {
-            moveToNextQuestionButton.setImageResource(R.mipmap.right_arrow)
-        }
     }
 
     fun moveToNextQuestion(view: View) {
         container.currentItem = container.currentItem + 1
-
-        if (container.currentItem == 1) {
-            moveToPreviousQuestionButton.setImageResource(R.mipmap.left)
-        }
-        if (container.currentItem == (container.adapter?.count ?: -1) - 1) {
-            moveToNextQuestionButton.setImageResource(R.drawable.anchor)
-        }
     }
 
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {

@@ -18,6 +18,8 @@ import hughes.alex.marinerlicenceprep.NetworkSingleton.Companion.getNetworkSingl
 import hughes.alex.marinerlicenceprep.activities.License
 import hughes.alex.marinerlicenceprep.activities.LoginActivity
 import hughes.alex.marinerlicenceprep.entity.UserEntity
+import org.jetbrains.anko.indeterminateProgressDialog
+import org.jetbrains.anko.toast
 import org.json.JSONObject
 import uk.me.hardill.volley.multipart.MultipartRequest
 import java.io.ByteArrayOutputStream
@@ -25,7 +27,7 @@ import java.util.*
 
 
 class AuthService(var context: Context) {
-    fun saveUserPrefs(username: String, email: String, url: String){
+    fun saveUserPrefs(username: String, email: String, url: String) {
         val prefs = context.getSharedPreferences(MyApp.USER_ACCOUNT_PREFERENCES, 0)
         val editor = prefs.edit()
         editor.putString(MyApp.USER_ACCOUNT_USERNAME, username)
@@ -33,18 +35,28 @@ class AuthService(var context: Context) {
         editor.putString(MyApp.USER_ACCOUNT_PROFILE_PICTURE_URL, url)
         editor.commit()
     }
+
     fun signIn(email: String, password: String) {
+        val waitDialog = context.indeterminateProgressDialog("Please wait", "Logging in")
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
             val url = MyApp.BASE_URL + "signin"
             val signInRequest = object : StringRequest(POST, url,
-                    Response.Listener { response -> Toast.makeText(context, response, Toast.LENGTH_LONG).show()
-                        val dataFromResponse = JSONObject(JSONObject( response).getString("data"))
-                        defaultUser = UserEntity("peruska", "peruskatestira@gmail.com", dataFromResponse.getString("url"))
-                        saveUserPrefs(email, dataFromResponse.getString("username"), dataFromResponse.getString("url"))
+                    Response.Listener { response ->
+
+                        val dataFromResponse = JSONObject(JSONObject(response).getString("data"))
+                        println(response)
+                        val user = dataFromResponse.getString("username")
+                        val pictureUrl = dataFromResponse.getString("url")
+                        defaultUser = UserEntity(user, email, pictureUrl)
+                        saveUserPrefs(user, email, pictureUrl)
+                        waitDialog.dismiss()
                         context.startActivity(Intent(context, Home::class.java))
                         (context as LoginActivity).finish()
                     },
-                    Response.ErrorListener { error -> Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show() }) {
+                    Response.ErrorListener { error ->
+                        context.toast("Unsuccessful login attempt. Please check your internet connection.")
+                        waitDialog.dismiss()
+                    }) {
                 override fun getParams(): Map<String, String> {
                     val params = HashMap<String, String>()
                     params["email"] = email
@@ -53,18 +65,17 @@ class AuthService(var context: Context) {
                 }
             }
             getNetworkSingletonInstance(context).requestQueue.add(signInRequest)
-        }
-        else {
+        } else {
             //TODO Implement logic when permission is not granted
         }
     }
 
-    fun signUp(context: Context, profilePictureBitmap: Bitmap, email: String, username: String, password: String){
+    fun signUp(context: Context, profilePictureBitmap: Bitmap, email: String, username: String, password: String) {
         val url = BASE_URL + "signup"
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
             val signInRequest = object : StringRequest(POST, url,
-                    Response.Listener {
-                        response -> Toast.makeText(context, response, Toast.LENGTH_LONG).show()
+                    Response.Listener { response ->
+                        Toast.makeText(context, response, Toast.LENGTH_LONG).show()
                         println(JSONObject(response))
                         uploadPhoto(context, profilePictureBitmap, email, username)
                     },
@@ -78,19 +89,17 @@ class AuthService(var context: Context) {
                 }
             }
             getNetworkSingletonInstance(context).requestQueue.add(signInRequest)
-        }
-        else {
+        } else {
             //TODO Implement logic when permission is not granted
         }
     }
 
-    fun uploadPhoto(context: Context, profilePictureBitmap: Bitmap, email: String, username: String){
+    fun uploadPhoto(context: Context, profilePictureBitmap: Bitmap, email: String, username: String) {
         val pictureUrl = MyApp.BASE_URL + "Upload_Avatar"
         val request = MultipartRequest(pictureUrl, null,
-                Response.Listener<NetworkResponse> {
-                    response ->
+                Response.Listener<NetworkResponse> { response ->
                     val responseInJson = JSONObject(String(response.data))
-                    if(responseInJson.getBoolean("success")) {
+                    if (responseInJson.getBoolean("success")) {
                         val prefs = context.getSharedPreferences(MyApp.USER_ACCOUNT_PREFERENCES, 0)
                         val editor = prefs.edit()
                         editor.putString(MyApp.USER_ACCOUNT_USERNAME, username)
@@ -100,7 +109,7 @@ class AuthService(var context: Context) {
                         context.startActivity(Intent(context, License::class.java))
                     }
                 },
-                Response.ErrorListener { error ->  println(error)})
+                Response.ErrorListener { error -> println(error) })
 
         val stream = ByteArrayOutputStream()
         profilePictureBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
@@ -114,12 +123,12 @@ class AuthService(var context: Context) {
         getNetworkSingletonInstance(context).addToRequestQueue(request)
     }
 
-    fun resetPassword(email : String){
+    fun resetPassword(email: String) {
         val url = BASE_URL + "Forgot_Password_API"
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
             val signInRequest = object : StringRequest(POST, url,
-                    Response.Listener {
-                        response -> Toast.makeText(context, response, Toast.LENGTH_LONG).show()
+                    Response.Listener { response ->
+                        Toast.makeText(context, response, Toast.LENGTH_LONG).show()
                         println(JSONObject(response))
                     },
                     Response.ErrorListener { error -> Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show() }) {
@@ -130,18 +139,17 @@ class AuthService(var context: Context) {
                 }
             }
             getNetworkSingletonInstance(context).requestQueue.add(signInRequest)
-        }
-        else {
+        } else {
             //TODO Implement logic when permission is not granted
         }
     }
 
-    fun changeEmail(newEmail: String){
+    fun changeEmail(newEmail: String) {
         val url = BASE_URL + "Change_Email"
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
             val signInRequest = object : StringRequest(POST, url,
-                    Response.Listener {
-                        response -> Toast.makeText(context, response, Toast.LENGTH_LONG).show()
+                    Response.Listener { response ->
+                        Toast.makeText(context, response, Toast.LENGTH_LONG).show()
                         println(JSONObject(response))
                     },
                     Response.ErrorListener { error -> Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show() }) {
@@ -153,18 +161,17 @@ class AuthService(var context: Context) {
                 }
             }
             getNetworkSingletonInstance(context).requestQueue.add(signInRequest)
-        }
-        else {
+        } else {
             //TODO Implement logic when permission is not granted
         }
     }
 
-    fun retrieveUserInfo(){
+    fun retrieveUserInfo() {
         val url = BASE_URL + "Get_User_Info"
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
             val signInRequest = object : StringRequest(POST, url,
-                    Response.Listener {
-                        response -> Toast.makeText(context, response, Toast.LENGTH_LONG).show()
+                    Response.Listener { response ->
+                        Toast.makeText(context, response, Toast.LENGTH_LONG).show()
                         println(JSONObject(response))
                     },
                     Response.ErrorListener { error -> Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show() }) {
@@ -175,18 +182,17 @@ class AuthService(var context: Context) {
                 }
             }
             getNetworkSingletonInstance(context).requestQueue.add(signInRequest)
-        }
-        else {
+        } else {
             //TODO Implement logic when permission is not granted
         }
     }
 
-    fun retrieveProfilePicture(){
+    fun retrieveProfilePicture() {
         val url = defaultUser!!.profileImageURL
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
             val signInRequest = object : StringRequest(POST, url,
-                    Response.Listener {
-                        response -> Toast.makeText(context, response, Toast.LENGTH_LONG).show()
+                    Response.Listener { response ->
+                        Toast.makeText(context, response, Toast.LENGTH_LONG).show()
                         println(JSONObject(response))
                     },
                     Response.ErrorListener { error -> Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show() }) {
@@ -197,14 +203,13 @@ class AuthService(var context: Context) {
                 }
             }
             getNetworkSingletonInstance(context).requestQueue.add(signInRequest)
-        }
-        else {
+        } else {
             //TODO Implement logic when permission is not granted
         }
     }
 
     fun logOut() {
-        saveUserPrefs("","","")
-        defaultUser = UserEntity("","","")
+        saveUserPrefs("", "", "")
+        defaultUser = UserEntity("", "", "")
     }
 }
