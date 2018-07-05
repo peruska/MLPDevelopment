@@ -11,6 +11,7 @@ import hughes.alex.marinerlicenceprep.fragments.StudyFragment.Companion.setValue
 import hughes.alex.marinerlicenceprep.models.BooksCategoriesSubcategories
 import kotlinx.android.synthetic.main.study_deck_list_group.view.*
 import kotlinx.android.synthetic.main.study_fragment.*
+import kotlinx.android.synthetic.main.study_list_group.view.*
 
 class ExpandableListAdapterForDeck(var context: Context, var listOfMembers: ArrayList<BooksCategoriesSubcategories>) : BaseExpandableListAdapter() {
     override fun getGroup(groupPosition: Int): Any {
@@ -37,6 +38,8 @@ class ExpandableListAdapterForDeck(var context: Context, var listOfMembers: Arra
     override fun getGroupView(groupPosition: Int, isExpanded: Boolean, convertView: View?, parent: ViewGroup?): View {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = inflater.inflate(R.layout.study_deck_list_group, parent, false)
+        if(groupPosition != 0)
+            view.groupImageDeck.setImageResource(R.mipmap.list_view_right_arrow)
         view.deck_group_name.text = listOfMembers[groupPosition].groupName
         return view!!
     }
