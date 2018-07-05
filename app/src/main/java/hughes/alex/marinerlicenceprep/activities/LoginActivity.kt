@@ -52,7 +52,6 @@ class LoginActivity : AppCompatActivity() {
         ActivityCompat.requestPermissions(this,
                 arrayOf(
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.READ_PHONE_STATE,
                         Manifest.permission.INTERNET),
                 1
         )
@@ -248,6 +247,7 @@ class LoginActivity : AppCompatActivity() {
         try {
             val bitmap = android.provider.MediaStore.Images.Media.getBitmap(contentResolver, mImageUri)
             imageView.setImageBitmap(bitmap)
+            profilePictureBitmap = bitmap
         } catch (ex: Exception) {
             Log.d("Failed to load", ex.toString())
         }

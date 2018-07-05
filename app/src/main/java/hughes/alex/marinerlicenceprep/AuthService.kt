@@ -79,7 +79,9 @@ class AuthService(var context: Context) {
                         println(JSONObject(response))
                         uploadPhoto(context, profilePictureBitmap, email, username)
                     },
-                    Response.ErrorListener { error -> Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show() }) {
+                    Response.ErrorListener { error ->
+                        context.toast("Unsuccessful sign up attempt. Please check your internet connection.")
+                    }) {
                 override fun getParams(): Map<String, String> {
                     val params = HashMap<String, String>()
                     params["username"] = username
