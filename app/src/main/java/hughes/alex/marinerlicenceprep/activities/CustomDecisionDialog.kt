@@ -16,8 +16,8 @@ class CustomDecisionDialog(a: Activity, private val dialogTitle: String, private
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         setContentView(R.layout.custom_decision_dialog)
-        btn_cancel.setOnClickListener{ v -> cancelDialog()}
-        btn_ok.setOnClickListener{ v -> confirm()}
+        btn_cancel.setOnClickListener{ cancelDialog()}
+        btn_ok.setOnClickListener{ confirm()}
         txt_Title.text = dialogTitle
         txt_dialog.text = dialogText
     }

@@ -20,7 +20,7 @@ class BookmarkedFragment : Fragment() {
         val view = inflater.inflate(R.layout.bookmarked_fragment, container, false)
         val licenseBooks = (context!!.applicationContext as MyApp).getLicenseBooks()
         view.bookmarkListView.adapter= ArrayAdapter<String>(context ,R.layout.bookmark_list_item, licenseBooks)
-        view.bookmarkListView.setOnItemClickListener { adapterView, view, i, l ->
+        view.bookmarkListView.setOnItemClickListener { _, _, _, _ ->
             val intent = Intent(context!!, BookmarkList::class.java)
             intent.putExtra("bookName", view.bookNameTextView.text.toString())
             startActivity(intent)

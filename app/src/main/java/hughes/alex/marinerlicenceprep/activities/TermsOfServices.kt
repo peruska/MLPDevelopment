@@ -16,7 +16,7 @@ class TermsOfServices : AppCompatActivity() {
         supportActionBar!!.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
         supportActionBar!!.setCustomView(R.layout.custom_action_bar_terms_of_services)
 
-        custom_back_click_terms_of_services.setOnClickListener { v -> finish() }
-        settings_terms_of_services.setOnClickListener { v -> finish() }
+        custom_back_click_terms_of_services.setOnClickListener { finish() }
+        settings_terms_of_services.setOnClickListener { finish() }
     }
 }
