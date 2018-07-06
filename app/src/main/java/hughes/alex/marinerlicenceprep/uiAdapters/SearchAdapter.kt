@@ -6,11 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import hughes.alex.marinerlicenceprep.R
+import hughes.alex.marinerlicenceprep.database.Queries
 import hughes.alex.marinerlicenceprep.entity.Questions
 import kotlinx.android.synthetic.main.fragment_study_activity.view.*
 
 
-class SearchAdapter(val items: ArrayList<Questions>, val context: Context) : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
+class SearchAdapter(val items: ArrayList<Int>, val context: Context) : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
 
     override fun getItemCount(): Int {
         return items.size
@@ -22,12 +23,13 @@ class SearchAdapter(val items: ArrayList<Questions>, val context: Context) : Rec
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.answer1.text = items[position].answerOne
-        holder.answer2.text = items[position].answerTwo
-        holder.answer3.text = items[position].answerThree
-        holder.answer4.text = items[position].answerFour
-        holder.questionText.text = items[position].question
-        holder.questionTitle.text = items[position].subcategory
+        val question = Queries.getQuestion(context, items[position].toString())
+        holder.answer1.text = question.answerOne
+        holder.answer2.text = question.answerTwo
+        holder.answer3.text = question.answerThree
+        holder.answer4.text = question.answerFour
+        holder.questionText.text = question.question
+        holder.questionTitle.text = question.subcategory
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {

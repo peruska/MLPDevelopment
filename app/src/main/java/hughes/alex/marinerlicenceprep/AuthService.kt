@@ -43,7 +43,7 @@ class AuthService(var context: Context) {
             val url = MyApp.BASE_URL + "signin"
             val signInRequest = object : StringRequest(POST, url,
                     Response.Listener { response ->
-
+                        println(response)
                         val dataFromResponse = JSONObject(JSONObject(response).getString("data"))
                         println(response)
                         val user = dataFromResponse.getString("username")
@@ -59,7 +59,7 @@ class AuthService(var context: Context) {
                             context.startActivity(Intent(context, Home::class.java))
                         (context as LoginActivity).finish()
                     },
-                    Response.ErrorListener { error ->
+                    Response.ErrorListener {
                         context.toast("Unsuccessful login attempt. Please check your internet connection.")
                         waitDialog.dismiss()
                     }) {
@@ -85,7 +85,7 @@ class AuthService(var context: Context) {
                         println(JSONObject(response))
                         uploadPhoto(context, profilePictureBitmap, email, username)
                     },
-                    Response.ErrorListener { error ->
+                    Response.ErrorListener {
                         context.toast("Unsuccessful sign up attempt. Please check your internet connection.")
                     }) {
                 override fun getParams(): Map<String, String> {

@@ -16,10 +16,6 @@ import kotlinx.android.synthetic.main.study_list_group.view.*
 import org.jetbrains.anko.forEachChild
 
 class StudyExpandableListAdapter(var context: Context?, val listOfGroups: ArrayList<StudyExpandableListItem>) : BaseExpandableListAdapter() {
-    companion object {
-        var groupChecked: Int = -1
-        var uncheckThis: Int = -1
-    }
 
     override fun onGroupExpanded(groupPosition: Int) {
         (context as Home).startStudying.text = "Study: " + listOfGroups[groupPosition].groupName
@@ -53,12 +49,6 @@ class StudyExpandableListAdapter(var context: Context?, val listOfGroups: ArrayL
         if(groupPosition != 0) {
             view.groupImage.setImageResource(R.mipmap.list_view_right_arrow)
         }
-        if (groupChecked == groupPosition) {
-            view.groupName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.mipmap.checked, 0)
-            activeTextView = view.groupName
-        } else if (uncheckThis == groupPosition) {
-            view.groupName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-        }
         return view
     }
 
@@ -74,12 +64,10 @@ class StudyExpandableListAdapter(var context: Context?, val listOfGroups: ArrayL
         return p0.toLong()
     }
 
-    private var activeTextView: TextView? = null
     override fun getChildView(groupPosition: Int, childPosition: Int, isLastChild: Boolean, convertView: View?, parent: ViewGroup?): View {
         val inflater = context!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = inflater.inflate(R.layout.study_list_child, parent, false)
         view.childName.text = listOfGroups[groupPosition].childNames[childPosition].subcategoryName
-
         view.childName.setOnClickListener {
             (context as Home).startStudying.text = "Study: " + listOfGroups[groupPosition].childNames[childPosition].subcategoryName
             StudyFragment.setValues(listOfGroups[groupPosition].bookID, "-1", listOfGroups[groupPosition].childNames[childPosition].subcategoryID)

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -8,36 +9,12 @@
         android:id="@+id/expandableListView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:groupIndicator="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/allEngineReplacement"
-        android:groupIndicator="@android:color/transparent"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@android:color/darker_gray"
-        app:layout_constraintTop_toBottomOf="@+id/allEngineReplacement" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@android:color/darker_gray"
-        app:layout_constraintBottom_toTopOf="@+id/allEngineReplacement" />
-
-    <TextView
-        android:id="@+id/allEngineReplacement"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:gravity="center_vertical"
-        android:text="All Engine"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/resumeStudying" />
 
     <Button
+        android:enabled="false"
         android:id="@+id/resumeStudying"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -45,7 +22,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/study_second_button"
-        android:text="resume: deck machinery"
+        android:text="Resume"
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

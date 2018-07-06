@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import hughes.alex.marinerlicenceprep.R
+import hughes.alex.marinerlicenceprep.database.Queries
 import hughes.alex.marinerlicenceprep.entity.Questions
 import kotlinx.android.synthetic.main.fragment_study_activity.view.*
 
@@ -14,7 +15,8 @@ class PlaceholderFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_study_activity, container, false)
-        val question = questions[arguments?.getInt(ARG_SECTION_NUMBER)!!]
+        val questionID = questions[arguments?.getInt(ARG_SECTION_NUMBER)!!]
+        val question = Queries.getQuestion(context!!, questionID.toString())
         rootView.questionTitle.text = question.subcategory + "\n" + question.questionNumber
         rootView.questionText.text = question.question
         rootView.answer1.text = question.answerOne
@@ -45,7 +47,7 @@ class PlaceholderFragment : Fragment() {
     }
 
     companion object {
-        lateinit var questions: ArrayList<Questions>
+        lateinit var questions: ArrayList<Int>
         private val ARG_SECTION_NUMBER = "section_number"
         fun newInstance(sectionNumber: Int): PlaceholderFragment {
             val fragment = PlaceholderFragment()

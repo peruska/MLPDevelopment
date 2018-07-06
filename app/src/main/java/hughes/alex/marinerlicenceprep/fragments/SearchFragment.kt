@@ -41,8 +41,8 @@ class SearchFragment : Fragment() {
         var listOfFoundQuestions: ArrayList<Questions>? = null
         var numberOfCalls = 0
         view.searchRecyclerView.layoutManager = LinearLayoutManager(context)
-        val mSearchAdapter = SearchAdapter(finalListOfQuestions, context!!)
-        view.searchRecyclerView.adapter = mSearchAdapter
+        //val mSearchAdapter = SearchAdapter(finalListOfQuestions, context!!)
+        //view.searchRecyclerView.adapter = mSearchAdapter
 
         if (bookCategory == "1") {
             listBookSubcategory = Gson().fromJson<ArrayList<StudyExpandableListItem>>(json, object : TypeToken<ArrayList<StudyExpandableListItem>>() {}.type)
@@ -85,7 +85,7 @@ class SearchFragment : Fragment() {
                         finalListOfQuestions.add(it)
                     }
                 }
-                mSearchAdapter.notifyDataSetChanged()
+                //mSearchAdapter.notifyDataSetChanged()
                 return false
             }
 
@@ -102,14 +102,14 @@ class SearchFragment : Fragment() {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 (parent!!.getChildAt(0) as TextView).setTextColor(Color.WHITE)
                 if (numberOfCalls == 0) {
-                    listOfFoundQuestions = Queries.getQuestions(context!!, bookCategory, "-1", dlNumber, "-1", "-1")
+                    //listOfFoundQuestions = Queries.getQuestions(context!!, bookCategory, "-1", dlNumber, "-1", "-1")
                 } else {
                     val bookID = if(position == 0){
                         spinner.selectedItem.toString()
                     }else {
                         arrayOfIndexes[spinner.selectedItemId.toInt()]
                     }
-                    listOfFoundQuestions = Queries.getQuestions(context!!, bookCategory, bookID, dlNumber, "-1", "-1")
+                    //listOfFoundQuestions = Queries.getQuestions(context!!, bookCategory, bookID, dlNumber, "-1", "-1")
                     mSearchView.setQuery(mSearchView.query, true)
                 }
 
@@ -125,7 +125,7 @@ class SearchFragment : Fragment() {
         closeButton.setOnClickListener {
             searchText.setText("")
             finalListOfQuestions.clear()
-            mSearchAdapter.notifyDataSetChanged()
+            //mSearchAdapter.notifyDataSetChanged()
         }
         return view
     }
