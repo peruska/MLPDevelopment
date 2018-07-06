@@ -350,4 +350,39 @@ object Queries {
         databaseAccess.updateTable(Questions.TABLE, fieldContainer, whereClause)
         databaseAccess.close()
     }
+
+    fun getSearchedQuestionIDs(context: Context, searchWord: String, bookCategoryID: String, bookID: String?): ArrayList<Int>{
+        val getQuestionMatchingIDForWholeCategory = "SELECT ${Questions.COLUMN_QUESTIONS_ID} FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOK_CATEGORY_ID} = $bookCategoryID "
+        val getQuestionMatchingID = "SELECT ${Questions.COLUMN_QUESTIONS_ID} FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOK_CATEGORY_ID} = $bookCategoryID AND ${Questions.COLUMN_BOOK_ID} = $bookID "
+        val whereClause = arrayOf(" AND " + Questions.COLUMN_QUESTION + " LIKE '%" + searchWord + "%'",
+                " AND " + Questions.COLUMN_ANSWER_ONE + " LIKE '%" + searchWord + "%'",
+                " AND " + Questions.COLUMN_ANSWER_TWO + " LIKE '%" + searchWord + "%'",
+                " AND " + Questions.COLUMN_ANSWER_THREE + " LIKE '%" + searchWord + "%'",
+                " AND " + Questions.COLUMN_ANSWER_FOUR + " LIKE '%" + searchWord + "%'",
+                " AND " + Questions.COLUMN_NUMBER + " LIKE '%" + searchWord + "%'",
+                " AND " + Questions.COLUMN_SUBCATEGORY_NAME + " LIKE '%" + searchWord + "%'")
+        val databaseAccess = DatabaseAccess.getInstance(context)
+        databaseAccess.open()
+        val listOfQuestionIDs = ArrayList<Int>()
+        if(bookID != null){
+            for(i in 0..6) {
+                val cursor = databaseAccess.executeRawQuery(getQuestionMatchingID + whereClause[i], arrayOf())
+                while (cursor.moveToNext()){
+                    listOfQuestionIDs.add(cursor.getInt(0))
+                }
+                cursor.close()
+            }
+        }else{
+            for(i in 0..6) {
+                val query = getQuestionMatchingIDForWholeCategory + whereClause[i]
+                val cursor = databaseAccess.executeRawQuery(query, arrayOf())
+                while (cursor.moveToNext()){
+                    listOfQuestionIDs.add(cursor.getInt(0))
+                }
+                cursor.close()
+            }
+        }
+        databaseAccess.close()
+        return listOfQuestionIDs
+    }
 }
