@@ -45,7 +45,17 @@ class StudyFragment : Fragment() {
     }
 
     override fun onResume() {
-        this.fragmentManager!!.popBackStack()
+        try {
+            val resumePrefs = context!!.getSharedPreferences(MyApp.RESUME_DATA, 0)
+            val resumeButtonName = resumePrefs.getString("resumeButtonNameString", "")
+            if(resumeButtonName.isNotBlank()){
+                view!!.resumeStudying.text = resumeButtonName.replace("Study: ", "Resume: ")
+                view!!.resumeStudying.isEnabled = true
+            }
+            else {
+                view!!.resumeStudying.background.setColorFilter(Color.GRAY, PorterDuff.Mode.SRC)
+            }
+        }catch (e:Exception){}
         super.onResume()
     }
 
@@ -55,16 +65,7 @@ class StudyFragment : Fragment() {
         val resumePrefs = context!!.getSharedPreferences(MyApp.RESUME_DATA, 0)
         StudyFragment.dlNumber = prefs.getString(MyApp.DL_NUMBER, "")
         StudyFragment.bookCategoryID = prefs.getString(MyApp.CATEGORY, "")
-        try {
-            val resumeButtonName = resumePrefs.getString("resumeButtonNameString", "")
-            if(resumeButtonName.isNotBlank()){
-                view.resumeStudying.text = resumeButtonName.replace("Study: ", "Resume: ")
-                view.resumeStudying.isEnabled = true
-            }
-            else {
-                view.resumeStudying.background.setColorFilter(Color.GRAY, PorterDuff.Mode.SRC)
-            }
-        }catch (e:Exception){}
+
         val json = prefs.getString(MyApp.USER_LICENSE_DATA_VALUES, "")
         val context = context
         val adapter =
