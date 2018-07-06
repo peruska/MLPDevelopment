@@ -96,9 +96,11 @@ class SearchFragment : Fragment() {
         spinner.dropDownWidth = Resources.getSystem().displayMetrics.widthPixels
         spinner.adapter = adapter
         spinner.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                (parent!!.getChildAt(0) as TextView).setTextColor(Color.WHITE)}
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                (parent!!.getChildAt(0) as TextView).setTextColor(Color.WHITE)
                 if (numberOfCalls == 0) {
                     listOfFoundQuestions = Queries.getQuestions(context!!, bookCategory, "-1", dlNumber, "-1", "-1")
                 } else {
@@ -112,7 +114,6 @@ class SearchFragment : Fragment() {
                 }
 
                 numberOfCalls++
-                (parent!!.getChildAt(0) as TextView).setTextColor(Color.WHITE)
             }
 
         }

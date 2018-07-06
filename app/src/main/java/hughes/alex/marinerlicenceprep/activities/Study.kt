@@ -1,6 +1,7 @@
 package hughes.alex.marinerlicenceprep.activities
 
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
@@ -12,6 +13,12 @@ import hughes.alex.marinerlicenceprep.R
 import hughes.alex.marinerlicenceprep.activities.PlaceholderFragment.Companion.questions
 import hughes.alex.marinerlicenceprep.database.Queries
 import kotlinx.android.synthetic.main.activity_study.*
+import android.content.DialogInterface
+import android.support.v7.app.AlertDialog
+import android.text.InputType
+import android.widget.EditText
+import org.jetbrains.anko.*
+
 
 class Study : AppCompatActivity() {
 
@@ -28,6 +35,7 @@ class Study : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_study)
+        val dialog = indeterminateProgressDialog ("Loading questions")
         val extras = intent.extras
         if (extras.getString("callingIntent") == "Normal") {
             autoNext = extras.getBoolean("autoNext")
@@ -79,8 +87,24 @@ class Study : AppCompatActivity() {
                 editor.commit()
             }
         })
+        dialog.dismiss()
     }
 
+    fun showChangeQuestionDialog(view: View){
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Go To Number")
+        builder.setMessage("Enter the number you wish to go to.")
+        val input = EditText(this)
+        input.hint = "Input number..."
+        input.inputType = InputType.TYPE_CLASS_NUMBER
+        builder.setView(input)
+        builder.setPositiveButton("Go To") { dialog, which ->
+            val inputValue = input.text.toString().toInt()
+            if(inputValue>0 && inputValue< questions.size)container.currentItem = inputValue-1 }
+        builder.setNegativeButton("Cancel"
+        ) { dialog, _ -> dialog.cancel() }
+        builder.show()
+    }
     private fun compareAnswers(view: View, answer: String): Boolean {
         val selectedAnswer =
                 when (view.id) {
@@ -104,7 +128,12 @@ class Study : AppCompatActivity() {
                 correct++
                 Queries.updateQuestionStatistics(this, PlaceholderFragment.questions[container.currentItem].questionID, 1)
             }
-            if (autoNext) moveToNextQuestion(view)
+            if (autoNext) {
+                val handler = Handler()
+                handler.postDelayed({
+                    moveToNextQuestion(view)
+                }, 700)
+            }
         } else {
             if (attemped == 0)
                 Queries.updateQuestionStatistics(this, PlaceholderFragment.questions[container.currentItem].questionID, 0)

@@ -12,6 +12,7 @@ import com.android.volley.Request.Method.POST
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import hughes.alex.marinerlicenceprep.MyApp.Companion.BASE_URL
+import hughes.alex.marinerlicenceprep.MyApp.Companion.USER_LICENSE_DATA_VALUES
 import hughes.alex.marinerlicenceprep.MyApp.Companion.defaultUser
 import hughes.alex.marinerlicenceprep.activities.Home
 import hughes.alex.marinerlicenceprep.NetworkSingleton.Companion.getNetworkSingletonInstance
@@ -50,7 +51,12 @@ class AuthService(var context: Context) {
                         defaultUser = UserEntity(user, email, pictureUrl)
                         saveUserPrefs(user, email, pictureUrl)
                         waitDialog.dismiss()
-                        context.startActivity(Intent(context, Home::class.java))
+
+                        val prefs = context.getSharedPreferences(MyApp.USER_LICENSE_DATA_VALUES, 0)
+                        if(prefs.getString(USER_LICENSE_DATA_VALUES, "").isBlank())
+                            context.startActivity(Intent(context, License::class.java))
+                        else
+                            context.startActivity(Intent(context, Home::class.java))
                         (context as LoginActivity).finish()
                     },
                     Response.ErrorListener { error ->
