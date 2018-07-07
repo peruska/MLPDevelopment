@@ -2,6 +2,7 @@ package hughes.alex.marinerlicenceprep.fragments
 
 
 import android.content.res.Resources
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -11,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.TextView
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.utils.ColorTemplate
@@ -95,6 +97,8 @@ class WeakestQuestionsFragment : Fragment() {
                 temporaryListOfQuestionIDs.forEach{
                     listOfWeakestQuestionIDs.add(it)
                 }
+
+                (parent!!.getChildAt(0) as TextView).setTextColor(Color.WHITE)
                 mSearchAdapter.notifyDataSetChanged()
             }
         }
