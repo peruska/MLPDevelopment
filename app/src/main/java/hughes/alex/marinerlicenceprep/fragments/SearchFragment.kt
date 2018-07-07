@@ -1,6 +1,7 @@
 package hughes.alex.marinerlicenceprep.fragments
 
 import android.content.res.Resources
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -39,6 +40,7 @@ class SearchFragment : Fragment() {
         searchWord.add("")
         view.searchRecyclerView.layoutManager = LinearLayoutManager(context)
         val mSearchAdapter = SearchAdapter(finalListOfIDs, context!!, searchWord)
+        val mSearchView = view.search_view
         view.searchRecyclerView.adapter = mSearchAdapter
 
         if (bookCategory == "1") {
@@ -57,7 +59,7 @@ class SearchFragment : Fragment() {
             }
         }
 
-        val mSearchView = view.search_view
+
 
         mSearchView.setOnClickListener {
             if (mSearchView.isIconified) {
@@ -97,7 +99,7 @@ class SearchFragment : Fragment() {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 selectedSpinnerPosition = position
                 mSearchView.setQuery(mSearchView.query, true)
-
+                (parent!!.getChildAt(0) as TextView).setTextColor(Color.WHITE)
 
             }
         }
