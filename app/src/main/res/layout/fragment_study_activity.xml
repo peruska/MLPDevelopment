@@ -4,72 +4,100 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".activities.Study$PlaceholderFragment">
+    android:layout_height="match_parent">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/constraintLayout2"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline5">
 
         <TextView
             android:id="@+id/answer1"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="8dp"
+            android:background="@color/lightGray"
             android:drawableStart="@mipmap/a_answer"
             android:gravity="center_vertical"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:background="@color/lightGray"
-            android:text="TextView"
             android:onClick="answerQuestion"
+            android:text="TextView"
+            app:layout_constraintBottom_toTopOf="@+id/guideline25"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/answer2"
-            android:drawableStart="@mipmap/b_answer"
-            android:gravity="center_vertical"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
             android:background="@color/lightGray"
-            android:text="TextView"
+            android:drawableStart="@mipmap/b_answer"
+            android:gravity="center_vertical"
             android:onClick="answerQuestion"
+            android:text="TextView"
+            app:layout_constraintBottom_toTopOf="@+id/guideline50"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/answer1" />
 
         <TextView
             android:id="@+id/answer3"
-            android:drawableStart="@mipmap/c_answer"
-            android:gravity="center_vertical"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
             android:background="@color/lightGray"
-            android:text="TextView"
+            android:drawableStart="@mipmap/c_answer"
+            android:gravity="center_vertical"
             android:onClick="answerQuestion"
+            android:text="TextView"
+            app:layout_constraintBottom_toTopOf="@+id/guideline75"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/answer2" />
 
         <TextView
             android:id="@+id/answer4"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="8dp"
+            android:background="@color/lightGray"
             android:drawableStart="@mipmap/d_answer"
             android:gravity="center_vertical"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="8dp"
-            android:background="@color/lightGray"
-            android:text="TextView"
             android:onClick="answerQuestion"
+            android:text="TextView"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/answer3" />
+            app:layout_constraintTop_toTopOf="@+id/guideline75" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline25"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.25" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline50"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.50" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline75"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.75" />
+
     </android.support.constraint.ConstraintLayout>
 
     <TextView
@@ -88,27 +116,33 @@
         android:id="@+id/questionTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="28dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintTop_creator="1" />
 
     <ImageView
-        android:visibility="invisible"
         android:id="@+id/openIllustration"
         android:layout_width="30dp"
         android:layout_height="40dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:src="@drawable/image_view_icon"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
 
 </android.support.constraint.ConstraintLayout>

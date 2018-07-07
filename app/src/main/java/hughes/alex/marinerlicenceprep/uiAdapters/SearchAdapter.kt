@@ -1,5 +1,6 @@
 package hughes.alex.marinerlicenceprep.uiAdapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.support.v7.widget.RecyclerView
@@ -12,8 +13,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import hughes.alex.marinerlicenceprep.R
 import hughes.alex.marinerlicenceprep.database.Queries
-import kotlinx.android.synthetic.main.fragment_study_activity.view.*
-
+import kotlinx.android.synthetic.main.search_item.view.*
 
 class SearchAdapter(val items: ArrayList<Int>, val context: Context, val querySearchWord: ArrayList<String>) : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
 
@@ -26,6 +26,7 @@ class SearchAdapter(val items: ArrayList<Int>, val context: Context, val querySe
         return ViewHolder(view)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val question = Queries.getQuestion(context, items[position].toString())
         if(querySearchWord[0] == "") {
@@ -35,6 +36,10 @@ class SearchAdapter(val items: ArrayList<Int>, val context: Context, val querySe
             holder.answer3.text = question.answerThree
             holder.answer2.text = question.answerTwo
             holder.answer1.text = question.answerOne
+            if(querySearchWord[1] == "weakest!")
+            {
+                holder.countOfAnswers.text = "Wrong: ${question.numberOfTimesWrong}\nCorrect: ${question.numberOfTimesCorrect}"
+            }
         }else {
             val value = querySearchWord[0].toLowerCase()
             fun makeSpannable(text: String, query: String): Spannable {
@@ -83,6 +88,7 @@ class SearchAdapter(val items: ArrayList<Int>, val context: Context, val querySe
         val answer3 = view.answer3
         val answer4 = view.answer4
         val questionTitle = view.questionTitle
+        val countOfAnswers = view.countOfAnswers
         val questionText = view.questionText
     }
 }

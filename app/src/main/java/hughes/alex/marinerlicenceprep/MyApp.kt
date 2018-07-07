@@ -10,6 +10,9 @@ import hughes.alex.marinerlicenceprep.entity.UserEntity
 import hughes.alex.marinerlicenceprep.fragments.StudyFragment
 import hughes.alex.marinerlicenceprep.models.BooksCategoriesSubcategories
 import hughes.alex.marinerlicenceprep.models.StudyExpandableListItem
+import hughes.alex.marinerlicenceprep.uiAdapters.ExpandableListAdapterForDeck
+import hughes.alex.marinerlicenceprep.uiAdapters.StudyExpandableListAdapter
+import org.jetbrains.anko.doAsync
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -28,6 +31,8 @@ class MyApp : Application() {
         const val USER_ACCOUNT_EMAIL = "email"
         const val USER_ACCOUNT_PROFILE_PICTURE_URL = "profile_picture"
         const val BASE_URL = "https://marinerlicenseprep.com/api/"
+        lateinit var dataForTwoLevelList: ArrayList<StudyExpandableListItem>
+        lateinit var dataForThreeLevelList: ArrayList<BooksCategoriesSubcategories>
     }
 
     fun getLicenseBooks(): ArrayList<String>{
@@ -45,5 +50,28 @@ class MyApp : Application() {
         }
         return bookList
 
+    }
+
+    fun fetchLicenseBooksAsListItem(){
+        val startTime = System.currentTimeMillis()
+        val prefs = this.getSharedPreferences(MyApp.USER_LICENSE_DATA_VALUES, 0)
+        StudyFragment.dlNumber = prefs.getString(MyApp.DL_NUMBER, "")
+        StudyFragment.bookCategoryID = prefs.getString(MyApp.CATEGORY, "")
+        val json = prefs.getString(MyApp.USER_LICENSE_DATA_VALUES, "")
+        val bookList: ArrayList<String> = ArrayList()
+        if (StudyFragment.bookCategoryID == "1") {
+            val list = Gson().fromJson<ArrayList<StudyExpandableListItem>>(json, object : TypeToken<ArrayList<StudyExpandableListItem>>() {}.type)
+            list.forEach { bookList.add(it.groupName) }
+        } else {
+            val list = Gson().fromJson<ArrayList<BooksCategoriesSubcategories>>(json, object : TypeToken<ArrayList<BooksCategoriesSubcategories>>() {}.type)
+            list.forEach { bookList.add(it.groupName) }
+        }
+        if (StudyFragment.bookCategoryID == "1")
+            dataForTwoLevelList =
+                    Gson().fromJson<java.util.ArrayList<StudyExpandableListItem>>(json, object : TypeToken<java.util.ArrayList<StudyExpandableListItem>>() {}.type)
+                else
+            dataForThreeLevelList = Gson().fromJson<java.util.ArrayList<BooksCategoriesSubcategories>>(json, object : TypeToken<java.util.ArrayList<BooksCategoriesSubcategories>>() {}.type)
+        val difference = System.currentTimeMillis() - startTime
+        println(difference)
     }
 }

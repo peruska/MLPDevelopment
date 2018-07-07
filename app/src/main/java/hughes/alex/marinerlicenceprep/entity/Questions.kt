@@ -3,7 +3,7 @@ package hughes.alex.marinerlicenceprep.entity
 class Questions(var question: String, var answerOne: String, var answerTwo: String,
                 var answerThree: String, var answerFour: String, var correctAnswer: String,
                 var questionNumber: String, var subcategory: String, var questionID: String,
-                var isBookmarked: String, var illustration: String) {
+                var isBookmarked: String, var illustration: String, var numberOfTimesWrong: String, var numberOfTimesCorrect: String)  {
     companion object {
         const val TABLE = "ZQUESTIONS"
 
