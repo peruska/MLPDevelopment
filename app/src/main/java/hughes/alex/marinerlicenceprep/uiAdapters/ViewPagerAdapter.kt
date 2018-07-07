@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.app.FragmentStatePagerAdapter
 import hughes.alex.marinerlicenceprep.fragments.GraphFragment
+import hughes.alex.marinerlicenceprep.fragments.WeakestQuestionsFragment
 import hughes.alex.marinerlicenceprep.fragments.WelcomeFragment
 
 class ViewPagerAdapter(fragmentManager: FragmentManager?) : FragmentStatePagerAdapter(fragmentManager) {
@@ -21,7 +22,7 @@ class ViewPagerAdapter(fragmentManager: FragmentManager?) : FragmentStatePagerAd
             1 // Fragment # 0 - This will show FirstFragment different title
             -> GraphFragment.newInstance(1, "Page # 2")
             2 // Fragment # 1 - This will show SecondFragment
-            -> WelcomeFragment.newInstance()
+            -> WeakestQuestionsFragment.newInstance(2, "Page # 3")
             else -> null
         }
     }
