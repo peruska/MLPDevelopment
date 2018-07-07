@@ -12,7 +12,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import hughes.alex.marinerlicenceprep.MyApp
 import hughes.alex.marinerlicenceprep.R
-import hughes.alex.marinerlicenceprep.activities.PlaceholderFragment
 import hughes.alex.marinerlicenceprep.activities.Study
 import hughes.alex.marinerlicenceprep.database.Queries
 import hughes.alex.marinerlicenceprep.models.BooksCategoriesSubcategories

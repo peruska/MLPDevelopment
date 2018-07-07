@@ -1,4 +1,4 @@
-package hughes.alex.marinerlicenceprep.activities
+package hughes.alex.marinerlicenceprep.fragments
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -6,8 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import hughes.alex.marinerlicenceprep.R
+import hughes.alex.marinerlicenceprep.activities.Illustration
+import hughes.alex.marinerlicenceprep.activities.Study
 import hughes.alex.marinerlicenceprep.database.Queries
-import hughes.alex.marinerlicenceprep.entity.Questions
 import kotlinx.android.synthetic.main.fragment_study_activity.view.*
 
 class PlaceholderFragment : Fragment() {
