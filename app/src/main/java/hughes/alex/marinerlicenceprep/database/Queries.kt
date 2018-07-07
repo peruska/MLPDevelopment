@@ -42,6 +42,9 @@ object Queries {
     private const val GET_WEAKEST_QUESTIONS = "SELECT ${Questions.COLUMN_QUESTIONS_ID} FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOK_CATEGORY_ID} = ? AND ${Questions.COLUMN_BOOK_ID} = ? AND" +
             " ${Questions.COLUMN_HAS_BEEN_ANSWERED} = 1 ORDER BY (${Questions.COLUMN_NUMBER_OF_TIMES_CORRECT}/${Questions.COLUMN_NUMBER_OF_TIMES_ANSWERED}*100) DESC"
 
+    private const val GET_WEAKEST_QUESTIONS_FROM_BOOKCATEGORY = "SELECT ${Questions.COLUMN_QUESTIONS_ID} FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOK_CATEGORY_ID} = ? AND " +
+            " ${Questions.COLUMN_HAS_BEEN_ANSWERED} = 1 ORDER BY (${Questions.COLUMN_NUMBER_OF_TIMES_CORRECT}/${Questions.COLUMN_NUMBER_OF_TIMES_ANSWERED}*100) DESC"
+
     fun getBooksCategoriesSubcategories(context: Context, bookCategory: Int, licenceNumber: Int): ArrayList<BooksCategoriesSubcategories> {
         val getQuestionsForSubcategoryAndLicence = "SELECT ${Questions.COLUMN_QUESTIONS_ID} FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_SUBCATEGORY_ID} = ? AND ZDL" + licenceNumber + " = 1"
 
@@ -392,9 +395,15 @@ object Queries {
         val listOfQuestionIDs : ArrayList<Int>
         val databaseAccess = DatabaseAccess.getInstance(context)
         databaseAccess.open()
-        val cursor = databaseAccess.executeRawQuery(GET_WEAKEST_QUESTIONS, arrayOf(bookCategoryID, bookID))
-        listOfQuestionIDs = idFetching(cursor)
-        cursor.close()
+        if(!bookID.contains("All")) {
+            val cursor = databaseAccess.executeRawQuery(GET_WEAKEST_QUESTIONS, arrayOf(bookCategoryID, bookID))
+            listOfQuestionIDs = idFetching(cursor)
+            cursor.close()
+        }else{
+            val cursor = databaseAccess.executeRawQuery(GET_WEAKEST_QUESTIONS_FROM_BOOKCATEGORY, arrayOf(bookCategoryID))
+            listOfQuestionIDs = idFetching(cursor)
+            cursor.close()
+        }
         databaseAccess.close()
         return listOfQuestionIDs
     }

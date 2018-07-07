@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.search_fragment.view.*
 class SearchFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var finalListOfIDs = ArrayList<Int>()
+        val finalListOfIDs = ArrayList<Int>()
         val listBookSubcategory: ArrayList<StudyExpandableListItem>
         val listBookCategorySubcategory: ArrayList<BooksCategoriesSubcategories>
         val spinnerArray = ArrayList<String>()
