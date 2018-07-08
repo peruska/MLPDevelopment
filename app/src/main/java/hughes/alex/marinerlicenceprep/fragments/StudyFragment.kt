@@ -67,20 +67,18 @@ class StudyFragment : Fragment() {
             intent.putExtra("logAnswers", logAnswersSwitch.isChecked)
             intent.putExtra("showAnswers", showAnswersSwitch.isChecked)
             intent.putExtra("callingIntent", "StudyFragment")
-            context.doAsync {
-                PlaceholderFragment.questions = Queries.getQuestionIDs(context, bookCategoryID,
-                        when (view.startStudying.text.toString()) {
-                            "Study: All Engine" -> "All Engine"
-                            "Study: All Deck" -> "All Deck"
-                            else -> bookID
-                        }, dlNumber, categoryID, subcategoryID)
-                val resumePrefs = context.getSharedPreferences(MyApp.RESUME_DATA, 0)
-                val editor = resumePrefs.edit()
-                editor.putString("resumeButtonNameString", view.startStudying.text.toString())
-                editor.apply()
-                context.startActivity(intent)
+            PlaceholderFragment.questions = Queries.getQuestionIDs(context, bookCategoryID,
+                    when (view.startStudying.text.toString()) {
+                        "Study: All Engine" -> "All Engine"
+                        "Study: All Deck" -> "All Deck"
+                        else -> bookID
+                    }, dlNumber, categoryID, subcategoryID)
+            val resumePrefs = context.getSharedPreferences(MyApp.RESUME_DATA, 0)
+            val editor = resumePrefs.edit()
+            editor.putString("resumeButtonNameString", view.startStudying.text.toString())
+            editor.apply()
+            context.startActivity(intent)
 
-            }
         }
         view.resumeStudying.setOnClickListener {
             val intent = Intent(context, Study::class.java)
