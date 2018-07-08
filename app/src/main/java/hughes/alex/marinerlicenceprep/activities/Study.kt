@@ -63,9 +63,9 @@ class Study : AppCompatActivity() {
                 moveToNextQuestionButton.setImageResource(if (position == container.adapter!!.count - 1) R.drawable.anchor else R.mipmap.right_arrow)
                 bookmarkQuestion.setImageResource(
                         if (currentQuestion.isBookmarked == "1")
-                            R.mipmap.bookmark_empty
-                        else
                             R.mipmap.bookmark
+                        else
+                            R.mipmap.bookmark_empty
                 )
                 val editor = prefs.edit()
                 editor.putString("dlNumber", StudyFragment.dlNumber)
@@ -140,6 +140,7 @@ class Study : AppCompatActivity() {
     }
 
     fun bookmarkQuestion(view: View) {
+        println("")
         if (currentQuestion.isBookmarked == "1") {
             Queries.changeBookmark(this, currentQuestion.questionID, "0")
             bookmarkQuestion.setImageResource(R.mipmap.bookmark_empty)
