@@ -2,6 +2,7 @@ package hughes.alex.marinerlicenceprep.uiAdapters
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.text.Spannable
@@ -12,7 +13,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import hughes.alex.marinerlicenceprep.R
+import hughes.alex.marinerlicenceprep.activities.Study
 import hughes.alex.marinerlicenceprep.database.Queries
+import hughes.alex.marinerlicenceprep.fragments.PlaceholderFragment
 import kotlinx.android.synthetic.main.search_item.view.*
 
 class SearchAdapter(val items: ArrayList<Int>, val context: Context, val querySearchWord: ArrayList<String>) : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
@@ -23,6 +26,22 @@ class SearchAdapter(val items: ArrayList<Int>, val context: Context, val querySe
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.search_item, parent, false)
+        view.answer1.isClickable = false
+        view.answer2.isClickable = false
+        view.answer3.isClickable = false
+        view.answer4.isClickable = false
+        view.questionText.isClickable = false
+        view.questionTitle.isClickable = false
+        view.setOnClickListener {
+            val intent = Intent(context, Study::class.java)
+            intent.putExtra("autoNext", true)
+            intent.putExtra("shuffleQuestions", false)
+            intent.putExtra("logAnswers", false)
+            intent.putExtra("showAnswers", false)
+            intent.putExtra("callingIntent", "StudyFragment")
+            PlaceholderFragment.questions = items
+                    context.startActivity(intent)
+        }
         return ViewHolder(view)
     }
 

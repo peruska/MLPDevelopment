@@ -1,6 +1,5 @@
 package hughes.alex.marinerlicenceprep.fragments
 
-import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -9,22 +8,15 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import hughes.alex.marinerlicenceprep.MyApp
 import hughes.alex.marinerlicenceprep.R
-import hughes.alex.marinerlicenceprep.activities.Home
 import hughes.alex.marinerlicenceprep.activities.Study
 import hughes.alex.marinerlicenceprep.database.Queries
-import hughes.alex.marinerlicenceprep.models.BooksCategoriesSubcategories
-import hughes.alex.marinerlicenceprep.models.StudyExpandableListItem
 import hughes.alex.marinerlicenceprep.uiAdapters.ExpandableListAdapterForDeck
 import hughes.alex.marinerlicenceprep.uiAdapters.StudyExpandableListAdapter
 import kotlinx.android.synthetic.main.study_fragment.*
 import kotlinx.android.synthetic.main.study_fragment.view.*
 import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.indeterminateProgressDialog
-import java.util.*
 
 
 class StudyFragment : Fragment() {
