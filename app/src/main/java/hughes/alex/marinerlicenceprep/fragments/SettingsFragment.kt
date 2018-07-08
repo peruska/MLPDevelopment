@@ -25,6 +25,10 @@ class SettingsFragment : Fragment() {
     private val resetScoreDialog = "Are you sure you want to reset your scores?"
     private val logoutTitle = "Logout"
     private val logoutDialog = "Are you sure you want to log out?"
+    companion object {
+        const val resetBookmarkType = 1
+        const val resetScoresType = 2
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.settings_fragment, container, false)
@@ -33,8 +37,8 @@ class SettingsFragment : Fragment() {
         view.changeEmail.setOnClickListener { startActivity(Intent(context, ChangeEmail::class.java)) }
         view.changePassword.setOnClickListener { startActivity(Intent(context, ChangePassword::class.java)) }
         view.submitFeedback.setOnClickListener { showDialog() }
-        view.reset_bookmark.setOnClickListener { showDecisionDialog(context as Activity, changeBookmarkTitleText, changeBookmarkDialogText) }
-        view.reset_scores.setOnClickListener { showDecisionDialog(context as Activity, resetScoresTitle, resetScoreDialog) }
+        view.reset_bookmark.setOnClickListener { showDecisionDialog(context as Activity, changeBookmarkTitleText, changeBookmarkDialogText, resetBookmarkType) }
+        view.reset_scores.setOnClickListener { showDecisionDialog(context as Activity, resetScoresTitle, resetScoreDialog, resetScoresType) }
         view.terms_of_service.setOnClickListener { startActivity(Intent(context as Activity, TermsOfServices::class.java)) }
         view.privacy_policy.setOnClickListener { startActivity(Intent(context as Activity, PrivacyPolicy::class.java)) }
         view.logout.setOnClickListener {
@@ -57,8 +61,8 @@ class SettingsFragment : Fragment() {
         customDialog.show()
     }
 
-    private fun showDecisionDialog(activity: Activity, title: String, dialogText: String) {
-        val customDecisionDialog = CustomDecisionDialog(activity, title, dialogText)
+    private fun showDecisionDialog(activity: Activity, title: String, dialogText: String, decisionType: Int) {
+        val customDecisionDialog = CustomDecisionDialog(activity, title, dialogText, decisionType)
         customDecisionDialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         customDecisionDialog.show()
     }
