@@ -321,11 +321,17 @@ object Queries {
         val databaseAccess = DatabaseAccess.getInstance(context)
         databaseAccess.open()
         val listOfQuestions: ArrayList<Int>
-
-        val getAllBookmarkedQuestions = "SELECT ${Questions.COLUMN_QUESTIONS_ID}  FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOKMARKED} = 1 AND " +
-                " ZDL" + dlNumber + " = 1 AND ${Questions.COLUMN_BOOK_NAME} = ?"
-
-        val cursor = databaseAccess.executeRawQuery(getAllBookmarkedQuestions, arrayOf(bookName))
+        val cursor = if (bookName == "All Engine" || bookName == "All Deck") {
+            val getAllBookmarkedQuestions = "SELECT ${Questions.COLUMN_QUESTIONS_ID}  FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOKMARKED} = 1 AND " +
+                    " ZDL" + dlNumber + " = 1 AND ${Questions.COLUMN_BOOK_CATEGORY_ID} = " +
+                    if (bookName == "All Engine") "1" else "2"
+            databaseAccess.executeRawQuery(getAllBookmarkedQuestions, arrayOf())
+        } else {
+            val getAllBookmarkedQuestions = "SELECT ${Questions.COLUMN_QUESTIONS_ID}  FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_BOOKMARKED} = 1 AND " +
+                    " ZDL" + dlNumber + " = 1 AND ${Questions.COLUMN_BOOK_NAME} = ?"
+            databaseAccess.executeRawQuery(getAllBookmarkedQuestions, arrayOf(bookName)
+            )
+        }
         listOfQuestions = idFetching(cursor)
         cursor.close()
         databaseAccess.close()
@@ -359,7 +365,8 @@ object Queries {
             for (i in 0..6) {
                 val cursor = databaseAccess.executeRawQuery(getQuestionMatchingID + whereClause[i], arrayOf())
                 while (cursor.moveToNext()) {
-                    listOfQuestionIDs.add(cursor.getInt(0))
+                    if (!listOfQuestionIDs.contains(cursor.getInt(0)))
+                        listOfQuestionIDs.add(cursor.getInt(0))
                 }
                 cursor.close()
             }

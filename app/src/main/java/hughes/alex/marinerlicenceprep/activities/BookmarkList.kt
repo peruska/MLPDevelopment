@@ -15,6 +15,6 @@ class BookmarkList : AppCompatActivity() {
         setContentView(R.layout.activity_bookmark_list)
         bookmarkRecyclerView.layoutManager = LinearLayoutManager(this)
         bookmarkRecyclerView.adapter = SearchAdapter(
-                Queries.getBookmarkedQuestions(this, intent.extras.getString("bookName")), this, arrayListOf(""))
+                Queries.getBookmarkedQuestions(this, intent.extras.getString("bookName")), this, arrayListOf("", ""))
     }
 }
