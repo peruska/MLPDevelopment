@@ -64,7 +64,7 @@ class WeakestQuestionsFragment : Fragment() {
         val listBookCategorySubcategory: ArrayList<BooksCategoriesSubcategories>
         val json = prefs.getString(MyApp.USER_LICENSE_DATA_VALUES, "")
         val listOfWeakestQuestionIDs = ArrayList<Int>()
-        val mSearchAdapter = SearchAdapter(listOfWeakestQuestionIDs, context!!, arrayListOf(""))
+        val mSearchAdapter = SearchAdapter(listOfWeakestQuestionIDs, context!!, arrayListOf("", "weakest!"))
 
         if (bookCategory == "1") {
             listBookSubcategory = Gson().fromJson<ArrayList<StudyExpandableListItem>>(json, object : TypeToken<ArrayList<StudyExpandableListItem>>() {}.type)

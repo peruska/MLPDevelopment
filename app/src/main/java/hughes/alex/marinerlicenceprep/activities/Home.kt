@@ -6,15 +6,14 @@ import android.support.design.internal.BottomNavigationItemView
 import android.support.design.internal.BottomNavigationMenuView
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.FragmentActivity
-import hughes.alex.marinerlicenceprep.AuthService
+import hughes.alex.marinerlicenceprep.MyApp
 import hughes.alex.marinerlicenceprep.R
-import hughes.alex.marinerlicenceprep.database.Queries
 import hughes.alex.marinerlicenceprep.fragments.*
 import kotlinx.android.synthetic.main.activity_home.*
+import org.jetbrains.anko.doAsync
 
 
 class Home : FragmentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
@@ -52,6 +51,10 @@ class Home : FragmentActivity() {
                 }
             }
             return@setOnNavigationItemSelectedListener true
+        }
+
+        doAsync {
+            (application as MyApp).fetchLicenseBooksAsListItem()
         }
     }
 

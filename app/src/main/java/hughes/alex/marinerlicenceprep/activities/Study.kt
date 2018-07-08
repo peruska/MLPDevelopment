@@ -14,9 +14,10 @@ import android.view.View
 import android.widget.EditText
 import hughes.alex.marinerlicenceprep.MyApp
 import hughes.alex.marinerlicenceprep.R
-import hughes.alex.marinerlicenceprep.activities.PlaceholderFragment.Companion.questions
+import hughes.alex.marinerlicenceprep.fragments.PlaceholderFragment.Companion.questions
 import hughes.alex.marinerlicenceprep.database.Queries
 import hughes.alex.marinerlicenceprep.entity.Questions
+import hughes.alex.marinerlicenceprep.fragments.PlaceholderFragment
 import hughes.alex.marinerlicenceprep.fragments.StudyFragment
 import kotlinx.android.synthetic.main.activity_study.*
 
