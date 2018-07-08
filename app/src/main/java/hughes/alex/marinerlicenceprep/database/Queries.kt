@@ -400,4 +400,27 @@ object Queries {
         databaseAccess.close()
         return listOfQuestionIDs
     }
+
+    fun resetBookmarks(context: Context){
+        val databaseAccess = DatabaseAccess.getInstance(context)
+        databaseAccess.open()
+        val fieldContainer = ContentValues()
+        fieldContainer.put(Questions.COLUMN_BOOKMARKED, 0)
+        val whereClause = Questions.COLUMN_BOOKMARKED + " = 1"
+        databaseAccess.updateTable(Questions.TABLE, fieldContainer, whereClause)
+        databaseAccess.close()
+    }
+
+    fun resetScores(context: Context){
+        val databaseAccess = DatabaseAccess.getInstance(context)
+        databaseAccess.open()
+        val fieldContainer = ContentValues()
+        fieldContainer.put(Questions.COLUMN_HAS_BEEN_ANSWERED, 0)
+        fieldContainer.put(Questions.COLUMN_NUMBER_OF_TIMES_ANSWERED, 0.0)
+        fieldContainer.put(Questions.COLUMN_NUMBER_OF_TIMES_CORRECT, 0.0)
+        fieldContainer.put(Questions.COLUMN_NUMBER_OF_TIMES_WRONG, 0.0)
+        val whereClause = Questions.COLUMN_HAS_BEEN_ANSWERED + " = 1"
+        databaseAccess.updateTable(Questions.TABLE, fieldContainer, whereClause)
+        databaseAccess.close()
+    }
 }

@@ -7,9 +7,12 @@ import android.view.Window
 import android.widget.Button
 import android.widget.TextView
 import hughes.alex.marinerlicenceprep.R
+import hughes.alex.marinerlicenceprep.database.Queries
+import hughes.alex.marinerlicenceprep.fragments.SettingsFragment
 import kotlinx.android.synthetic.main.custom_decision_dialog.*
+import org.jetbrains.anko.indeterminateProgressDialog
 
-class CustomDecisionDialog(a: Activity, private val dialogTitle: String, private val dialogText: String) : Dialog(a){
+class CustomDecisionDialog(a: Activity, private val dialogTitle: String, private val dialogText: String, private val decisionType: Int) : Dialog(a){
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,7 +26,17 @@ class CustomDecisionDialog(a: Activity, private val dialogTitle: String, private
     }
 
     private fun confirm(){
-        //TODO ovde se menja bookmark
+        this.dismiss()
+        val waitDialog = context.indeterminateProgressDialog("Please wait", "Resetting")
+        when (decisionType){
+            SettingsFragment.resetBookmarkType ->{
+                Queries.resetBookmarks(context)
+            }
+            SettingsFragment.resetScoresType ->{
+                Queries.resetScores(context)
+            }
+        }
+        waitDialog.dismiss()
     }
 
     private fun cancelDialog(){
