@@ -41,6 +41,9 @@ class SearchAdapter(private val items: ArrayList<Int>,
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        if(position != 0){
+            holder.num.visibility = View.GONE
+        }
         val question = Queries.getQuestion(context, items[position].toString())
         holder.mainView.setOnClickListener {
             val intent = Intent(context, Study::class.java)
@@ -108,5 +111,6 @@ class SearchAdapter(private val items: ArrayList<Int>,
         val questionTitle: TextView = view.questionTitle
         val countOfAnswers: TextView = view.countOfAnswers
         val questionText: TextView = view.questionText
+        val num: TextView = view.num
     }
 }
