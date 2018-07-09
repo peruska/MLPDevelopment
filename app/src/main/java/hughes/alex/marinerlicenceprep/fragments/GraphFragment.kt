@@ -7,39 +7,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.github.mikephil.charting.animation.Easing
-import com.github.mikephil.charting.data.*
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.gson.Gson
-import hughes.alex.marinerlicenceprep.R
-import kotlinx.android.synthetic.main.graph_fragment.view.*
 import com.google.gson.reflect.TypeToken
 import hughes.alex.marinerlicenceprep.MyApp
+import hughes.alex.marinerlicenceprep.R
 import hughes.alex.marinerlicenceprep.database.Queries
 import hughes.alex.marinerlicenceprep.entity.Book
 import hughes.alex.marinerlicenceprep.models.BooksCategoriesSubcategories
 import hughes.alex.marinerlicenceprep.models.StudyExpandableListItem
-import kotlinx.android.synthetic.main.welcome_fragment.view.*
+import kotlinx.android.synthetic.main.graph_fragment.view.*
 
 class GraphFragment : Fragment() {
-    private var title: String? = null
-    private var page: Int = 0
-
-    companion object {
-        fun newInstance(page: Int, title: String): GraphFragment {
-            val fragmentFirst = GraphFragment()
-            val args = Bundle()
-            args.putInt("someInt", page)
-            args.putString("someTitle", title)
-            fragmentFirst.arguments = args
-            return fragmentFirst
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        page = arguments!!.getInt("someInt", 0)
-        title = arguments!!.getString("someTitle")
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

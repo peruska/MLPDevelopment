@@ -18,56 +18,53 @@ import hughes.alex.marinerlicenceprep.database.Queries
 import hughes.alex.marinerlicenceprep.fragments.PlaceholderFragment
 import kotlinx.android.synthetic.main.search_item.view.*
 
-class SearchAdapter(val items: ArrayList<Int>, val context: Context, val querySearchWord: ArrayList<String>) : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
+class SearchAdapter(private val items: ArrayList<Int>,
+                    val context: Context,
+                    private val querySearchWord: ArrayList<String>) : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
 
     override fun getItemCount(): Int {
         return items.size
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.search_item, parent, false)
-        view.answer1.isClickable = false
-        view.answer2.isClickable = false
-        view.answer3.isClickable = false
-        view.answer4.isClickable = false
-        view.questionText.isClickable = false
-        view.questionTitle.isClickable = false
-        view.setOnClickListener {
+        return ViewHolder(LayoutInflater.from(context).inflate(R.layout.search_item, parent, false))
+    }
+
+    private fun makeSpannable(text: String, query: String): Spannable {
+        val mSpannable: Spannable = SpannableString(text)
+        val startIndex = text.toLowerCase().indexOf(query)
+        val endIndex = query.length + startIndex
+        mSpannable.setSpan(ForegroundColorSpan(Color.RED), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        return mSpannable
+    }
+
+    @SuppressLint("SetTextI18n")
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val question = Queries.getQuestion(context, items[position].toString())
+        holder.mainView.setOnClickListener {
             val intent = Intent(context, Study::class.java)
             intent.putExtra("autoNext", true)
             intent.putExtra("shuffleQuestions", false)
             intent.putExtra("logAnswers", false)
             intent.putExtra("showAnswers", false)
             intent.putExtra("callingIntent", "StudyFragment")
+            intent.putExtra("resumeQuestionNumber", position)
             PlaceholderFragment.questions = items
-                    context.startActivity(intent)
+            context.startActivity(intent)
         }
-        return ViewHolder(view)
-    }
-
-    @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val question = Queries.getQuestion(context, items[position].toString())
-        if(querySearchWord[0] == "") {
+        if (querySearchWord[0] == "") {
             holder.questionText.text = question.question
             holder.questionTitle.text = question.subcategory
             holder.answer4.text = question.answerFour
             holder.answer3.text = question.answerThree
             holder.answer2.text = question.answerTwo
             holder.answer1.text = question.answerOne
-            if(querySearchWord[1] == "weakest!")
-            {
+            if (querySearchWord[1] == "weakest!") {
                 holder.countOfAnswers.text = "Wrong: ${question.numberOfTimesWrong}\nCorrect: ${question.numberOfTimesCorrect}"
             }
-        }else {
+        } else {
             val value = querySearchWord[0].toLowerCase()
-            fun makeSpannable(text: String, query: String): Spannable {
-                val mSpannable: Spannable = SpannableString(text)
-                val startIndex = text.toLowerCase().indexOf(query)
-                val endIndex = query.length + startIndex
-                mSpannable.setSpan(ForegroundColorSpan(Color.RED), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                return mSpannable
-            }
+
             if (question.subcategory.toLowerCase().contains(value)) {
                 holder.questionTitle.setText(makeSpannable(question.subcategory, value), TextView.BufferType.SPANNABLE)
             } else {
@@ -102,12 +99,13 @@ class SearchAdapter(val items: ArrayList<Int>, val context: Context, val querySe
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val answer1 = view.answer1
-        val answer2 = view.answer2
-        val answer3 = view.answer3
-        val answer4 = view.answer4
-        val questionTitle = view.questionTitle
-        val countOfAnswers = view.countOfAnswers
-        val questionText = view.questionText
+        val mainView: View = view
+        val answer1: TextView = view.answer1
+        val answer2: TextView = view.answer2
+        val answer3: TextView = view.answer3
+        val answer4: TextView = view.answer4
+        val questionTitle: TextView = view.questionTitle
+        val countOfAnswers: TextView = view.countOfAnswers
+        val questionText: TextView = view.questionText
     }
 }

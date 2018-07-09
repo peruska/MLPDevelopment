@@ -13,42 +13,20 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
-import com.github.mikephil.charting.animation.Easing
-import com.github.mikephil.charting.data.*
-import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.gson.Gson
-import hughes.alex.marinerlicenceprep.R
-import kotlinx.android.synthetic.main.graph_fragment.view.*
 import com.google.gson.reflect.TypeToken
 import hughes.alex.marinerlicenceprep.MyApp
+import hughes.alex.marinerlicenceprep.R
+import hughes.alex.marinerlicenceprep.activities.Home
 import hughes.alex.marinerlicenceprep.database.Queries
-import hughes.alex.marinerlicenceprep.entity.Book
 import hughes.alex.marinerlicenceprep.models.BooksCategoriesSubcategories
 import hughes.alex.marinerlicenceprep.models.StudyExpandableListItem
 import hughes.alex.marinerlicenceprep.uiAdapters.SearchAdapter
+import kotlinx.android.synthetic.main.home_fragment.*
+import kotlinx.android.synthetic.main.home_fragment.view.*
 import kotlinx.android.synthetic.main.weakest_question_fragment.view.*
-import kotlinx.android.synthetic.main.welcome_fragment.view.*
 
 class WeakestQuestionsFragment : Fragment() {
-    private var title: String? = null
-    private var page: Int = 0
-
-    companion object {
-        fun newInstance(page: Int, title: String): WeakestQuestionsFragment {
-            val fragmentFirst = WeakestQuestionsFragment()
-            val args = Bundle()
-            args.putInt("someInt", page)
-            args.putString("someTitle", title)
-            fragmentFirst.arguments = args
-            return fragmentFirst
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        page = arguments!!.getInt("someInt", 0)
-        title = arguments!!.getString("someTitle")
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -56,7 +34,7 @@ class WeakestQuestionsFragment : Fragment() {
         view.weakestQuestionsRecycler.layoutManager = LinearLayoutManager(context)
         val spinnerArray = ArrayList<String>()
         val adapter = ArrayAdapter<String>(context, R.layout.spinner_item, spinnerArray)
-        val spinner : Spinner = view.spinnerWeakestQuestionCategories
+        val spinner : Spinner = (context!! as Home).spinnerWeakestQuestionCategories
         val prefs = context!!.getSharedPreferences(MyApp.USER_LICENSE_DATA_VALUES, 0)
         val bookCategory = prefs.getString(MyApp.CATEGORY, "")
         val arrayOfIndexes = ArrayList<String>()
@@ -71,14 +49,12 @@ class WeakestQuestionsFragment : Fragment() {
             listBookSubcategory.forEach {
                 spinnerArray.add(it.groupName)
                 arrayOfIndexes.add(it.bookID)
-
             }
         } else {
             listBookCategorySubcategory = Gson().fromJson<ArrayList<BooksCategoriesSubcategories>>(json, object : TypeToken<ArrayList<BooksCategoriesSubcategories>>() {}.type)
             listBookCategorySubcategory.forEach {
                 spinnerArray.add(it.groupName)
                 arrayOfIndexes.add(it.groupNameID)
-
             }
         }
         view.weakestQuestionsRecycler.adapter = mSearchAdapter
