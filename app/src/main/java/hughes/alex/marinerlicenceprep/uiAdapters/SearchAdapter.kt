@@ -17,6 +17,7 @@ import hughes.alex.marinerlicenceprep.activities.Study
 import hughes.alex.marinerlicenceprep.database.Queries
 import hughes.alex.marinerlicenceprep.fragments.PlaceholderFragment
 import kotlinx.android.synthetic.main.search_item.view.*
+import kotlinx.android.synthetic.main.weakest_question_fragment.view.*
 
 class SearchAdapter(private val items: ArrayList<Int>,
                     val context: Context,
@@ -40,6 +41,21 @@ class SearchAdapter(private val items: ArrayList<Int>,
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        if(position != 0){
+            holder.num.visibility = View.GONE
+        }else{
+            when(querySearchWord[1]) {
+                "weakest!" ->{
+                    holder.num.text = "Logged: " + items.size + " Question(s)"
+            }
+                "bookmarked!" ->{
+                    holder.num.text ="" + items.size + " Question(s)"
+                }
+                else -> {
+                    holder.num.text = "Search Results: " + items.size + " Question(s)"
+                }
+            }
+        }
         val question = Queries.getQuestion(context, items[position].toString())
         holder.mainView.setOnClickListener {
             val intent = Intent(context, Study::class.java)
@@ -107,5 +123,6 @@ class SearchAdapter(private val items: ArrayList<Int>,
         val questionTitle: TextView = view.questionTitle
         val countOfAnswers: TextView = view.countOfAnswers
         val questionText: TextView = view.questionText
+        val num: TextView = view.num
     }
 }

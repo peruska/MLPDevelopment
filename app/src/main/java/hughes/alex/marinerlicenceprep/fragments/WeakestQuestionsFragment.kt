@@ -23,15 +23,14 @@ import hughes.alex.marinerlicenceprep.models.BooksCategoriesSubcategories
 import hughes.alex.marinerlicenceprep.models.StudyExpandableListItem
 import hughes.alex.marinerlicenceprep.uiAdapters.SearchAdapter
 import kotlinx.android.synthetic.main.home_fragment.*
-import kotlinx.android.synthetic.main.home_fragment.view.*
 import kotlinx.android.synthetic.main.weakest_question_fragment.view.*
 
 class WeakestQuestionsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.weakest_question_fragment, container, false)
-        view.weakestQuestionsRecycler.layoutManager = LinearLayoutManager(context)
+        val viewFragment = inflater.inflate(R.layout.weakest_question_fragment, container, false)
+        viewFragment.weakestQuestionsRecycler.layoutManager = LinearLayoutManager(context)
         val spinnerArray = ArrayList<String>()
         val adapter = ArrayAdapter<String>(context, R.layout.spinner_item, spinnerArray)
         val spinner : Spinner = (context!! as Home).spinnerWeakestQuestionCategories
@@ -57,7 +56,7 @@ class WeakestQuestionsFragment : Fragment() {
                 arrayOfIndexes.add(it.groupNameID)
             }
         }
-        view.weakestQuestionsRecycler.adapter = mSearchAdapter
+        viewFragment.weakestQuestionsRecycler.adapter = mSearchAdapter
         spinner.dropDownWidth = Resources.getSystem().displayMetrics.widthPixels
         spinner.adapter = adapter
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -78,6 +77,6 @@ class WeakestQuestionsFragment : Fragment() {
                 mSearchAdapter.notifyDataSetChanged()
             }
         }
-        return view
+        return viewFragment
     }
 }
