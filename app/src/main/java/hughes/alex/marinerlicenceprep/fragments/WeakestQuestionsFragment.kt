@@ -75,7 +75,6 @@ class WeakestQuestionsFragment : Fragment() {
 
                 (parent!!.getChildAt(0) as TextView).setTextColor(Color.WHITE)
                 mSearchAdapter.notifyDataSetChanged()
-                viewFragment!!.loggedNumber.text = "Logged: " + listOfWeakestQuestionIDs.size + " Question(s)"
             }
         }
         return viewFragment
