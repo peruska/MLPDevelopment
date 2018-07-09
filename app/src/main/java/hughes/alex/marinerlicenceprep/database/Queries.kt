@@ -375,6 +375,7 @@ object Queries {
                 val query = getQuestionMatchingIDForWholeCategory + whereClause[i]
                 val cursor = databaseAccess.executeRawQuery(query, arrayOf())
                 while (cursor.moveToNext()) {
+                    if (!listOfQuestionIDs.contains(cursor.getInt(0)))
                     listOfQuestionIDs.add(cursor.getInt(0))
                 }
                 cursor.close()
