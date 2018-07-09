@@ -17,6 +17,7 @@ import hughes.alex.marinerlicenceprep.activities.Study
 import hughes.alex.marinerlicenceprep.database.Queries
 import hughes.alex.marinerlicenceprep.fragments.PlaceholderFragment
 import kotlinx.android.synthetic.main.search_item.view.*
+import kotlinx.android.synthetic.main.weakest_question_fragment.view.*
 
 class SearchAdapter(private val items: ArrayList<Int>,
                     val context: Context,
