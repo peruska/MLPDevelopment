@@ -43,6 +43,18 @@ class SearchAdapter(private val items: ArrayList<Int>,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if(position != 0){
             holder.num.visibility = View.GONE
+        }else{
+            when(querySearchWord[1]) {
+                "weakest!" ->{
+                    holder.num.text = "Logged: " + items.size + " Question(s)"
+            }
+                "bookmarked!" ->{
+                    holder.num.text ="" + items.size + " Question(s)"
+                }
+                else -> {
+                    holder.num.text = "Search Results: " + items.size + " Question(s)"
+                }
+            }
         }
         val question = Queries.getQuestion(context, items[position].toString())
         holder.mainView.setOnClickListener {

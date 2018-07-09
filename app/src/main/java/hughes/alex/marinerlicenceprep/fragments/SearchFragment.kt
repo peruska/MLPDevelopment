@@ -36,8 +36,7 @@ class SearchFragment : Fragment() {
         var selectedSpinnerPosition = 0
         val adapter = ArrayAdapter<String>(context, R.layout.spinner_item, spinnerArray)
         val spinner = view.searchSelectionSpinner
-        val searchWord : ArrayList<String> = ArrayList()
-        searchWord.add("")
+        val searchWord : ArrayList<String> = arrayListOf("", "")
         view.searchRecyclerView.layoutManager = LinearLayoutManager(context)
         val mSearchAdapter = SearchAdapter(finalListOfIDs, context!!, searchWord)
         val mSearchView = view.search_view
@@ -46,7 +45,7 @@ class SearchFragment : Fragment() {
         if (bookCategory == "1") {
             listBookSubcategory = Gson().fromJson<ArrayList<StudyExpandableListItem>>(json, object : TypeToken<ArrayList<StudyExpandableListItem>>() {}.type)
             listBookSubcategory.forEach {
-                spinnerArray.add(it.groupName)
+                spinnerArray.add("Search " + it.groupName)
                 arrayOfIndexes.add(it.bookID)
 
             }
