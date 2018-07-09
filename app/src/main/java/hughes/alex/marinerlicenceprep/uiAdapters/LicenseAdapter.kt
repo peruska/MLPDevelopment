@@ -77,7 +77,10 @@ class LicenseAdapter(val items: ArrayList<LicenseEntity>, val context: Context,
                     activeBookCategoryID = itemClicked.bookCategoryID
                     prefsEditor.commit()
 
-                    uiThread { dialog.dismiss() }
+                    uiThread {
+                        dialog.dismiss()
+                        (context.application as MyApp).fetchLicenseBooksAsListItem()
+                    }
                 }
             } else {
                 val builder = AlertDialogBuilder(context)

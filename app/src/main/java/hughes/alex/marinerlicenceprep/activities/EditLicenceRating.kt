@@ -29,4 +29,5 @@ class EditLicenceRating : AppCompatActivity() {
     fun backToSettings(view: View) {
         finish()
     }
+
 }
