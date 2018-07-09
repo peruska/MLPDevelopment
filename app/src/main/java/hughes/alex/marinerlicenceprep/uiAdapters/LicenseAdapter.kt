@@ -16,6 +16,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.widget.ImageView
 import android.widget.TextView
+import hughes.alex.marinerlicenceprep.AuthService
 import hughes.alex.marinerlicenceprep.activities.EditLicenceRating
 import hughes.alex.marinerlicenceprep.activities.Home
 import hughes.alex.marinerlicenceprep.database.Queries
@@ -79,6 +80,9 @@ class LicenseAdapter(val items: ArrayList<LicenseEntity>, val context: Context,
 
                     uiThread {
                         dialog.dismiss()
+                        AuthService(context).changeRating(
+                                if(itemClicked.bookCategoryID == 1) "Engine" else "Deck",
+                                itemClicked.dlNumber.toString())
                         (context.application as MyApp).fetchLicenseBooksAsListItem()
                     }
                 }
@@ -103,12 +107,16 @@ class LicenseAdapter(val items: ArrayList<LicenseEntity>, val context: Context,
                     prefsEditor.putString(MyApp.DL_NUMBER, itemClicked.dlNumber.toString())
                     prefsEditor.putString(MyApp.CATEGORY, itemClicked.bookCategoryID.toString())
                     prefsEditor.commit()
+                    AuthService(context).changeRating(
+                            if(itemClicked.bookCategoryID == 1) "Engine" else "Deck",
+                            itemClicked.dlNumber.toString())
                     context.startActivity(Intent(context, Home::class.java))
                     (context as Activity).finish()
                 }
                 builder.negativeButton("Cancel") { }
                 builder.show()
             }
+
         }
         if (items[position].dlNumber == activeDL && items[position].bookCategoryID == activeBookCategoryID) {
             if (::visibleCheckMark.isInitialized)

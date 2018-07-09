@@ -216,6 +216,29 @@ class AuthService(var context: Context) {
         }
     }
 
+    fun changeRating(book: String, rating: String) {
+        val url = BASE_URL +"Change_Rating"
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
+            val signInRequest = object : StringRequest(POST, url,
+                    Response.Listener { response ->
+                        Toast.makeText(context, response, Toast.LENGTH_LONG).show()
+                        println(JSONObject(response))
+                    },
+                    Response.ErrorListener { error -> Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show() }) {
+                override fun getParams(): Map<String, String> {
+                    val params = HashMap<String, String>()
+                    params["email"] = defaultUser!!.email
+                    params["book"] = book
+                    params["rating"] = rating
+                    return params
+                }
+            }
+            getNetworkSingletonInstance(context).requestQueue.add(signInRequest)
+        } else {
+            //TODO Implement logic when permission is not granted
+        }
+    }
+
     fun logOut() {
         saveUserPrefs("", "", "")
         defaultUser = UserEntity("", "", "")

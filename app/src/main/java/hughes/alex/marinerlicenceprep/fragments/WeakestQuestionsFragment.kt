@@ -3,6 +3,7 @@ package hughes.alex.marinerlicenceprep.fragments
 
 import android.content.res.Resources
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -59,6 +60,8 @@ class WeakestQuestionsFragment : Fragment() {
         viewFragment.weakestQuestionsRecycler.adapter = mSearchAdapter
         spinner.dropDownWidth = Resources.getSystem().displayMetrics.widthPixels
         spinner.adapter = adapter
+
+        spinner.background.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP)
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
 

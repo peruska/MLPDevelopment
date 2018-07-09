@@ -7,10 +7,13 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.view.ViewPager
+import android.support.v4.widget.TextViewCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.text.InputType
+import android.util.TypedValue
 import android.view.View
+import android.view.WindowManager
 import android.widget.EditText
 import hughes.alex.marinerlicenceprep.MyApp
 import hughes.alex.marinerlicenceprep.R
@@ -20,6 +23,9 @@ import hughes.alex.marinerlicenceprep.entity.Questions
 import hughes.alex.marinerlicenceprep.fragments.PlaceholderFragment
 import hughes.alex.marinerlicenceprep.fragments.StudyFragment
 import kotlinx.android.synthetic.main.activity_study.*
+import org.jetbrains.anko.alert
+import org.jetbrains.anko.noButton
+import org.jetbrains.anko.yesButton
 
 
 class Study : AppCompatActivity() {
@@ -34,6 +40,7 @@ class Study : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_study)
+        TextViewCompat.setAutoSizeTextTypeWithDefaults(upgradeAccount, TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM)
         val extras = intent.extras
         autoNext = extras.getBoolean("autoNext")
         shuffleQuestions = extras.getBoolean("shuffleQuestions")
@@ -66,8 +73,8 @@ class Study : AppCompatActivity() {
                 currentQuestion = Queries.getQuestion(this@Study, questions[position].toString())
                 numberLabel.text = "Num " + (container.currentItem + 1) + "/" + container.adapter?.count
                 attemped = 0
-                moveToPreviousQuestionButton.setImageResource(if (position == 0) R.drawable.anchor else R.mipmap.left)
-                moveToNextQuestionButton.setImageResource(if (position == container.adapter!!.count - 1) R.drawable.anchor else R.mipmap.right_arrow)
+                moveToPreviousQuestionButton.setImageResource(if (position == 0) R.mipmap.left_disabled else R.mipmap.left)
+                moveToNextQuestionButton.setImageResource(if (position == container.adapter!!.count - 1) R.mipmap.right_disabled else R.mipmap.right)
                 bookmarkQuestion.setImageResource(
                         if (currentQuestion.isBookmarked == "1")
                             R.mipmap.bookmark
@@ -125,25 +132,56 @@ class Study : AppCompatActivity() {
         if (compareAnswers(view, currentQuestion.correctAnswer)) {
             view.setBackgroundColor(resources.getColor(R.color.questionsGreen))
             if (attemped == 0) {
-                correct++
-                Queries.updateQuestionStatistics(this, currentQuestion.questionID, 1)
+                if (logAnswers){
+                    correct++
+                    Queries.updateQuestionStatistics(this, currentQuestion.questionID, 1)
+                }
             }
             if (autoNext) {
+                window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 val handler = Handler()
                 handler.postDelayed({
                     moveToNextQuestion(view)
-                }, 700)
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                }, 400)
             }
         } else {
-            if (attemped == 0)
+            if (attemped == 0 && logAnswers)
                 Queries.updateQuestionStatistics(this, currentQuestion.questionID, 0)
             view.setBackgroundColor(resources.getColor(R.color.questionsRed))
         }
         if (attemped == 0) {
-            total++
-            scoreLabel.text = "Score " + correct + "/" + total
+
+            if (logAnswers){
+                total++
+                scoreLabel.text = "Score " + correct + "/" + total
+            }
         }
         attemped = 1
+    }
+
+    fun changeLogingAnswers(view: View) {
+        if (logAnswers)
+            alert {
+                yesButton {
+                    logAnswers = false
+                    scoreLabel.text = "Study Mode"
+                }
+                noButton { }
+                title = "Turn OFF Logging Answers"
+                message = "Turn OFF tracking for correct or incorrect answers"
+            }.show() else {
+            alert {
+                yesButton {
+                    logAnswers = true
+                    scoreLabel.text = "Score " + correct + "/" + total
+                }
+                noButton { }
+                title = "Turn ON Logging Answers"
+                message = "Turn ON tracking for correct or incorrect answers"
+            }.show()
+        }
     }
 
     fun bookmarkQuestion(view: View) {

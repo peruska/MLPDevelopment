@@ -2,6 +2,7 @@ package hughes.alex.marinerlicenceprep.fragments
 
 import android.content.res.Resources
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -36,7 +37,7 @@ class SearchFragment : Fragment() {
         var selectedSpinnerPosition = 0
         val adapter = ArrayAdapter<String>(context, R.layout.spinner_item, spinnerArray)
         val spinner = view.searchSelectionSpinner
-        val searchWord : ArrayList<String> = arrayListOf("", "")
+        val searchWord: ArrayList<String> = arrayListOf("", "")
         view.searchRecyclerView.layoutManager = LinearLayoutManager(context)
         val mSearchAdapter = SearchAdapter(finalListOfIDs, context!!, searchWord)
         val mSearchView = view.search_view
@@ -92,6 +93,7 @@ class SearchFragment : Fragment() {
 
         spinner.dropDownWidth = Resources.getSystem().displayMetrics.widthPixels
         spinner.adapter = adapter
+        spinner.background.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP)
         spinner.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
 
@@ -103,18 +105,18 @@ class SearchFragment : Fragment() {
             }
         }
 
-            val searchCloseButtonId = mSearchView.context.resources
-                    .getIdentifier("android:id/search_close_btn", null, null)
-            val searchTextId = mSearchView.context.resources.getIdentifier("android:id/search_src_text", null, null)
-            val searchText = mSearchView.findViewById<EditText>(searchTextId)
-            val closeButton = mSearchView.findViewById<ImageView>(searchCloseButtonId)
-            closeButton.setOnClickListener {
-                searchText.setText("")
-                finalListOfIDs.clear()
-                mSearchAdapter.notifyDataSetChanged()
-            }
-
-        return view
+        val searchCloseButtonId = mSearchView.context.resources
+                .getIdentifier("android:id/search_close_btn", null, null)
+        val searchTextId = mSearchView.context.resources.getIdentifier("android:id/search_src_text", null, null)
+        val searchText = mSearchView.findViewById<EditText>(searchTextId)
+        val closeButton = mSearchView.findViewById<ImageView>(searchCloseButtonId)
+        closeButton.setOnClickListener {
+            searchText.setText("")
+            finalListOfIDs.clear()
+            mSearchAdapter.notifyDataSetChanged()
         }
 
+        return view
     }
+
+}

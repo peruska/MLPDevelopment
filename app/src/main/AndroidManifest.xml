@@ -3,8 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="hughes.alex.marinerlicenceprep">
 
-    <uses-permission android:name="android.permission.INTERNET" tools:remove="android:maxSdkVersion"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:remove="android:maxSdkVersion" />
+    <uses-permission
+        android:name="android.permission.INTERNET"
+        tools:remove="android:maxSdkVersion" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:remove="android:maxSdkVersion" />
 
     <application
         android:name=".MyApp"
@@ -35,7 +39,8 @@
         </activity>
         <activity
             android:name=".activities.Home"
-            android:exported="true" />
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activities.EditSubscriptionProfile"
             android:theme="@style/AppTheme.NoActionBar" />
