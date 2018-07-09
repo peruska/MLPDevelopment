@@ -66,8 +66,9 @@
         <activity
             android:name=".activities.License"
             android:exported="true" />
-        <activity android:name=".activities.BookmarkList" />
-        <activity android:name=".activities.Illustration"></activity>
+        <activity android:name=".activities.BookmarkList"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activities.Illustration"/>
     </application>
 
 </manifest>
