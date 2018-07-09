@@ -37,9 +37,16 @@ class Study : AppCompatActivity() {
         val extras = intent.extras
         autoNext = extras.getBoolean("autoNext")
         shuffleQuestions = extras.getBoolean("shuffleQuestions")
+        if (shuffleQuestions)
+            PlaceholderFragment.questions.shuffle()
         logAnswers = extras.getBoolean("logAnswers")
         showAnswers = extras.getBoolean("showAnswers")
         currentQuestion = Queries.getQuestion(this, questions[0].toString())
+        bookmarkQuestion.setImageResource(
+                if (currentQuestion.isBookmarked == "1")
+                    R.mipmap.bookmark
+                else
+                    R.mipmap.bookmark_empty)
         mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
         container.adapter = mSectionsPagerAdapter
         if (extras.getString("callingIntent") != "StudyFragment")
