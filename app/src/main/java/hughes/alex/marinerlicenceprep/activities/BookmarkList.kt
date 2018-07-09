@@ -3,6 +3,7 @@ package hughes.alex.marinerlicenceprep.activities
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
+import android.view.View
 import hughes.alex.marinerlicenceprep.R
 import hughes.alex.marinerlicenceprep.database.Queries
 import hughes.alex.marinerlicenceprep.uiAdapters.SearchAdapter
@@ -16,5 +17,10 @@ class BookmarkList : AppCompatActivity() {
         bookmarkRecyclerView.layoutManager = LinearLayoutManager(this)
         bookmarkRecyclerView.adapter = SearchAdapter(
                 Queries.getBookmarkedQuestions(this, intent.extras.getString("bookName")), this, arrayListOf("", ""))
+        textView7.text = "Bookmarked: " + intent.extras.getString("bookName")
+    }
+
+    fun back(view: View){
+        finish()
     }
 }

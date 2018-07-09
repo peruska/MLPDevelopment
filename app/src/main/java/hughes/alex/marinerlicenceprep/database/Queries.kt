@@ -47,7 +47,8 @@ object Queries {
             " ${Questions.COLUMN_HAS_BEEN_ANSWERED} = 1 ORDER BY (${Questions.COLUMN_NUMBER_OF_TIMES_CORRECT}/${Questions.COLUMN_NUMBER_OF_TIMES_ANSWERED}*100) DESC"
 
     fun getBooksCategoriesSubcategories(context: Context, bookCategory: Int, licenceNumber: Int): ArrayList<BooksCategoriesSubcategories> {
-        val getQuestionsForSubcategoryAndLicence = "SELECT ${Questions.COLUMN_QUESTIONS_ID} FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_SUBCATEGORY_ID} = ? AND ZDL" + licenceNumber + " = 1"
+        val getQuestionsForSubcategoryAndLicence = "SELECT ${Questions.COLUMN_QUESTIONS_ID} FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_SUBCATEGORY_ID} = ? AND ZDL" + licenceNumber + " = 1 AND ${Questions.COLUMN_BOOK_ID} = ? AND " +
+                " ${Questions.COLUMN_CATEGORY_ID} = ?"
 
         val list: ArrayList<BooksCategoriesSubcategories> = ArrayList()
         val databaseAccess = DatabaseAccess.getInstance(context)
@@ -73,8 +74,8 @@ object Queries {
                 while (cursor3.moveToNext()) {
                     val subcategoryName = cursor3.getString(0)
                     val subcategoryID = cursor3.getString(1)
-                    val cursorCheck = databaseAccess.executeRawQuery(getQuestionsForSubcategoryAndLicence, arrayOf(subcategoryID))
-                    if (cursorCheck.count > 0) {
+                    val cursorCheck = databaseAccess.executeRawQuery(getQuestionsForSubcategoryAndLicence, arrayOf(subcategoryID, bookID, bookCategoryID))
+                    if (cursorCheck.moveToNext()) {
                         subcategoriesOfCategory.add(Subcategory(subcategoryName, subcategoryID))
                     }
                     cursorCheck.close()
