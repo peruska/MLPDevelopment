@@ -53,6 +53,7 @@
         android:background="@color/colorLoginInputBackground"
         android:ems="10"
         android:hint="Password"
+        android:imeOptions="actionDone"
         android:textColorHint="@android:color/white"
         android:inputType="textPassword"
         android:padding="10dp"

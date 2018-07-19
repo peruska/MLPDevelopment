@@ -64,7 +64,7 @@ class SearchAdapter(private val items: ArrayList<Int>,
             intent.putExtra("logAnswers", false)
             intent.putExtra("showAnswers", false)
             intent.putExtra("callingIntent", "StudyFragment")
-            intent.putExtra("resumeQuestionNumber", position)
+            intent.putExtra("startFrom", position)
             PlaceholderFragment.questions = items
             context.startActivity(intent)
         }
@@ -75,6 +75,8 @@ class SearchAdapter(private val items: ArrayList<Int>,
             holder.answer3.text = question.answerThree
             holder.answer2.text = question.answerTwo
             holder.answer1.text = question.answerOne
+            holder.questionNumber.text = question.questionNumber
+
             if (querySearchWord[1] == "weakest!") {
                 holder.countOfAnswers.text = "Wrong: ${question.numberOfTimesWrong}\nCorrect: ${question.numberOfTimesCorrect}"
             }
@@ -111,6 +113,11 @@ class SearchAdapter(private val items: ArrayList<Int>,
             } else {
                 holder.answer4.text = question.answerFour
             }
+            if (question.questionNumber.toLowerCase().contains(value)) {
+                holder.questionNumber.setText(makeSpannable(question.questionNumber, value), TextView.BufferType.SPANNABLE)
+            } else {
+                holder.questionNumber.text = question.questionNumber
+            }
         }
     }
 
@@ -123,6 +130,7 @@ class SearchAdapter(private val items: ArrayList<Int>,
         val questionTitle: TextView = view.questionTitle
         val countOfAnswers: TextView = view.countOfAnswers
         val questionText: TextView = view.questionText
+        val questionNumber: TextView = view.questionNumber
         val num: TextView = view.num
     }
 }

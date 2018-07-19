@@ -62,6 +62,7 @@ class GraphFragment : Fragment() {
         xAxis.isGranularityEnabled = true
         xAxis.position = XAxis.XAxisPosition.BOTTOM
         view.barChart.data=BarData(set)
+        view.barChart.description.isEnabled = false
         return view
     }
 }

@@ -53,7 +53,8 @@
         <activity
             android:name=".activities.ChangePassword"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activities.TermsOfServices" />
+        <activity android:name=".activities.TermsOfServices"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.PrivacyPolicy"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -68,7 +69,8 @@
             android:exported="true" />
         <activity android:name=".activities.BookmarkList"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activities.Illustration"/>
+        <activity android:name=".activities.Illustration"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

@@ -81,11 +81,11 @@ class AuthService(var context: Context) {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
             val signInRequest = object : StringRequest(POST, url,
                     Response.Listener { response ->
-                        Toast.makeText(context, response, Toast.LENGTH_LONG).show()
                         println(JSONObject(response))
                         uploadPhoto(context, profilePictureBitmap, email, username)
                     },
                     Response.ErrorListener {
+                        //TODO PASSWORD LENGHT CHECK
                         context.toast("Unsuccessful sign up attempt. Please check your internet connection.")
                     }) {
                 override fun getParams(): Map<String, String> {
@@ -136,10 +136,9 @@ class AuthService(var context: Context) {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
             val signInRequest = object : StringRequest(POST, url,
                     Response.Listener { response ->
-                        Toast.makeText(context, response, Toast.LENGTH_LONG).show()
                         println(JSONObject(response))
                     },
-                    Response.ErrorListener { error -> Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show() }) {
+                    Response.ErrorListener { error ->}) {
                 override fun getParams(): Map<String, String> {
                     val params = HashMap<String, String>()
                     params["email"] = email
@@ -157,10 +156,9 @@ class AuthService(var context: Context) {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
             val signInRequest = object : StringRequest(POST, url,
                     Response.Listener { response ->
-                        Toast.makeText(context, response, Toast.LENGTH_LONG).show()
                         println(JSONObject(response))
                     },
-                    Response.ErrorListener { error -> Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show() }) {
+                    Response.ErrorListener { error ->  }) {
                 override fun getParams(): Map<String, String> {
                     val params = HashMap<String, String>()
                     params["old_email"] = "peruskatestira@gmail.com"//"defaultUser!!.email
@@ -179,10 +177,9 @@ class AuthService(var context: Context) {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
             val signInRequest = object : StringRequest(POST, url,
                     Response.Listener { response ->
-                        Toast.makeText(context, response, Toast.LENGTH_LONG).show()
                         println(JSONObject(response))
                     },
-                    Response.ErrorListener { error -> Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show() }) {
+                    Response.ErrorListener { error ->  }) {
                 override fun getParams(): Map<String, String> {
                     val params = HashMap<String, String>()
                     params["email"] = "peruskatestira@gmail.com"//defaultUser!!.email
@@ -200,10 +197,9 @@ class AuthService(var context: Context) {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
             val signInRequest = object : StringRequest(POST, url,
                     Response.Listener { response ->
-                        Toast.makeText(context, response, Toast.LENGTH_LONG).show()
                         println(JSONObject(response))
                     },
-                    Response.ErrorListener { error -> Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show() }) {
+                    Response.ErrorListener { error -> }) {
                 override fun getParams(): Map<String, String> {
                     val params = HashMap<String, String>()
                     params["email"] = "peruskatestira@gmail.com"//defaultUser!!.email
@@ -221,10 +217,9 @@ class AuthService(var context: Context) {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
             val signInRequest = object : StringRequest(POST, url,
                     Response.Listener { response ->
-                        Toast.makeText(context, response, Toast.LENGTH_LONG).show()
                         println(JSONObject(response))
                     },
-                    Response.ErrorListener { error -> Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show() }) {
+                    Response.ErrorListener { error -> }) {
                 override fun getParams(): Map<String, String> {
                     val params = HashMap<String, String>()
                     params["email"] = defaultUser!!.email

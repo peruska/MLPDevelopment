@@ -12,11 +12,9 @@ class TermsOfServices : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_terms_of_services)
+    }
 
-        supportActionBar!!.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
-        supportActionBar!!.setCustomView(R.layout.custom_action_bar_terms_of_services)
-
-        custom_back_click_terms_of_services.setOnClickListener { finish() }
-        settings_terms_of_services.setOnClickListener { finish() }
+    fun backToSettings(view: View) {
+        finish()
     }
 }

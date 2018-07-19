@@ -5,6 +5,7 @@ import android.os.Bundle
 import hughes.alex.marinerlicenceprep.R
 import kotlinx.android.synthetic.main.activity_illustration.*
 import android.graphics.drawable.Drawable
+import android.view.View
 import it.sephiroth.android.library.imagezoom.ImageViewTouchBase
 
 
@@ -16,8 +17,10 @@ class Illustration : AppCompatActivity() {
 
         //Fix passed image name
         val illustrationName = fixImageName(intent.extras.getString("illustrationName"))
+        illustrationLabel.text = illustrationName
 
         //Adapt image view to match parent
+        illustrationImageView.baselineAlignBottom = false
         illustrationImageView.displayType = ImageViewTouchBase.DisplayType.FIT_TO_SCREEN
 
         //Try to open png with fixed image name
@@ -58,5 +61,9 @@ class Illustration : AppCompatActivity() {
             }
             else -> diagramRef
         }
+    }
+
+    fun backToQuestion(view: View){
+        finish()
     }
 }
