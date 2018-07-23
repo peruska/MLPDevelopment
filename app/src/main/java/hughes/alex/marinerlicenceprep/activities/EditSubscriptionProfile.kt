@@ -41,7 +41,9 @@ class EditSubscriptionProfile : AppCompatActivity() {
 
         cancel.setOnClickListener { finish() }
     }
-
+    fun moveToStripe(view: View){
+        startActivity(Intent(this, Stripe::class.java))
+    }
     fun changeProfilePicture(view: View){
         photo = createTemporaryFile("picture", ".jpg")
         photo.delete()
