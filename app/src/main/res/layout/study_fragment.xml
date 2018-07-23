@@ -6,8 +6,10 @@
     android:layout_height="match_parent">
 
     <ExpandableListView
+        android:choiceMode="singleChoice"
         android:id="@+id/expandableListView"
         android:layout_width="match_parent"
+        android:listSelector="@drawable/selector_text_view"
         android:layout_height="0dp"
         android:groupIndicator="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"

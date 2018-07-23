@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.design.internal.BottomNavigationItemView
 import android.support.design.internal.BottomNavigationMenuView
 import android.support.design.widget.BottomNavigationView
+import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import hughes.alex.marinerlicenceprep.MyApp
 import hughes.alex.marinerlicenceprep.R
@@ -14,42 +15,38 @@ import org.jetbrains.anko.doAsync
 
 
 class Home : FragmentActivity() {
+    var activeFragment: Fragment? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
         navigationView.disableShiftMode()
         val firstTransition = supportFragmentManager.beginTransaction()
-        firstTransition.replace(R.id.fragmentPlaceholder, HomeFragment())
+        activeFragment = HomeFragment()
+        firstTransition.replace(R.id.fragmentPlaceholder, activeFragment)
         firstTransition.commit()
         navigationView.setOnNavigationItemSelectedListener { item ->
             fragmentPlaceholder.removeAllViews()
+            supportFragmentManager.popBackStack()
             when (item.itemId) {
                 R.id.menu_home -> {
-                    val transactionToHome = supportFragmentManager.beginTransaction()
-                    transactionToHome.replace(R.id.fragmentPlaceholder, HomeFragment())
-                    transactionToHome.commit()
+                    activeFragment = HomeFragment()
                 }
                 R.id.menu_study -> {
-                    val transactionToStudyFragment = supportFragmentManager.beginTransaction()
-                    transactionToStudyFragment.replace(R.id.fragmentPlaceholder, StudyFragment())
-                    transactionToStudyFragment.commit()
+                    activeFragment = StudyFragment()
                 }
                 R.id.menu_search -> {
-                    val transactionToSearchFragment = supportFragmentManager.beginTransaction()
-                    transactionToSearchFragment.replace(R.id.fragmentPlaceholder, SearchFragment())
-                    transactionToSearchFragment.commit()
+                    activeFragment = SearchFragment()
                 }
                 R.id.menu_bookmarked -> {
-                    val transactionToBookmarkedFragment = supportFragmentManager.beginTransaction()
-                    transactionToBookmarkedFragment.replace(R.id.fragmentPlaceholder, BookmarkedFragment())
-                    transactionToBookmarkedFragment.commit()
+                    activeFragment = BookmarkedFragment()
                 }
                 R.id.menu_settings -> {
-                    val transactionToSettingsFragment = supportFragmentManager.beginTransaction()
-                    transactionToSettingsFragment.replace(R.id.fragmentPlaceholder, SettingsFragment())
-                    transactionToSettingsFragment.commit()
+                    activeFragment = SettingsFragment()
                 }
             }
+            val transactionToFragment = supportFragmentManager.beginTransaction()
+            transactionToFragment.replace(R.id.fragmentPlaceholder, activeFragment)
+            transactionToFragment.commit()
             return@setOnNavigationItemSelectedListener true
         }
 
