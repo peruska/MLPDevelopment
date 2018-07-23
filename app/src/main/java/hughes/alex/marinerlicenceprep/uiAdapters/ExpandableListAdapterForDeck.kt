@@ -20,6 +20,7 @@ class ExpandableListAdapterForDeck(var context: Context, var listOfMembers: Arra
 
     override fun onGroupExpanded(groupPosition: Int) {
         (context as Home).startStudying.text = "Study: " + listOfMembers[groupPosition].groupName
+
         setValues(listOfMembers[groupPosition].groupNameID)
     }
 

@@ -52,7 +52,7 @@ class AuthService(var context: Context) {
                             val pictureUrl = dataFromResponse.getString("url")
                             defaultUser = UserEntity(user, email, pictureUrl)
                             saveUserPrefs(user, email, pictureUrl)
-
+                            retrieveUserInfo()
                             val prefs = context.getSharedPreferences(MyApp.USER_LICENSE_DATA_VALUES, 0)
                             if (prefs.getString(USER_LICENSE_DATA_VALUES, "").isBlank())
                                 context.startActivity(Intent(context, License::class.java))
@@ -122,7 +122,7 @@ class AuthService(var context: Context) {
                         editor.putString(MyApp.USER_ACCOUNT_EMAIL, email)
                         editor.putString(MyApp.USER_ACCOUNT_PROFILE_PICTURE_URL, "")
                         editor.commit()
-
+                        retrieveUserInfo()
                         //If the upload occurred on login activity show select rating screen
                         (context as? LoginActivity)?.startActivity(Intent(context, License::class.java))
                         (context as? LoginActivity)?.finish()

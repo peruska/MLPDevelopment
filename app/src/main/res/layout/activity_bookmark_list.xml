@@ -6,6 +6,100 @@
     android:layout_height="match_parent"
     tools:context=".activities.BookmarkList">
 
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/lines"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/bookmarkRecyclerView"
+        app:layout_constraintVertical_bias="1.0"
+        android:paddingStart="20dp">
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            app:layout_constraintBottom_toTopOf="@+id/view1"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@android:color/darker_gray"/>
+
+        <View
+            android:id="@+id/view1"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            app:layout_constraintBottom_toTopOf="@+id/view2"
+            app:layout_constraintTop_toBottomOf="@+id/view"
+            android:background="@android:color/darker_gray" />
+
+        <View
+            android:id="@+id/view2"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            app:layout_constraintBottom_toTopOf="@+id/view3"
+            app:layout_constraintTop_toBottomOf="@+id/view1"
+            android:background="@android:color/darker_gray" />
+
+        <View
+            android:id="@+id/view3"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            app:layout_constraintBottom_toTopOf="@+id/view4"
+            app:layout_constraintTop_toBottomOf="@+id/view2"
+            android:background="@android:color/darker_gray" />
+
+        <View
+            android:id="@+id/view4"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            app:layout_constraintBottom_toTopOf="@+id/view5"
+            app:layout_constraintTop_toBottomOf="@+id/view3"
+            android:background="@android:color/darker_gray" />
+
+        <View
+            android:id="@+id/view5"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            app:layout_constraintBottom_toTopOf="@+id/view6"
+            app:layout_constraintTop_toBottomOf="@+id/view4"
+            android:background="@android:color/darker_gray" />
+
+        <View
+            android:id="@+id/view6"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            app:layout_constraintBottom_toTopOf="@+id/view7"
+            app:layout_constraintTop_toBottomOf="@+id/view5"
+            android:background="@android:color/darker_gray" />
+
+        <View
+            android:id="@+id/view7"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            app:layout_constraintBottom_toTopOf="@+id/view8"
+            app:layout_constraintTop_toBottomOf="@+id/view6"
+            android:background="@android:color/darker_gray" />
+
+        <View
+            android:id="@+id/view8"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            app:layout_constraintBottom_toTopOf="@+id/view9"
+            app:layout_constraintTop_toBottomOf="@+id/view7"
+            android:background="@android:color/darker_gray" />
+
+        <View
+            android:id="@+id/view9"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view8"
+            android:background="@android:color/darker_gray" />
+    </android.support.constraint.ConstraintLayout>
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/editLicenceToolbar"
         android:layout_width="match_parent"
@@ -26,12 +120,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
+                android:textColor="@android:color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:textColor="@android:color/white"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/cancel"
@@ -39,12 +133,12 @@
                 android:layout_height="52dp"
                 android:drawableStart="@mipmap/left"
                 android:gravity="center_vertical"
+                android:onClick="back"
                 android:text="Back"
+                android:textColor="@android:color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:onClick="back"
-                android:textColor="@android:color/white" />
+                app:layout_constraintTop_toTopOf="parent" />
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.Toolbar>
 

@@ -51,18 +51,13 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
-
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET), 1)
-
         fetchUserPreferences()
-
-        checkIfUUIDExists()
-
         if (alreadyLoggedIn())
             loadHomeActivity()
-        else
-            initLoginActivity()
+        setContentView(R.layout.activity_login)
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET), 1)
+        checkIfUUIDExists()
+        initLoginActivity()
     }
 
     private fun loadHomeActivity() {
@@ -271,8 +266,8 @@ class LoginActivity : AppCompatActivity() {
                 emailEditText.hint = "Enter email here..."
                 positiveButton("Reset") {
                     val email = emailEditText.text.toString()
-                    if(email.isNotBlank() && isEmailValid(email))
-                    AuthService(this@LoginActivity).resetPassword(email)
+                    if (email.isNotBlank() && isEmailValid(email))
+                        AuthService(this@LoginActivity).resetPassword(email)
                     else toast("You didn't enter valid email")
                 }
                 negativeButton("Cancel") {}

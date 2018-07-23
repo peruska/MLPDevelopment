@@ -79,7 +79,6 @@ class Study : AppCompatActivity() {
 
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
-            @SuppressLint("SetTextI18n", "ApplySharedPref")
             override fun onPageSelected(position: Int) {
                 currentQuestion = Queries.getQuestion(this@Study, questions[position].toString())
                 numberLabel.text = "Num " + (container.currentItem + 1) + "/" + container.adapter?.count

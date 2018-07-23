@@ -9,6 +9,7 @@ import hughes.alex.marinerlicenceprep.models.BooksCategoriesSubcategories
 import hughes.alex.marinerlicenceprep.models.BooksWithScores
 import hughes.alex.marinerlicenceprep.models.CategoryWithSubcategories
 import hughes.alex.marinerlicenceprep.models.StudyExpandableListItem
+import java.util.*
 import kotlin.collections.ArrayList
 
 object Queries {
@@ -83,6 +84,7 @@ object Queries {
                 }
                 cursor3.close()
                 if (subcategoriesOfCategory.size > 0) {
+                    Collections.sort(subcategoriesOfCategory, AlphanumericSorter())
                     categoriesWithSubcategories.add(CategoryWithSubcategories(categoryOfBook, bookCategoryID, subcategoriesOfCategory))
                 }
             }
@@ -124,6 +126,7 @@ object Queries {
             }
             cursor2.close()
             if (subcategories.size > 0) {
+                Collections.sort(subcategories, AlphanumericSorter())
                 listOfGroups.add(StudyExpandableListItem(bookName, bookID, subcategories))
             }
         }

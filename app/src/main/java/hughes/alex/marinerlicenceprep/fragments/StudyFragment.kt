@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import hughes.alex.marinerlicenceprep.MyApp
 import hughes.alex.marinerlicenceprep.R
 import hughes.alex.marinerlicenceprep.activities.Study
@@ -17,7 +16,6 @@ import hughes.alex.marinerlicenceprep.uiAdapters.ExpandableListAdapterForDeck
 import hughes.alex.marinerlicenceprep.uiAdapters.StudyExpandableListAdapter
 import kotlinx.android.synthetic.main.study_fragment.*
 import kotlinx.android.synthetic.main.study_fragment.view.*
-import org.jetbrains.anko.doAsync
 
 
 class StudyFragment : Fragment() {
@@ -36,11 +34,34 @@ class StudyFragment : Fragment() {
             StudyFragment.categoryID = categoryID
             StudyFragment.subcategoryID = subcategoryID
         }
+
     }
 
     override fun onResume() {
         val view = view!!
         val context = context!!
+        view.shuffleQuestionsSwitch.setOnCheckedChangeListener { compoundButton, b ->
+            if(compoundButton.isChecked) {
+                view.resumeStudying.isEnabled = false
+                view.resumeStudying.text = "Can't Resume on Shuffled Bank"
+                view.resumeStudying.background.setColorFilter(Color.GRAY, PorterDuff.Mode.SRC)
+            } else {
+                val resumePrefs = context!!.getSharedPreferences(MyApp.RESUME_DATA, 0)
+                val resumeButtonName = resumePrefs.getString("resumeButtonNameString", "")
+                val resumeQuestionNumber = resumePrefs.getInt("resumeQuestionNumber", -1)
+                if (resumeButtonName.isNotBlank() && resumeQuestionNumber != -1) {
+                    view.resumeStudying.text = resumeButtonName.replace("Study: ", "Resume: ")
+                    view.resumeStudying.isEnabled = true
+                    view.resumeStudying.background.colorFilter = null
+                }
+            }
+        }
+        val adapter =
+                if (bookCategoryID == "1")
+                    StudyExpandableListAdapter(context, MyApp.dataForTwoLevelList)
+                else
+                    ExpandableListAdapterForDeck(context, MyApp.dataForThreeLevelList)
+        view.expandableListView.setAdapter(adapter)
         try {
             val resumePrefs = context.getSharedPreferences(MyApp.RESUME_DATA, 0)
             val resumeButtonName = resumePrefs.getString("resumeButtonNameString", "")
@@ -100,30 +121,6 @@ class StudyFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.study_fragment, container, false)
-        val context = context!!
-        view.shuffleQuestionsSwitch.setOnCheckedChangeListener { compoundButton, b ->
-            if(compoundButton.isChecked) {
-                view.resumeStudying.isEnabled = false
-                view.resumeStudying.text = "Can't Resume on Shuffled Bank"
-                view.resumeStudying.background.setColorFilter(Color.GRAY, PorterDuff.Mode.SRC)
-            } else {
-                val resumePrefs = context.getSharedPreferences(MyApp.RESUME_DATA, 0)
-                val resumeButtonName = resumePrefs.getString("resumeButtonNameString", "")
-                val resumeQuestionNumber = resumePrefs.getInt("resumeQuestionNumber", -1)
-                if (resumeButtonName.isNotBlank() && resumeQuestionNumber != -1) {
-                    view.resumeStudying.text = resumeButtonName.replace("Study: ", "Resume: ")
-                    view.resumeStudying.isEnabled = true
-                    view.resumeStudying.background.colorFilter = null
-                }
-            }
-        }
-        val adapter =
-                if (bookCategoryID == "1")
-                    StudyExpandableListAdapter(context, MyApp.dataForTwoLevelList)
-                else
-                    ExpandableListAdapterForDeck(context, MyApp.dataForThreeLevelList)
-        view.expandableListView.setAdapter(adapter)
-        return view
+        return inflater.inflate(R.layout.study_fragment, container, false)
     }
 }
