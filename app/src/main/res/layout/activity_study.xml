@@ -16,7 +16,7 @@
         app:layout_constraintBottom_toTopOf="@+id/bottomToolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
+        app:layout_constraintTop_toBottomOf="@+id/upgradeAccount" />
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar3"
@@ -34,13 +34,13 @@
 
             <ImageButton
                 android:id="@+id/bookmarkQuestion"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="28dp"
+                android:layout_height="45dp"
                 android:layout_marginEnd="8dp"
                 android:background="@android:color/transparent"
-                android:src="@mipmap/bookmark"
                 android:onClick="bookmarkQuestion"
-                android:scaleType="centerInside"
+                android:scaleType="fitXY"
+                android:src="@mipmap/bookmark"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -98,7 +98,7 @@
                 android:background="@android:color/transparent"
                 android:onClick="moveToPreviousQuestion"
                 android:scaleType="centerInside"
-                android:src="@drawable/anchor"
+                android:src="@mipmap/left_disabled"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -107,13 +107,14 @@
                 android:id="@+id/numberLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="24dp"
                 android:onClick="showChangeQuestionDialog"
                 android:textColor="@android:color/white"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/moveToNextQuestionButton"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/scoreLabel"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -125,7 +126,7 @@
                 android:background="@android:color/transparent"
                 android:onClick="moveToNextQuestion"
                 android:scaleType="centerInside"
-                android:src="@mipmap/right_arrow"
+                android:src="@mipmap/right"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -134,11 +135,12 @@
                 android:id="@+id/scoreLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="32dp"
+                android:text="Score 0/0"
                 android:textColor="@android:color/white"
                 android:textSize="20sp"
-                android:text="Score 0/0"
                 android:textStyle="bold"
+                android:onClick="changeLogingAnswers"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/numberLabel"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -148,15 +150,17 @@
     </android.support.v7.widget.Toolbar>
 
 
-    <Button
-        android:id="@+id/button"
+    <TextView
+        android:id="@+id/upgradeAccount"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:background="@android:color/holo_blue_light"
+        android:gravity="center_vertical"
+        android:padding="5dp"
         android:text="Upgrade Account To Unlock ALL Questions!"
+        android:textAlignment="center"
         android:textAllCaps="false"
         android:textColor="@android:color/white"
-        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"

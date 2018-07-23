@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.ContentResolver
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -23,6 +24,8 @@ import android.transition.TransitionManager
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import hughes.alex.marinerlicenceprep.AuthService
@@ -32,7 +35,8 @@ import hughes.alex.marinerlicenceprep.entity.UserEntity
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.login_scene.*
 import kotlinx.android.synthetic.main.sign_in_scene.*
-import org.jetbrains.anko.toast
+import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import java.io.File
 import java.util.*
 
@@ -49,17 +53,44 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        ActivityCompat.requestPermissions(this,
-                arrayOf(
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.INTERNET),
-                1
-        )
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET), 1)
+
+        fetchUserPreferences()
+
+        checkIfUUIDExists()
+
+        if (alreadyLoggedIn())
+            loadHomeActivity()
+        else
+            initLoginActivity()
+    }
+
+    private fun loadHomeActivity() {
+        startActivity(Intent(this, Home::class.java))
+        finish()
+    }
+
+    private fun initLoginActivity() {
+        window.statusBarColor = resources.getColor(R.color.colorPrimary)
+        loginScene = Scene.getSceneForLayout(scene_root as ViewGroup, R.layout.login_scene, this)
+        signUpScene = Scene.getSceneForLayout(scene_root as ViewGroup, R.layout.sign_in_scene, this)
+        transition.duration = 300
+        passwordLogin.onSubmit {
+            submitLogInRequest(passwordLogin)
+
+            //Hide soft keyboard
+            val view = this.currentFocus
+            if (view != null) {
+                val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(view.windowToken, 0)
+            }
+        }
+
+
+    }
+
+    private fun checkIfUUIDExists() {
         val prefs = this.getSharedPreferences(MyApp.USER_ACCOUNT_PREFERENCES, 0)
-        val username = prefs.getString(MyApp.USER_ACCOUNT_USERNAME, "")
-        val email = prefs.getString(MyApp.USER_ACCOUNT_EMAIL, "")
-        val profilePictureURL = prefs.getString(MyApp.USER_ACCOUNT_PROFILE_PICTURE_URL, "")
-        MyApp.defaultUser = UserEntity(username, email, profilePictureURL)
         MyApp.uuid = prefs.getString("uuid", "")
         if (MyApp.uuid == "") {
             val editor = prefs.edit()
@@ -67,18 +98,34 @@ class LoginActivity : AppCompatActivity() {
             editor.putString("uuid", MyApp.uuid)
             editor.commit()
         }
-        if (MyApp.defaultUser?.email!!.isNotBlank()) {
-            startActivity(Intent(this, Home::class.java))
-            finish()
-        }
-        window.statusBarColor = resources.getColor(R.color.colorPrimary)
-        loginScene = Scene.getSceneForLayout(scene_root as ViewGroup, R.layout.login_scene, this)
-        signUpScene = Scene.getSceneForLayout(scene_root as ViewGroup, R.layout.sign_in_scene, this)
-        transition.duration = 300
     }
+
+    private fun fetchUserPreferences() {
+        val prefs = this.getSharedPreferences(MyApp.USER_ACCOUNT_PREFERENCES, 0)
+        val username = prefs.getString(MyApp.USER_ACCOUNT_USERNAME, "")
+        val email = prefs.getString(MyApp.USER_ACCOUNT_EMAIL, "")
+        val profilePictureURL = prefs.getString(MyApp.USER_ACCOUNT_PROFILE_PICTURE_URL, "")
+        MyApp.defaultUser = UserEntity(username, email, profilePictureURL)
+    }
+
+    private fun alreadyLoggedIn(): Boolean {
+        return MyApp.defaultUser?.email!!.isNotBlank()
+    }
+
 
     fun transitionToSignUp(view: View) {
         TransitionManager.go(signUpScene, transition)
+
+        confirmPasswordSignUp.onSubmit {
+            submitSignUpRequest(confirmPasswordSignUp)
+
+            //Hide soft keyboard
+            val view = this.currentFocus
+            if (view != null) {
+                val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(view.windowToken, 0)
+            }
+        }
     }
 
     fun transitionToLogIn(view: View) {
@@ -86,8 +133,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun showPhotoDialog(view: View) {
-        //TODO ADD PERMISSION CHECK
-
         photo = createTemporaryFile("picture", ".jpg")
         photo.delete()
         val items = arrayOf<CharSequence>("Take Photo", "Choose from Library", "Cancel")
@@ -123,11 +168,7 @@ class LoginActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent)
         when (requestCode) {
             1 -> if (resultCode == Activity.RESULT_OK) {
-                //val extras = imageReturnedIntent.extras
                 grabImage(profilePictureSignUp)
-                /*val extras = imageReturnedIntent.extras
-                profilePictureBitmap = extras.get("data") as Bitmap
-                profilePictureSignUp.setImageBitmap(profilePictureBitmap)*/
             }
             2 -> if (resultCode == Activity.RESULT_OK) {
                 onSelectFromGalleryResult(imageReturnedIntent!!)
@@ -186,7 +227,7 @@ class LoginActivity : AppCompatActivity() {
             return
         }
         AuthService(this).signIn(
-                emailLogin.text.toString(),
+                emailLogin.text.toString().trim(),
                 passwordLogin.text.toString()
         )
     }
@@ -201,6 +242,7 @@ class LoginActivity : AppCompatActivity() {
             5 -> toast("You didn't confirm your password.")
             6 -> toast("Passwords don't match.")
             7 -> toast("Please upload photo.")
+            8 -> toast("Password must be at least 8 characters long.")
         }
     }
 
@@ -212,6 +254,7 @@ class LoginActivity : AppCompatActivity() {
         if (confirmPasswordSignUp.text.isNullOrEmpty()) return 5
         if (confirmPasswordSignUp.text.toString() != paswordSignUp.text.toString()) return 6
         if (!::profilePictureBitmap.isInitialized) return 7
+        if (paswordSignUp.text.length < 8) return 7
         return 0
     }
 
@@ -220,16 +263,21 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun forgotPassword(view: View) {
-        val alert = AlertDialog.Builder(this)
-        val emailEditText = EditText(this)
-        alert.setMessage("Please enter your email. An email will be sent with a link to reset your password.")
-        alert.setTitle("Reset password")
-        emailEditText.hint = "Enter email here..."
-        alert.setView(emailEditText)
-        alert.setPositiveButton("Reset") { _, _ -> AuthService(this).resetPassword(emailEditText.text.toString()) }
-        alert.setNegativeButton("Cancel") { _, _ -> }
-
-        alert.show()
+        alert {
+            title = "Reset password"
+            message = "Please enter your email. An email will be sent with a link to reset your password."
+            customView {
+                val emailEditText = editText()
+                emailEditText.hint = "Enter email here..."
+                positiveButton("Reset") {
+                    val email = emailEditText.text.toString()
+                    if(email.isNotBlank() && isEmailValid(email))
+                    AuthService(this@LoginActivity).resetPassword(email)
+                    else toast("You didn't enter valid email")
+                }
+                negativeButton("Cancel") {}
+            }
+        }.show()
     }
 
     private fun createTemporaryFile(part: String, ext: String): File {
@@ -250,6 +298,17 @@ class LoginActivity : AppCompatActivity() {
             profilePictureBitmap = bitmap
         } catch (ex: Exception) {
             Log.d("Failed to load", ex.toString())
+        }
+    }
+
+    //Submit login request when user clicks ok button after password input
+    private fun EditText.onSubmit(func: () -> Unit) {
+        setOnEditorActionListener { _, actionId, _ ->
+
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                func()
+            }
+            true
         }
     }
 }

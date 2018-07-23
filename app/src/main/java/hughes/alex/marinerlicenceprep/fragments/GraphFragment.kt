@@ -10,6 +10,7 @@ import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -20,6 +21,9 @@ import hughes.alex.marinerlicenceprep.entity.Book
 import hughes.alex.marinerlicenceprep.models.BooksCategoriesSubcategories
 import hughes.alex.marinerlicenceprep.models.StudyExpandableListItem
 import kotlinx.android.synthetic.main.graph_fragment.view.*
+import com.github.mikephil.charting.components.XAxis
+
+
 
 class GraphFragment : Fragment() {
 
@@ -41,15 +45,24 @@ class GraphFragment : Fragment() {
         }
         val results = Queries.getStatisticsForBook(context!!, bookList)
         var i = 0f
+        val labels = ArrayList<String>()
         results.forEach { println(it.bookScore)
-            if(it.bookScore>0)
-                entries.add(BarEntry( i++, it.bookScore))
+            if(it.bookScore>0) {
+                entries.add(BarEntry(i++, it.bookScore))
+                labels.add(it.bookName)
+            }
         }
         val set = BarDataSet(entries, "")
         set.colors = ColorTemplate.JOYFUL_COLORS.asList()
         view.barChart.setTouchEnabled(false)
         view.barChart.animateY(1000, Easing.EasingOption.EaseOutBack)
+        view.barChart.xAxis.valueFormatter =  IndexAxisValueFormatter(labels)
+        val xAxis = view.barChart.xAxis
+        xAxis.granularity = 1f
+        xAxis.isGranularityEnabled = true
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
         view.barChart.data=BarData(set)
+        view.barChart.description.isEnabled = false
         return view
     }
 }

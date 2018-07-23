@@ -7,10 +7,13 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.view.ViewPager
+import android.support.v4.widget.TextViewCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.text.InputType
+import android.util.TypedValue
 import android.view.View
+import android.view.WindowManager
 import android.widget.EditText
 import hughes.alex.marinerlicenceprep.MyApp
 import hughes.alex.marinerlicenceprep.R
@@ -20,6 +23,11 @@ import hughes.alex.marinerlicenceprep.entity.Questions
 import hughes.alex.marinerlicenceprep.fragments.PlaceholderFragment
 import hughes.alex.marinerlicenceprep.fragments.StudyFragment
 import kotlinx.android.synthetic.main.activity_study.*
+import org.jetbrains.anko.alert
+import org.jetbrains.anko.noButton
+import org.jetbrains.anko.yesButton
+import android.R.attr.data
+import com.google.gson.Gson
 
 
 class Study : AppCompatActivity() {
@@ -30,32 +38,42 @@ class Study : AppCompatActivity() {
     private var logAnswers: Boolean = true
     var showAnswers: Boolean = false
     lateinit var currentQuestion: Questions
+    lateinit var answeredQuestions: Array<Boolean>
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_study)
+        TextViewCompat.setAutoSizeTextTypeWithDefaults(upgradeAccount, TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM)
         val extras = intent.extras
+
+        //Fetch values from switches
         autoNext = extras.getBoolean("autoNext")
         shuffleQuestions = extras.getBoolean("shuffleQuestions")
-        if (shuffleQuestions)
-            PlaceholderFragment.questions.shuffle()
         logAnswers = extras.getBoolean("logAnswers")
         showAnswers = extras.getBoolean("showAnswers")
         currentQuestion = Queries.getQuestion(this, questions[0].toString())
-        bookmarkQuestion.setImageResource(
-                if (currentQuestion.isBookmarked == "1")
-                    R.mipmap.bookmark
-                else
-                    R.mipmap.bookmark_empty)
+
+        //Set corresponding values on activity
+        if (shuffleQuestions) PlaceholderFragment.questions.shuffle()
+        if (!logAnswers) scoreLabel.text = "Study Mode"
+        bookmarkQuestion.setImageResource(if (currentQuestion.isBookmarked == "1") R.mipmap.bookmark else R.mipmap.bookmark_empty)
+
+        answeredQuestions = Array(questions.size) { false }
+
         mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
         container.adapter = mSectionsPagerAdapter
+        val prefs = getSharedPreferences(MyApp.RESUME_DATA, 0)
         if (extras.getString("callingIntent") != "StudyFragment")
             container.currentItem = extras.getInt("bookmarkOrSearchSelection")
-        else if (extras.getInt("resumeQuestionNumber") > 0)
+        else if (extras.getInt("resumeQuestionNumber") > 0) {
             container.currentItem = extras.getInt("resumeQuestionNumber")
-        numberLabel.text = "Num " + (container.currentItem + 1) + "/" + container.adapter?.count
-        closeButton.setOnClickListener { finish() }
-        val prefs = getSharedPreferences(MyApp.RESUME_DATA, 0)
+            correct = prefs.getInt("correct", 0)
+            total = prefs.getInt("total", 0)
+            scoreLabel.text = "Score " + correct + "/" + total
+            val jsonText = prefs.getString("answeredQuestions", "")
+            if (jsonText.isNotBlank())
+                answeredQuestions = Gson().fromJson<Array<Boolean>>(jsonText, Array<Boolean>::class.java)
+        }
         container.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {}
 
@@ -66,12 +84,10 @@ class Study : AppCompatActivity() {
                 currentQuestion = Queries.getQuestion(this@Study, questions[position].toString())
                 numberLabel.text = "Num " + (container.currentItem + 1) + "/" + container.adapter?.count
                 attemped = 0
-                moveToPreviousQuestionButton.setImageResource(if (position == 0) R.drawable.anchor else R.mipmap.left)
-                moveToNextQuestionButton.setImageResource(if (position == container.adapter!!.count - 1) R.drawable.anchor else R.mipmap.right_arrow)
+                moveToPreviousQuestionButton.setImageResource(if (position == 0) R.mipmap.left_disabled else R.mipmap.left)
+                moveToNextQuestionButton.setImageResource(if (position == container.adapter!!.count - 1) R.mipmap.right_disabled else R.mipmap.right)
                 bookmarkQuestion.setImageResource(
-                        if (currentQuestion.isBookmarked == "1")
-                            R.mipmap.bookmark
-                        else
+                        if (currentQuestion.isBookmarked == "1") R.mipmap.bookmark else
                             R.mipmap.bookmark_empty
                 )
                 val editor = prefs.edit()
@@ -81,9 +97,12 @@ class Study : AppCompatActivity() {
                 editor.putString("categoryID", StudyFragment.categoryID)
                 editor.putString("subcategoryID", StudyFragment.subcategoryID)
                 editor.putInt("resumeQuestionNumber", container.currentItem)
+                editor.putString("answeredQuestions", Gson().toJson(answeredQuestions))
                 editor.commit()
             }
         })
+        numberLabel.text = "Num " + (container.currentItem + 1) + "/" + container.adapter?.count
+        closeButton.setOnClickListener { finish() }
     }
 
     fun showChangeQuestionDialog(view: View) {
@@ -121,33 +140,68 @@ class Study : AppCompatActivity() {
     var total = 0
     @SuppressLint("SetTextI18n")
     fun answerQuestion(view: View) {
-
         if (compareAnswers(view, currentQuestion.correctAnswer)) {
             view.setBackgroundColor(resources.getColor(R.color.questionsGreen))
             if (attemped == 0) {
-                correct++
-                Queries.updateQuestionStatistics(this, currentQuestion.questionID, 1)
+                if (logAnswers && !answeredQuestions[container.currentItem]) {
+                    correct++
+                    Queries.updateQuestionStatistics(this, currentQuestion.questionID, 1)
+                    answeredQuestions[container.currentItem] = true
+                    total++
+                }
             }
             if (autoNext) {
+                window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 val handler = Handler()
                 handler.postDelayed({
                     moveToNextQuestion(view)
-                }, 700)
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                }, 400)
             }
         } else {
-            if (attemped == 0)
-                Queries.updateQuestionStatistics(this, currentQuestion.questionID, 0)
             view.setBackgroundColor(resources.getColor(R.color.questionsRed))
+            if (attemped == 0 && logAnswers && !answeredQuestions[container.currentItem]) {
+                Queries.updateQuestionStatistics(this, currentQuestion.questionID, 0)
+                answeredQuestions[container.currentItem] = true
+                total++
+            }
         }
         if (attemped == 0) {
-            total++
-            scoreLabel.text = "Score " + correct + "/" + total
+            if (logAnswers) {
+                scoreLabel.text = "Score " + correct + "/" + total
+                val prefsEditor = getSharedPreferences(MyApp.RESUME_DATA, 0).edit()
+                prefsEditor.putInt("correct", correct)
+                prefsEditor.putInt("total", total)
+                prefsEditor.apply()
+            }
         }
         attemped = 1
     }
 
+    fun changeLogingAnswers(view: View) {
+        if (logAnswers)
+            alert {
+                yesButton {
+                    logAnswers = false
+                    scoreLabel.text = "Study Mode"
+                }
+                noButton { }
+                title = "Turn OFF Logging Answers"
+                message = "Turn OFF tracking for correct or incorrect answers"
+            }.show() else {
+            alert {
+                yesButton {
+                    logAnswers = true
+                    scoreLabel.text = "Score " + correct + "/" + total
+                }
+                noButton { }
+                title = "Turn ON Logging Answers"
+                message = "Turn ON tracking for correct or incorrect answers"
+            }.show()
+        }
+    }
+
     fun bookmarkQuestion(view: View) {
-        println("")
         if (currentQuestion.isBookmarked == "1") {
             Queries.changeBookmark(this, currentQuestion.questionID, "0")
             bookmarkQuestion.setImageResource(R.mipmap.bookmark_empty)

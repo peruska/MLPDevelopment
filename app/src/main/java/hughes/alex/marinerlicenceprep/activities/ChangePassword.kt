@@ -2,6 +2,7 @@ package hughes.alex.marinerlicenceprep.activities
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import hughes.alex.marinerlicenceprep.AuthService
 import hughes.alex.marinerlicenceprep.R
 import kotlinx.android.synthetic.main.activity_change_password.*
 
@@ -19,6 +20,6 @@ class ChangePassword : AppCompatActivity() {
 
 
     private fun savePasswordChange() {
-        //TODO
+        //AuthService(this).changePassword()
     }
 }

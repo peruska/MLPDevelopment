@@ -18,7 +18,7 @@ class ChangeEmail : AppCompatActivity() {
     }
 
     private fun saveEmailChange(){
-        AuthService(this).changeEmail(emailValue.text.toString())
+        AuthService(this).changeEmail(emailValue.text.toString().trim())
     }
 
 }

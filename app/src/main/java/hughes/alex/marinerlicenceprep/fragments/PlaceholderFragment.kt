@@ -11,6 +11,7 @@ import hughes.alex.marinerlicenceprep.R
 import hughes.alex.marinerlicenceprep.activities.Illustration
 import hughes.alex.marinerlicenceprep.activities.Study
 import hughes.alex.marinerlicenceprep.database.Queries
+import kotlinx.android.synthetic.main.activity_study.*
 import kotlinx.android.synthetic.main.fragment_study_activity.view.*
 
 class PlaceholderFragment : Fragment() {
@@ -18,6 +19,8 @@ class PlaceholderFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_study_activity, container, false)
+
+
 
         //Query question based on passed argument
         val questionID = questions[arguments?.getInt("question_number")!!]
@@ -29,13 +32,14 @@ class PlaceholderFragment : Fragment() {
 
         //Set text values and enable auto-sizing
         rootView.answer1.text = question.answerOne
-        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(rootView.answer1, 10, 24, 1, TypedValue.COMPLEX_UNIT_SP)
+        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(rootView.answer1, 10, 20, 1, TypedValue.COMPLEX_UNIT_SP)
         rootView.answer2.text = question.answerTwo
-        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(rootView.answer2, 10, 24, 1, TypedValue.COMPLEX_UNIT_SP)
+        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(rootView.answer2, 10, 20, 1, TypedValue.COMPLEX_UNIT_SP)
         rootView.answer3.text = question.answerThree
-        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(rootView.answer3, 10, 24, 1, TypedValue.COMPLEX_UNIT_SP)
+        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(rootView.answer3, 10, 20, 1, TypedValue.COMPLEX_UNIT_SP)
         rootView.answer4.text = question.answerFour
-        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(rootView.answer4, 10, 24, 1, TypedValue.COMPLEX_UNIT_SP)
+        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(rootView.answer4, 10, 20, 1, TypedValue.COMPLEX_UNIT_SP)
+        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(rootView.questionText, 10, 20, 1, TypedValue.COMPLEX_UNIT_SP)
 
         //If show answers is enabled, mark correct answer
         if ((context as Study).showAnswers)
