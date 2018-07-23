@@ -6,10 +6,8 @@
     android:layout_height="match_parent">
 
     <ExpandableListView
-        android:choiceMode="singleChoice"
         android:id="@+id/expandableListView"
         android:layout_width="match_parent"
-        android:listSelector="@drawable/selector_text_view"
         android:layout_height="0dp"
         android:groupIndicator="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -174,7 +172,7 @@
                 android:layout_height="wrap_content"
                 android:text="Study"
                 android:textColor="@android:color/white"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />

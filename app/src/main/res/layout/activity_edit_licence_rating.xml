@@ -22,7 +22,9 @@
             android:drawableStart="@mipmap/left"
             android:text="@string/settings_title"
             android:gravity="center_vertical"
-            android:onClick="backToSettings"/>
+            android:onClick="backToSettings"
+            android:textSize="18sp"
+            android:textColor="@android:color/white"/>
     </android.support.v7.widget.Toolbar>
 
 

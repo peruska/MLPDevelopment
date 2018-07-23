@@ -23,7 +23,9 @@
             android:gravity="center_vertical"
             android:onClick="backToSettings"
             android:text="@string/settings_title"
-            tools:layout_editor_absoluteY="4dp" />
+            tools:layout_editor_absoluteY="4dp"
+            android:textSize="18sp"
+            android:textColor="@android:color/white"/>
     </android.support.v7.widget.Toolbar>
 
     <ScrollView
