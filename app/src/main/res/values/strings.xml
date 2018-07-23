@@ -140,5 +140,8 @@ If you have any questions or suggestions about my Privacy Policy, do not hesitat
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="choose_rating_text">Please Choose Your Rating. \n Your App Experience will be \n Customized to this.</string>
     <string name="cancel">Cancel</string>
+    <string name="old_password">Old Password</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_new_password">Confirm New Password</string>
 
 </resources>

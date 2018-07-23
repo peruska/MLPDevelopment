@@ -51,8 +51,6 @@ class EditSubscriptionProfile : AppCompatActivity() {
             when {
                 items[item] == "Take Photo" -> {
                     val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-
-                    //mImageUri = Uri.fromFile(photo)
                     mImageUri = FileProvider.getUriForFile(this, this.applicationContext.packageName + ".my.package.name.provider", photo)
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri)
                     startActivityForResult(intent, 1)

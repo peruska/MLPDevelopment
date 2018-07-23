@@ -2,10 +2,8 @@ package hughes.alex.marinerlicenceprep.activities
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v7.app.ActionBar
 import android.view.View
 import hughes.alex.marinerlicenceprep.R
-import kotlinx.android.synthetic.main.custom_action_bar_terms_of_services.*
 
 class TermsOfServices : AppCompatActivity() {
 

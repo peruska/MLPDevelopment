@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.ContentResolver
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -24,6 +25,7 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import hughes.alex.marinerlicenceprep.AuthService
@@ -73,7 +75,18 @@ class LoginActivity : AppCompatActivity() {
         loginScene = Scene.getSceneForLayout(scene_root as ViewGroup, R.layout.login_scene, this)
         signUpScene = Scene.getSceneForLayout(scene_root as ViewGroup, R.layout.sign_in_scene, this)
         transition.duration = 300
-        passwordLogin.onSubmit { submitLogInRequest(passwordLogin) }
+        passwordLogin.onSubmit {
+            submitLogInRequest(passwordLogin)
+
+            //Hide soft keyboard
+            val view = this.currentFocus
+            if (view != null) {
+                val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(view.windowToken, 0)
+            }
+        }
+
+
     }
 
     private fun checkIfUUIDExists() {
@@ -102,6 +115,17 @@ class LoginActivity : AppCompatActivity() {
 
     fun transitionToSignUp(view: View) {
         TransitionManager.go(signUpScene, transition)
+
+        confirmPasswordSignUp.onSubmit {
+            submitSignUpRequest(confirmPasswordSignUp)
+
+            //Hide soft keyboard
+            val view = this.currentFocus
+            if (view != null) {
+                val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(view.windowToken, 0)
+            }
+        }
     }
 
     fun transitionToLogIn(view: View) {
@@ -203,7 +227,7 @@ class LoginActivity : AppCompatActivity() {
             return
         }
         AuthService(this).signIn(
-                emailLogin.text.toString(),
+                emailLogin.text.toString().trim(),
                 passwordLogin.text.toString()
         )
     }
@@ -218,6 +242,7 @@ class LoginActivity : AppCompatActivity() {
             5 -> toast("You didn't confirm your password.")
             6 -> toast("Passwords don't match.")
             7 -> toast("Please upload photo.")
+            8 -> toast("Password must be at least 8 characters long.")
         }
     }
 
@@ -229,6 +254,7 @@ class LoginActivity : AppCompatActivity() {
         if (confirmPasswordSignUp.text.isNullOrEmpty()) return 5
         if (confirmPasswordSignUp.text.toString() != paswordSignUp.text.toString()) return 6
         if (!::profilePictureBitmap.isInitialized) return 7
+        if (paswordSignUp.text.length < 8) return 7
         return 0
     }
 
@@ -236,7 +262,6 @@ class LoginActivity : AppCompatActivity() {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 
-    //Show forgot password dialog
     fun forgotPassword(view: View) {
         alert {
             title = "Reset password"
@@ -244,7 +269,12 @@ class LoginActivity : AppCompatActivity() {
             customView {
                 val emailEditText = editText()
                 emailEditText.hint = "Enter email here..."
-                positiveButton("Reset") { AuthService(this@LoginActivity).resetPassword(emailEditText.text.toString()) }
+                positiveButton("Reset") {
+                    val email = emailEditText.text.toString()
+                    if(email.isNotBlank() && isEmailValid(email))
+                    AuthService(this@LoginActivity).resetPassword(email)
+                    else toast("You didn't enter valid email")
+                }
                 negativeButton("Cancel") {}
             }
         }.show()
@@ -274,8 +304,10 @@ class LoginActivity : AppCompatActivity() {
     //Submit login request when user clicks ok button after password input
     private fun EditText.onSubmit(func: () -> Unit) {
         setOnEditorActionListener { _, actionId, _ ->
+
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                func() }
+                func()
+            }
             true
         }
     }

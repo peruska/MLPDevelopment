@@ -4,10 +4,12 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.support.v4.widget.TextViewCompat
 import android.support.v7.widget.RecyclerView
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +19,6 @@ import hughes.alex.marinerlicenceprep.activities.Study
 import hughes.alex.marinerlicenceprep.database.Queries
 import hughes.alex.marinerlicenceprep.fragments.PlaceholderFragment
 import kotlinx.android.synthetic.main.search_item.view.*
-import kotlinx.android.synthetic.main.weakest_question_fragment.view.*
 
 class SearchAdapter(private val items: ArrayList<Int>,
                     val context: Context,
@@ -68,6 +69,13 @@ class SearchAdapter(private val items: ArrayList<Int>,
             PlaceholderFragment.questions = items
             context.startActivity(intent)
         }
+
+        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(holder.answer1, 10, 18, 1, TypedValue.COMPLEX_UNIT_SP)
+        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(holder.answer2, 10, 18, 1, TypedValue.COMPLEX_UNIT_SP)
+        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(holder.answer3, 10, 18, 1, TypedValue.COMPLEX_UNIT_SP)
+        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(holder.answer4, 10, 18, 1, TypedValue.COMPLEX_UNIT_SP)
+        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(holder.questionText, 18, 20, 1, TypedValue.COMPLEX_UNIT_SP)
+
         if (querySearchWord[0] == "") {
             holder.questionText.text = question.question
             holder.questionTitle.text = question.subcategory
