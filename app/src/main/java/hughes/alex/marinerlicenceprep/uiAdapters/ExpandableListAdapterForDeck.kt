@@ -45,7 +45,7 @@ class ExpandableListAdapterForDeck(val context: Context, var listOfMembers: Arra
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = inflater.inflate(R.layout.study_deck_list_group, parent, false)
         if(groupPosition != 0)
-            view.groupImageDeck.setImageResource(R.mipmap.list_view_right_arrow)
+            view.groupImageDeck.setImageResource(R.drawable.list_view_right_arrow)
         view.deck_group_name.text = listOfMembers[groupPosition].groupName
         return view!!
     }

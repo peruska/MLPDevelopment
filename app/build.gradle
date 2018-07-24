@@ -50,4 +50,5 @@ dependencies {
     implementation "org.jetbrains.anko:anko-sdk25-coroutines:$anko_version"
     implementation "org.jetbrains.anko:anko-appcompat-v7-coroutines:$anko_version"
     implementation 'com.stripe:stripe-android:6.1.2'
+    implementation 'com.github.chrisbanes:PhotoView:2.1.4'
 }
