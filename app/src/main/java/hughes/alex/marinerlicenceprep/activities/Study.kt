@@ -177,6 +177,15 @@ class Study : AppCompatActivity() {
         attemped = 1
     }
 
+    private fun showRestartDialog() {
+        alert {
+            title = "FINISHED"
+            message = "You've finished all the questions, do you want to start over?"
+            positiveButton("Restart") {container.currentItem = 0}
+            noButton {  }
+        }.show()
+    }
+
     fun changeLogingAnswers(view: View) {
         if (logAnswers)
             alert {
@@ -217,6 +226,9 @@ class Study : AppCompatActivity() {
     }
 
     fun moveToNextQuestion(view: View) {
+        if(container.currentItem == container.adapter?.count!! - 1)
+            showRestartDialog()
+        else
         container.currentItem = container.currentItem + 1
     }
 

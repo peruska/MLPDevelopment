@@ -36,7 +36,7 @@ class EditSubscriptionProfile : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_subscription_profile)
 
-        Picasso.get().load(BASE_URL+MyApp.defaultUser!!.profileImageURL).into(profilePictureImageView)
+        Picasso.get().load("https://marinerlicenseprep.com/"+MyApp.defaultUser!!.profileImageURL).into(profilePictureImageView)
         editProfileUsername.text =(MyApp.defaultUser as UserEntity).username
 
         cancel.setOnClickListener { finish() }

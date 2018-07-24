@@ -52,7 +52,6 @@ class AuthService(var context: Context) {
                             val pictureUrl = dataFromResponse.getString("url")
                             defaultUser = UserEntity(user, email, pictureUrl)
                             saveUserPrefs(user, email, pictureUrl)
-                            retrieveUserInfo()
                             val prefs = context.getSharedPreferences(MyApp.USER_LICENSE_DATA_VALUES, 0)
                             if (prefs.getString(USER_LICENSE_DATA_VALUES, "").isBlank())
                                 context.startActivity(Intent(context, License::class.java))
@@ -111,18 +110,13 @@ class AuthService(var context: Context) {
     }
 
     fun uploadPhoto(context: Context, profilePictureBitmap: Bitmap, email: String, username: String) {
-        val pictureUrl = MyApp.BASE_URL + "Upload_Avatar"
-        val request = MultipartRequest(pictureUrl, null,
+        val url = MyApp.BASE_URL + "Upload_Avatar"
+        val pictureUrl = "${username}_${MyApp.uuid}.jpg"
+        val request = MultipartRequest(url, null,
                 Response.Listener<NetworkResponse> { response ->
                     val responseAsJson = JSONObject(String(response.data))
                     if (responseAsJson.getBoolean("success")) {
-                        val prefs = context.getSharedPreferences(MyApp.USER_ACCOUNT_PREFERENCES, 0)
-                        val editor = prefs.edit()
-                        editor.putString(MyApp.USER_ACCOUNT_USERNAME, username)
-                        editor.putString(MyApp.USER_ACCOUNT_EMAIL, email)
-                        editor.putString(MyApp.USER_ACCOUNT_PROFILE_PICTURE_URL, "")
-                        editor.commit()
-                        retrieveUserInfo()
+                        saveUserPrefs(username, email, pictureUrl)
                         //If the upload occurred on login activity show select rating screen
                         (context as? LoginActivity)?.startActivity(Intent(context, License::class.java))
                         (context as? LoginActivity)?.finish()
@@ -138,7 +132,7 @@ class AuthService(var context: Context) {
         request.addPart(MultipartRequest.FilePart(
                 "data",
                 "image/jpg",
-                "${username}_${MyApp.uuid}.jpg",
+                pictureUrl,
                 byteArray))
         getNetworkSingletonInstance(context).addToRequestQueue(request)
     }
@@ -238,6 +232,15 @@ class AuthService(var context: Context) {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
             val signInRequest = object : StringRequest(POST, url,
                     Response.Listener { response ->
+
+                        val responseAsJson = JSONObject(response)
+
+                        if (responseAsJson.getBoolean("success")) {
+                            val dataFromResponse = JSONObject(responseAsJson.getString("data"))
+                            val user = dataFromResponse.getString("username")
+                            val pictureUrl = dataFromResponse.getString("url")
+                            defaultUser = UserEntity(user, defaultUser!!.email, pictureUrl)
+                            saveUserPrefs(user, defaultUser!!.email, pictureUrl)}
                         println(JSONObject(response))
                     },
                     Response.ErrorListener { error -> }) {

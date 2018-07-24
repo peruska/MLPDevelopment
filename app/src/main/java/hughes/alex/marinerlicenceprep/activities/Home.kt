@@ -7,6 +7,7 @@ import android.support.design.internal.BottomNavigationMenuView
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
+import hughes.alex.marinerlicenceprep.AuthService
 import hughes.alex.marinerlicenceprep.MyApp
 import hughes.alex.marinerlicenceprep.R
 import hughes.alex.marinerlicenceprep.fragments.*
@@ -19,6 +20,7 @@ class Home : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+        AuthService(this).retrieveUserInfo()
         navigationView.disableShiftMode()
         val firstTransition = supportFragmentManager.beginTransaction()
         activeFragment = HomeFragment()
