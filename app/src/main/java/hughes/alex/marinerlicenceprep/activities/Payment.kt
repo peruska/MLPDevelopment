@@ -47,8 +47,7 @@ class Payment : AppCompatActivity() {
     private fun submitCard(view: View ){
         card = card_input_widget.card!!
         card.currency = "usd"
-        card.name = "Djura Karikatura"
-        amount = 150    //TODO this amount is in cents
+        amount = 150    //TODO this amount is in cents. This is actually 1.5 dollars
 
         stripeClass.createToken(card, "pk_test_phihB2GTlTnHz5f7jkblfi1G", object : TokenCallback { //TODO testing public key
             override fun onSuccess(token: Token?) {
