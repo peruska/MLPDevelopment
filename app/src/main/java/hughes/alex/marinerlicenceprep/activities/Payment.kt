@@ -1,11 +1,16 @@
 package hughes.alex.marinerlicenceprep.activities
 
+import android.content.Context
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.stripe.android.Stripe
 import com.stripe.android.TokenCallback
 import com.stripe.android.exception.AuthenticationException
@@ -13,14 +18,10 @@ import com.stripe.android.model.Card
 import com.stripe.android.model.Token
 import hughes.alex.marinerlicenceprep.R
 import kotlinx.android.synthetic.main.stripe.*
-import java.io.BufferedWriter
 import java.io.IOException
-import java.io.OutputStream
-import java.io.OutputStreamWriter
 import java.lang.Exception
-import java.net.HttpURLConnection
-import java.net.URL
-import java.util.*
+import kotlin.collections.HashMap
+
 
 class Payment : AppCompatActivity() {
 
@@ -47,23 +48,22 @@ class Payment : AppCompatActivity() {
         card = card_input_widget.card!!
         card.currency = "usd"
         card.name = "Djura Karikatura"
-        amount = 11
+        amount = 150    //TODO this amount is in cents
 
-        stripeClass.createToken(card, "pk_test_phihB2GTlTnHz5f7jkblfi1G", object : TokenCallback {
+        stripeClass.createToken(card, "pk_test_phihB2GTlTnHz5f7jkblfi1G", object : TokenCallback { //TODO testing public key
             override fun onSuccess(token: Token?) {
                 Toast.makeText(applicationContext, "Token created: " + token!!.id, Toast.LENGTH_LONG).show()
-                StripeCharge(token.id, "Djura Karikatura", amount).execute()
+                StripeCharge(token.id, "Demo Description", amount, this@Payment).execute()
             }
 
             override fun onError(error: Exception?) {
                 Log.d("Stripe", error?.localizedMessage)
-                println("Greska 1")
             }
 
         })
     }
 
-    class StripeCharge(private val token: String, val name: String, private val amount: Int) : AsyncTask<String, Void, String>() {
+    class StripeCharge(private val token: String, val name: String, private val amount: Int, val context: Context) : AsyncTask<String, Void, String>() {
         override fun doInBackground(vararg params: String?): String {
             Thread{
                 postData(name, token, amount.toString())
@@ -79,30 +79,28 @@ class Payment : AppCompatActivity() {
         }
 
         private fun postData(description: String, token: String, amount: String){
-            try {
-                val url = URL("https://marinerlicenseprep.com/api/Charge")
-                val conn = url.openConnection() as HttpURLConnection
-                conn.readTimeout = 10000
-                conn.connectTimeout = 15000
-                conn.requestMethod = "POST"
-                conn.doInput = true
-                conn.doOutput = true
+            try{
 
-                val params = ArrayList<Pair<String, String>>()
-                params.add(Pair("method", "charge"))
-                params.add(Pair("description", description))
-                params.add(Pair("source", token))
-                params.add(Pair("amount", amount))
+                val stringRequest = object : StringRequest(Request.Method.POST, "https://marinerlicenseprep.com/api/Charge", Response.Listener { s ->
+                    // Your success code here
+                    println("Success POST")
+                }, Response.ErrorListener { e ->
+                    // Your error code here
+                    println("Error POST")
+                }) {
+                    override fun getParams(): Map<String, String> {
+                        val params = HashMap<String, String>()
+                        params["method"] = "charge"
+                        params["description"] = description
+                        params["source"] = token
+                        params["amount"] = amount
+                        params["currency"] = "usd"
 
-                val os: OutputStream
-
-                os = conn.outputStream
-                val writer = BufferedWriter(OutputStreamWriter(os, "UTF-8"))
-                writer.write(params.toString()) //TODO Check this line
-                writer.flush()
-                writer.close()
-                os.close()
-
+                        return params
+                    }
+                }
+                val  requestQueue = Volley.newRequestQueue(context)
+                requestQueue.add<String>(stringRequest)
             }catch (e: IOException) {
                 e.printStackTrace()
             }
