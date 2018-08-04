@@ -40,6 +40,7 @@ class StudyFragment : Fragment() {
     override fun onResume() {
         val view = view!!
         val context = context!!
+        if(MyApp.checkIfUserIsSubscribed())
         view.shuffleQuestionsSwitch.setOnCheckedChangeListener { compoundButton, b ->
             if(compoundButton.isChecked) {
                 view.resumeStudying.isEnabled = false
@@ -56,6 +57,7 @@ class StudyFragment : Fragment() {
                 }
             }
         }
+        else view.shuffleQuestionsSwitch.isEnabled = false
         val adapter =
                 if (bookCategoryID == "1")
                     StudyExpandableListAdapter(context, MyApp.dataForTwoLevelList)

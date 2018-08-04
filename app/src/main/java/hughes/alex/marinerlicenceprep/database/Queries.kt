@@ -263,7 +263,9 @@ object Queries {
         }
 
         databaseAccess.close()
-        return listOfQuestions
+        return if (!MyApp.checkIfUserIsSubscribed())
+            ArrayList(listOfQuestions.take(20))
+        else listOfQuestions
     }
 
     private fun dataFetchingForOneQuestion(cursor: Cursor): Questions {
@@ -339,7 +341,9 @@ object Queries {
         listOfQuestions = idFetching(cursor)
         cursor.close()
         databaseAccess.close()
-        return listOfQuestions
+        return if (!MyApp.checkIfUserIsSubscribed())
+            ArrayList(listOfQuestions.take(20))
+        else listOfQuestions
     }
 
     fun changeBookmark(context: Context, questionID: String, value: String) {
@@ -380,13 +384,15 @@ object Queries {
                 val cursor = databaseAccess.executeRawQuery(query, arrayOf())
                 while (cursor.moveToNext()) {
                     if (!listOfQuestionIDs.contains(cursor.getInt(0)))
-                    listOfQuestionIDs.add(cursor.getInt(0))
+                        listOfQuestionIDs.add(cursor.getInt(0))
                 }
                 cursor.close()
             }
         }
         databaseAccess.close()
-        return listOfQuestionIDs
+        return if (!MyApp.checkIfUserIsSubscribed())
+            ArrayList(listOfQuestionIDs.take(20))
+        else listOfQuestionIDs
     }
 
     fun getWeakestQuestions(context: Context, bookCategoryID: String, bookID: String): List<Int> {
@@ -403,10 +409,12 @@ object Queries {
             cursor.close()
         }
         databaseAccess.close()
-        return listOfQuestionIDs
+        return if (!MyApp.checkIfUserIsSubscribed())
+            ArrayList(listOfQuestionIDs.take(20))
+        else listOfQuestionIDs
     }
 
-    fun resetBookmarks(context: Context){
+    fun resetBookmarks(context: Context) {
         val databaseAccess = DatabaseAccess.getInstance(context)
         databaseAccess.open()
         val fieldContainer = ContentValues()
@@ -416,7 +424,7 @@ object Queries {
         databaseAccess.close()
     }
 
-    fun resetScores(context: Context){
+    fun resetScores(context: Context) {
         val databaseAccess = DatabaseAccess.getInstance(context)
         databaseAccess.open()
         val fieldContainer = ContentValues()

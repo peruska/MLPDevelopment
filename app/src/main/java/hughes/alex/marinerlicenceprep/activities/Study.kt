@@ -11,23 +11,21 @@ import android.support.v4.widget.TextViewCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.text.InputType
-import android.util.TypedValue
 import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
+import com.google.gson.Gson
 import hughes.alex.marinerlicenceprep.MyApp
 import hughes.alex.marinerlicenceprep.R
-import hughes.alex.marinerlicenceprep.fragments.PlaceholderFragment.Companion.questions
 import hughes.alex.marinerlicenceprep.database.Queries
 import hughes.alex.marinerlicenceprep.entity.Questions
 import hughes.alex.marinerlicenceprep.fragments.PlaceholderFragment
+import hughes.alex.marinerlicenceprep.fragments.PlaceholderFragment.Companion.questions
 import hughes.alex.marinerlicenceprep.fragments.StudyFragment
 import kotlinx.android.synthetic.main.activity_study.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.noButton
 import org.jetbrains.anko.yesButton
-import android.R.attr.data
-import com.google.gson.Gson
 
 
 class Study : AppCompatActivity() {
@@ -45,7 +43,8 @@ class Study : AppCompatActivity() {
         setContentView(R.layout.activity_study)
         TextViewCompat.setAutoSizeTextTypeWithDefaults(upgradeAccount, TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM)
         val extras = intent.extras
-
+        if (MyApp.checkIfUserIsSubscribed())
+            upgradeAccount.visibility = View.GONE
         //Fetch values from switches
         autoNext = extras.getBoolean("autoNext")
         shuffleQuestions = extras.getBoolean("shuffleQuestions")
@@ -181,8 +180,8 @@ class Study : AppCompatActivity() {
         alert {
             title = "FINISHED"
             message = "You've finished all the questions, do you want to start over?"
-            positiveButton("Restart") {container.currentItem = 0}
-            noButton {  }
+            positiveButton("Restart") { container.currentItem = 0 }
+            noButton { }
         }.show()
     }
 
@@ -226,10 +225,10 @@ class Study : AppCompatActivity() {
     }
 
     fun moveToNextQuestion(view: View) {
-        if(container.currentItem == container.adapter?.count!! - 1)
+        if (container.currentItem == container.adapter?.count!! - 1)
             showRestartDialog()
         else
-        container.currentItem = container.currentItem + 1
+            container.currentItem = container.currentItem + 1
     }
 
     class SectionsPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
