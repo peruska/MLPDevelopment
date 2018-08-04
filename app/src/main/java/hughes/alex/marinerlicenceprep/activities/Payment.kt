@@ -20,7 +20,6 @@ import hughes.alex.marinerlicenceprep.R
 import kotlinx.android.synthetic.main.stripe.*
 import java.io.IOException
 import java.lang.Exception
-import kotlin.collections.HashMap
 
 
 class Payment : AppCompatActivity() {
@@ -45,7 +44,12 @@ class Payment : AppCompatActivity() {
     }
 
     private fun submitCard(view: View ){
-        card = card_input_widget.card!!
+        try {
+            card = card_input_widget.card!!
+        }
+        catch (e: Exception){
+            return
+        }
         card.currency = "usd"
         amount = 150    //TODO this amount is in cents. This is actually 1.5 dollars
 
