@@ -97,7 +97,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/first_half_layout">
 
                 <android.support.constraint.ConstraintLayout
-                    android:id="@+id/constraintLayout3"
+                    android:id="@+id/oneMonth"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginBottom="8dp"
@@ -111,7 +111,7 @@
                     android:elevation="6dp"
                     android:outlineProvider="bounds"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/constraintLayout4"
+                    app:layout_constraintEnd_toStartOf="@+id/threeMonths"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -161,7 +161,7 @@
                 </android.support.constraint.ConstraintLayout>
 
                 <android.support.constraint.ConstraintLayout
-                    android:id="@+id/constraintLayout4"
+                    android:id="@+id/threeMonths"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginBottom="8dp"
@@ -178,7 +178,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/constraintLayout3"
+                    app:layout_constraintStart_toEndOf="@+id/oneMonth"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <TextView

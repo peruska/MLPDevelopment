@@ -41,7 +41,9 @@ class EditSubscriptionProfile : AppCompatActivity() {
         cancel.setOnClickListener { finish() }
     }
     fun moveToStripe(view: View){
-        startActivity(Intent(this, Payment::class.java))
+        val paymentIntent = Intent(this, Payment::class.java)
+        paymentIntent.putExtra("duration", if(view.id == R.id.oneMonth) "oneMonth" else "threeMonths")
+        startActivity(paymentIntent)
     }
     fun changeProfilePicture(view: View){
         photo = createTemporaryFile("picture", ".jpg")
