@@ -50,7 +50,12 @@ class AuthService(var context: Context) {
                             val dataFromResponse = JSONObject(responseAsJson.getString("data"))
                             val user = dataFromResponse.getString("username")
                             val pictureUrl = dataFromResponse.getString("url")
-                            val subToDate = dataFromResponse.getString("sub_to_date")
+                            val subToDate =
+                            try {
+                                 dataFromResponse.getString("sub_to_date")
+                            }catch (e: Exception){
+                                Date().time.toString()
+                            }
                             defaultUser = UserEntity(user, email, pictureUrl, subToDate)
                             saveUserPrefs(user, email, pictureUrl)
                             val prefs = context.getSharedPreferences(MyApp.USER_LICENSE_DATA_VALUES, 0)
