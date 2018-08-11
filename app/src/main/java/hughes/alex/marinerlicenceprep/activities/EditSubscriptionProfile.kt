@@ -24,6 +24,7 @@ import hughes.alex.marinerlicenceprep.R
 import hughes.alex.marinerlicenceprep.entity.UserEntity
 import kotlinx.android.synthetic.main.activity_edit_subscription_profile.*
 import java.io.File
+import java.text.SimpleDateFormat
 
 class EditSubscriptionProfile : AppCompatActivity() {
 
@@ -34,18 +35,28 @@ class EditSubscriptionProfile : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_subscription_profile)
-
-        Picasso.get().load("https://marinerlicenseprep.com/"+MyApp.defaultUser!!.profileImageURL).into(profilePictureImageView)
-        editProfileUsername.text =(MyApp.defaultUser as UserEntity).username
+        when (MyApp.defaultUser?.subscriptionName) {
+            "None" -> subType.text = "Subscription: NONE"
+            else -> subType.text = "Expiration: " +
+                    SimpleDateFormat("dd/MM/yyyy").format(SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(MyApp.defaultUser?.subscriptionEndDate))
+        }
+        when (MyApp.defaultUser?.subscriptionName) {
+            "1 Month package" -> oneMonthCheck.visibility = View.VISIBLE
+            "3 Month package" -> threeMonthCheck.visibility = View.VISIBLE
+        }
+        Picasso.get().load("https://marinerlicenseprep.com/" + MyApp.defaultUser?.profileImageURL).into(profilePictureImageView)
+        editProfileUsername.text = (MyApp.defaultUser as UserEntity).username
 
         cancel.setOnClickListener { finish() }
     }
-    fun moveToStripe(view: View){
+
+    fun moveToStripe(view: View) {
         val paymentIntent = Intent(this, Payment::class.java)
-        paymentIntent.putExtra("duration", if(view.id == R.id.oneMonth) "oneMonth" else "threeMonths")
+        paymentIntent.putExtra("duration", if (view.id == R.id.oneMonth) "oneMonth" else "threeMonths")
         startActivity(paymentIntent)
     }
-    fun changeProfilePicture(view: View){
+
+    fun changeProfilePicture(view: View) {
         photo = createTemporaryFile("picture", ".jpg")
         photo.delete()
         val items = arrayOf<CharSequence>("Take Photo", "Choose from Library", "Cancel")
@@ -74,6 +85,7 @@ class EditSubscriptionProfile : AppCompatActivity() {
         listView.overscrollFooter = ColorDrawable(Color.TRANSPARENT)
         dialog.show()
     }
+
     private fun createTemporaryFile(part: String, ext: String): File {
         var tempDir = Environment.getExternalStorageDirectory()
         tempDir = File(tempDir.absolutePath + "/.temp/")

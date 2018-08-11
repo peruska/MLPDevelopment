@@ -103,7 +103,8 @@ class LoginActivity : AppCompatActivity() {
         val email = prefs.getString(MyApp.USER_ACCOUNT_EMAIL, "")
         val profilePictureURL = prefs.getString(MyApp.USER_ACCOUNT_PROFILE_PICTURE_URL, "")
         val subToDate = prefs.getString(MyApp.USER_ACCOUNT_SUB_TO_DATE, "")
-        MyApp.defaultUser = UserEntity(username, email, profilePictureURL, subToDate)
+        val subType = prefs.getString(MyApp.USER_ACCOUNT_SUB_TYPE, "")
+        MyApp.defaultUser = UserEntity(username, email, profilePictureURL, subToDate, subType)
     }
 
     private fun alreadyLoggedIn(): Boolean {

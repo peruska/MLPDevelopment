@@ -16,7 +16,7 @@ class HomeFragment : Fragment() {
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.home_fragment, container, false)
         view.viewPager.adapter = ViewPagerAdapter(fragmentManager)
-        view.viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
+        view.viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
             }
 
@@ -25,12 +25,11 @@ class HomeFragment : Fragment() {
             }
 
             override fun onPageSelected(position: Int) {
-               if(position == 2){
-                   view.spinnerToolbar.visibility = View.VISIBLE
-                   view.spinnerWeakestQuestionCategories.setSelection(0)
-               }
-                else
-                   view.spinnerToolbar.visibility = View.INVISIBLE
+                if (position == 2) {
+                    view.spinnerToolbar.visibility = View.VISIBLE
+                    view.spinnerWeakestQuestionCategories.setSelection(0)
+                } else
+                    view.spinnerToolbar.visibility = View.INVISIBLE
             }
 
         })

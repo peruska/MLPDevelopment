@@ -28,12 +28,14 @@ import java.util.*
 
 
 class AuthService(var context: Context) {
-    fun saveUserPrefs(username: String, email: String, url: String) {
+    fun saveUserPrefs(username: String, email: String, url: String, subToDate: String, subType: String) {
         val prefs = context.getSharedPreferences(MyApp.USER_ACCOUNT_PREFERENCES, 0)
         val editor = prefs.edit()
         editor.putString(MyApp.USER_ACCOUNT_USERNAME, username)
         editor.putString(MyApp.USER_ACCOUNT_EMAIL, email)
         editor.putString(MyApp.USER_ACCOUNT_PROFILE_PICTURE_URL, url)
+        editor.putString(MyApp.USER_ACCOUNT_SUB_TO_DATE, subToDate)
+        editor.putString(MyApp.USER_ACCOUNT_SUB_TYPE, subType)
         editor.commit()
     }
 
@@ -51,13 +53,19 @@ class AuthService(var context: Context) {
                             val user = dataFromResponse.getString("username")
                             val pictureUrl = dataFromResponse.getString("url")
                             val subToDate =
-                            try {
-                                 dataFromResponse.getString("sub_to_date")
-                            }catch (e: Exception){
-                                Date().time.toString()
-                            }
-                            defaultUser = UserEntity(user, email, pictureUrl, subToDate)
-                            saveUserPrefs(user, email, pictureUrl)
+                                    try {
+                                        dataFromResponse.getString("sub_to_date")
+                                    } catch (e: Exception) {
+                                        Date().time.toString()
+                                    }
+                            val subType =
+                                    try {
+                                        dataFromResponse.getString("subscription_package")
+                                    } catch (e: Exception) {
+                                        "NONE"
+                                    }
+                            defaultUser = UserEntity(user, email, pictureUrl, subToDate, subType)
+                            saveUserPrefs(user, email, pictureUrl, subToDate, subType)
                             val prefs = context.getSharedPreferences(MyApp.USER_LICENSE_DATA_VALUES, 0)
                             if (prefs.getString(USER_LICENSE_DATA_VALUES, "").isBlank())
                                 context.startActivity(Intent(context, License::class.java))
@@ -122,7 +130,19 @@ class AuthService(var context: Context) {
                 Response.Listener<NetworkResponse> { response ->
                     val responseAsJson = JSONObject(String(response.data))
                     if (responseAsJson.getBoolean("success")) {
-                        saveUserPrefs(username, email, pictureUrl)
+                        val subToDate =
+                                try {
+                                    responseAsJson.getString("sub_to_date")
+                                } catch (e: Exception) {
+                                    Date().time.toString()
+                                }
+                        val subType =
+                                try {
+                                    responseAsJson.getString("subscription_package")
+                                } catch (e: Exception) {
+                                    "NONE"
+                                }
+                        saveUserPrefs(username, email, pictureUrl, subToDate, subType)
                         //If the upload occurred on login activity show select rating screen
                         (context as? LoginActivity)?.startActivity(Intent(context, License::class.java))
                         (context as? LoginActivity)?.finish()
@@ -241,13 +261,26 @@ class AuthService(var context: Context) {
                             val dataFromResponse = JSONObject(responseAsJson.getString("data"))
                             val user = dataFromResponse.getString("username")
                             val pictureUrl = dataFromResponse.getString("url")
-                            val subToDate = dataFromResponse.getString("sub_to_date")
-                            defaultUser = UserEntity(user, defaultUser!!.email, pictureUrl, subToDate)
-                            saveUserPrefs(user, defaultUser!!.email, pictureUrl)
+                            val subToDate =
+                                    try {
+                                        dataFromResponse.getString("sub_to_date")
+                                    }catch (e: Exception){
+                                        Date().time.toString()
+                                    }
+                            val subType =
+                                    try {
+                                        dataFromResponse.getString("subscription_package")
+                                    }catch (e: Exception){
+                                        "None"
+                                    }
+                            defaultUser = UserEntity(user, defaultUser!!.email, pictureUrl, subToDate, subType)
+                            saveUserPrefs(user, defaultUser!!.email, pictureUrl, subToDate, subType)
                             if (!checkIfUserIsSubscribed())
                                 context.alert {
-                                    yesButton{ title = "Upgrade Account"
-                                            context.startActivity(Intent(context, EditSubscriptionProfile::class.java)) }
+                                    yesButton {
+                                        title = "Upgrade Account"
+                                        context.startActivity(Intent(context, EditSubscriptionProfile::class.java))
+                                    }
                                     noButton { title = "Not Now" }
                                     title = "Upgrade Account?"
                                     message = "You are not a premium user! The functionality of this app will be heavily limited" +
@@ -260,27 +293,7 @@ class AuthService(var context: Context) {
                     Response.ErrorListener { error -> }) {
                 override fun getParams(): Map<String, String> {
                     val params = HashMap<String, String>()
-                    params["email"] = "peruskatestira@gmail.com"//defaultUser!!.email
-                    return params
-                }
-            }
-            getNetworkSingletonInstance(context).requestQueue.add(signInRequest)
-        } else {
-            //TODO Implement logic when permission is not granted
-        }
-    }
-
-    fun retrieveProfilePicture() {
-        val url = defaultUser!!.profileImageURL
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
-            val signInRequest = object : StringRequest(POST, url,
-                    Response.Listener { response ->
-                        println(JSONObject(response))
-                    },
-                    Response.ErrorListener { error -> }) {
-                override fun getParams(): Map<String, String> {
-                    val params = HashMap<String, String>()
-                    params["email"] = "peruskatestira@gmail.com"//defaultUser!!.email
+                    params["email"] = defaultUser!!.email
                     return params
                 }
             }
@@ -317,7 +330,7 @@ class AuthService(var context: Context) {
     }
 
     fun logOut() {
-        saveUserPrefs("", "", "")
-        defaultUser = UserEntity("", "", "", "")
+        saveUserPrefs("", "", "", "", "")
+        defaultUser = UserEntity("", "", "", "", "NONE")
     }
 }

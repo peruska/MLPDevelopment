@@ -70,11 +70,11 @@ class SearchAdapter(private val items: ArrayList<Int>,
             context.startActivity(intent)
         }
 
-        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(holder.answer1, 10, 18, 1, TypedValue.COMPLEX_UNIT_SP)
-        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(holder.answer2, 10, 18, 1, TypedValue.COMPLEX_UNIT_SP)
-        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(holder.answer3, 10, 18, 1, TypedValue.COMPLEX_UNIT_SP)
-        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(holder.answer4, 10, 18, 1, TypedValue.COMPLEX_UNIT_SP)
-        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(holder.questionText, 18, 20, 1, TypedValue.COMPLEX_UNIT_SP)
+        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(holder.answer1, 7, 18, 1, TypedValue.COMPLEX_UNIT_SP)
+        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(holder.answer2, 7, 18, 1, TypedValue.COMPLEX_UNIT_SP)
+        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(holder.answer3, 7, 18, 1, TypedValue.COMPLEX_UNIT_SP)
+        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(holder.answer4, 7, 18, 1, TypedValue.COMPLEX_UNIT_SP)
+        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(holder.questionText, 7, 20, 1, TypedValue.COMPLEX_UNIT_SP)
 
         if (querySearchWord[0] == "") {
             holder.questionText.text = question.question

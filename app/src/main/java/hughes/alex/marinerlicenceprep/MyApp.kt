@@ -26,6 +26,7 @@ class MyApp : Application() {
         const val USER_ACCOUNT_EMAIL = "email"
         const val USER_ACCOUNT_PROFILE_PICTURE_URL = "profile_picture"
         const val USER_ACCOUNT_SUB_TO_DATE = "sub_to_date"
+        const val USER_ACCOUNT_SUB_TYPE = "subscription_package"
         const val BASE_URL = "https://marinerlicenseprep.com/api/"
         lateinit var dataForTwoLevelList: ArrayList<StudyExpandableListItem>
         lateinit var dataForThreeLevelList: ArrayList<BooksCategoriesSubcategories>
