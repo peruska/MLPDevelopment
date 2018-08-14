@@ -19,6 +19,7 @@ import hughes.alex.marinerlicenceprep.R
 import kotlinx.android.synthetic.main.stripe.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.indeterminateProgressDialog
+import org.jetbrains.anko.toast
 import java.io.IOException
 import java.lang.Exception
 
@@ -29,32 +30,71 @@ class Payment : AppCompatActivity() {
     var amount: Int = 0
     lateinit var name: String
     private lateinit var card: Card
-    lateinit var dialog : ProgressDialog
+    lateinit var dialog: ProgressDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.stripe)
-        try{
+        if (intent.extras.getString("duration") == "oneMonth")
+            button.text = "PAY NOW $9.99" else
+            button.text = "PAY NOW $24.99"
+        try {
             stripeClass = Stripe(this, "pk_test_phihB2GTlTnHz5f7jkblfi1G") //TODO testing public key
-        } catch ( e: AuthenticationException ){
+        } catch (e: AuthenticationException) {
             e.printStackTrace()
         }
     }
 
     fun onClk(view: View) {
+        with(card_input_widget){
+            try {
+                if(!card!!.validateCard()){
+                    toast("Invalid card!")
+                    requestFocus()
+                }
+            }catch (e:Exception){
+                toast("Invalid card!")
+                requestFocus()
+                return
+            }
+        }
+        with(address1) {
+            if (text.isEmpty()) {
+                error = "Please enter your primary address!"
+                requestFocus()
+                return
+            }
+        }
+        with(city) {
+            if (text.isEmpty()) {
+                error = "Please enter your city!"
+                requestFocus()
+                return
+            }
+        }
+        with(zipCode) {
+            if (text.isEmpty()) {
+                error = "Please enter your zip code!"
+                requestFocus()
+                return
+            }
+        }
         dialog = indeterminateProgressDialog("Processing payments")
         submitCard(view)
     }
 
-    private fun submitCard(view: View ){
+    private fun submitCard(view: View) {
         try {
             card = card_input_widget.card!!
-        }
-        catch (e: Exception){
+        } catch (e: Exception) {
             return
         }
         card.currency = "usd"
-        amount = if(intent.extras.getString("duration") == "oneMonth") 999 else 2499
+        card.addressLine1 = address1.text.toString()
+        card.addressLine2 = address2.text.toString()
+        card.addressZip = zipCode.text.toString()
+        card.addressCity = city.text.toString()
+        amount = if (intent.extras.getString("duration") == "oneMonth") 999 else 2499
         name = MyApp.defaultUser!!.username
 
         stripeClass.createToken(card, "pk_test_phihB2GTlTnHz5f7jkblfi1G", object : TokenCallback { //TODO testing public key
@@ -66,9 +106,8 @@ class Payment : AppCompatActivity() {
                             postData(name, token!!.id, amount.toString())
                             println("Thread start")
                             dialog.dismiss()
-                        } catch (e: Exception){
+                        } catch (e: Exception) {
                             println(e.message)
-                            println("Nesto ne valja")
                             dialog.dismiss()
                         }
                     }
@@ -82,8 +121,8 @@ class Payment : AppCompatActivity() {
         })
     }
 
-    private fun postData(description: String, token: String, amount: String){
-        try{
+    private fun postData(description: String, token: String, amount: String) {
+        try {
             println("Post method started")
             val stringRequest = object : StringRequest(Request.Method.POST, "https://marinerlicenseprep.com/api/Charge", Response.Listener { s ->
                 // Your success code here
@@ -103,9 +142,9 @@ class Payment : AppCompatActivity() {
                     return params
                 }
             }
-            val  requestQueue = Volley.newRequestQueue(this@Payment)
+            val requestQueue = Volley.newRequestQueue(this@Payment)
             requestQueue.add<String>(stringRequest)
-        }catch (e: IOException) {
+        } catch (e: IOException) {
             e.printStackTrace()
         }
     }
