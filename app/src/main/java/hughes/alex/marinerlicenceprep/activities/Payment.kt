@@ -58,6 +58,14 @@ class Payment : AppCompatActivity() {
                 return
             }
         }
+
+        with(nameInput) {
+            if (text.isEmpty()) {
+                error = "Please enter your name!"
+                requestFocus()
+                return
+            }
+        }
         with(address1) {
             if (text.isEmpty()) {
                 error = "Please enter your primary address!"
@@ -90,6 +98,7 @@ class Payment : AppCompatActivity() {
             return
         }
         card.currency = "usd"
+        card.name = nameInput.toString()
         card.addressLine1 = address1.text.toString()
         card.addressLine2 = address2.text.toString()
         card.addressZip = zipCode.text.toString()
