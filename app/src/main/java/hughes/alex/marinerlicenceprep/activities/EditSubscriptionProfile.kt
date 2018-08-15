@@ -35,15 +35,15 @@ class EditSubscriptionProfile : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_subscription_profile)
-        when (MyApp.defaultUser?.subscriptionName) {
-            "None" -> subType.text = "Subscription: NONE"
-            else -> subType.text = "Expiration: " +
-                    SimpleDateFormat("dd/MM/yyyy").format(SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(MyApp.defaultUser?.subscriptionEndDate))
-        }
-        when (MyApp.defaultUser?.subscriptionName) {
-            "1 Month package" -> oneMonthCheck.visibility = View.VISIBLE
-            "3 Month package" -> threeMonthCheck.visibility = View.VISIBLE
-        }
+        if (MyApp.defaultUser?.subscriptionName == "None")
+            subType.text = "Subscription: NONE"
+        else subType.text = "Expiration: " +
+                SimpleDateFormat("dd/MM/yyyy").format(SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(MyApp.defaultUser?.subscriptionEndDate))
+        if (MyApp.defaultUser?.subscriptionName!!.contains("1"))
+            oneMonthCheck.visibility = View.VISIBLE
+        else if(MyApp.defaultUser?.subscriptionName!!.contains("3"))
+            threeMonthCheck.visibility = View.VISIBLE
+
         Picasso.get().load("https://marinerlicenseprep.com/" + MyApp.defaultUser?.profileImageURL).into(profilePictureImageView)
         editProfileUsername.text = (MyApp.defaultUser as UserEntity).username
 
