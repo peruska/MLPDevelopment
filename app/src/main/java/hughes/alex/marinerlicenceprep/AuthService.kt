@@ -264,13 +264,13 @@ class AuthService(var context: Context) {
                             val subToDate =
                                     try {
                                         dataFromResponse.getString("sub_to_date")
-                                    }catch (e: Exception){
+                                    } catch (e: Exception) {
                                         Date().time.toString()
                                     }
                             val subType =
                                     try {
                                         dataFromResponse.getString("subscription_package")
-                                    }catch (e: Exception){
+                                    } catch (e: Exception) {
                                         "None"
                                     }
                             defaultUser = UserEntity(user, defaultUser!!.email, pictureUrl, subToDate, subType)

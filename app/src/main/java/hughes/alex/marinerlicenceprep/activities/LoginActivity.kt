@@ -213,11 +213,11 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun submitLogInRequest(view: View) {
-        if (emailLogin.text.toString().isEmpty()) {
+        if (emailLogin.text.toString().isBlank()) {
             toast("You didn't enter email.")
             return
         }
-        if (passwordLogin.text.toString().isEmpty()) {
+        if (passwordLogin.text.toString().isBlank()) {
             toast("You didn't enter password.")
             return
         }
@@ -246,11 +246,11 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun inputsAreInvalid(): Int {
-        if (usernameSignUp.text.isNullOrEmpty()) return 1
-        if (emailSignUp.text.isNullOrEmpty()) return 2
+        if (usernameSignUp.text.isBlank()) return 1
+        if (emailSignUp.text.isBlank()) return 2
         if (!isEmailValid(emailSignUp.text.toString())) return 3
-        if (paswordSignUp.text.isNullOrEmpty()) return 4
-        if (confirmPasswordSignUp.text.isEmpty()) return 5
+        if (paswordSignUp.text.isBlank()) return 4
+        if (confirmPasswordSignUp.text.isBlank()) return 5
         if (confirmPasswordSignUp.text.toString() != paswordSignUp.text.toString()) return 6
         if (!::profilePictureBitmap.isInitialized) return 7
         if (paswordSignUp.text.length < 8) return 7
