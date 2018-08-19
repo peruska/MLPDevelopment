@@ -7,6 +7,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
@@ -31,17 +32,23 @@ class EditSubscriptionProfile : AppCompatActivity() {
     private lateinit var photo: File
     private lateinit var mImageUri: Uri
     private lateinit var profilePictureBitmap: Bitmap
-
+    private var alreadySubscribed: Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_subscription_profile)
-        if (MyApp.defaultUser?.subscriptionName == "None")
+        if (MyApp.defaultUser?.subscriptionName == "None") {
             subType.text = "Subscription: NONE"
-        else subType.text = "Expiration: " +
-                SimpleDateFormat("dd/MM/yyyy").format(SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(MyApp.defaultUser?.subscriptionEndDate))
+            alreadySubscribed = false
+        } else {
+            subType.text = "Expiration: " +
+                    SimpleDateFormat("MM/dd/yyyy").format(SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(MyApp.defaultUser?.subscriptionEndDate))
+            alreadySubscribed = true
+            oneMonth.background.setColorFilter(resources.getColor(android.R.color.darker_gray), PorterDuff.Mode.SRC)
+            threeMonths.background.setColorFilter(resources.getColor(android.R.color.darker_gray), PorterDuff.Mode.SRC)
+        }
         if (MyApp.defaultUser?.subscriptionName!!.contains("1"))
             oneMonthCheck.visibility = View.VISIBLE
-        else if(MyApp.defaultUser?.subscriptionName!!.contains("3"))
+        else if (MyApp.defaultUser?.subscriptionName!!.contains("3"))
             threeMonthCheck.visibility = View.VISIBLE
 
         Picasso.get().load("https://marinerlicenseprep.com/" + MyApp.defaultUser?.profileImageURL).into(profilePictureImageView)
@@ -51,6 +58,7 @@ class EditSubscriptionProfile : AppCompatActivity() {
     }
 
     fun moveToStripe(view: View) {
+        if (alreadySubscribed) return
         val paymentIntent = Intent(this, Payment::class.java)
         paymentIntent.putExtra("duration", if (view.id == R.id.oneMonth) "oneMonth" else "threeMonths")
         startActivity(paymentIntent)
