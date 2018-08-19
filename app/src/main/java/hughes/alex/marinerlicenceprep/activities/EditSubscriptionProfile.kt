@@ -4,10 +4,7 @@ package hughes.alex.marinerlicenceprep.activities
 import android.app.Activity
 import android.content.ContentResolver
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Color
-import android.graphics.PorterDuff
+import android.graphics.*
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
@@ -36,7 +33,7 @@ class EditSubscriptionProfile : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_subscription_profile)
-        if (MyApp.defaultUser?.subscriptionName == "None") {
+        if (!MyApp.checkIfUserIsSubscribed()) {
             subType.text = "Subscription: NONE"
             alreadySubscribed = false
         } else {
@@ -45,6 +42,7 @@ class EditSubscriptionProfile : AppCompatActivity() {
             alreadySubscribed = true
             oneMonth.background.setColorFilter(resources.getColor(android.R.color.darker_gray), PorterDuff.Mode.SRC)
             threeMonths.background.setColorFilter(resources.getColor(android.R.color.darker_gray), PorterDuff.Mode.SRC)
+            setBlur()
         }
         if (MyApp.defaultUser?.subscriptionName!!.contains("1"))
             oneMonthCheck.visibility = View.VISIBLE
@@ -55,6 +53,23 @@ class EditSubscriptionProfile : AppCompatActivity() {
         editProfileUsername.text = (MyApp.defaultUser as UserEntity).username
 
         cancel.setOnClickListener { finish() }
+    }
+
+    private fun setBlur() {
+        val radius = textView.textSize / 10
+        val filter = BlurMaskFilter(radius, BlurMaskFilter.Blur.NORMAL)
+        textView.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        textView.paint.maskFilter = filter
+        textView2.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        textView2.paint.maskFilter = filter
+        textView3.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        textView3.paint.maskFilter = filter
+        textView4.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        textView4.paint.maskFilter = filter
+        textView5.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        textView5.paint.maskFilter = filter
+        textView6.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        textView6.paint.maskFilter = filter
     }
 
     fun moveToStripe(view: View) {

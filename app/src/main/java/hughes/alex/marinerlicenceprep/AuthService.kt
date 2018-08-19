@@ -20,7 +20,9 @@ import hughes.alex.marinerlicenceprep.activities.Home
 import hughes.alex.marinerlicenceprep.activities.License
 import hughes.alex.marinerlicenceprep.activities.LoginActivity
 import hughes.alex.marinerlicenceprep.entity.UserEntity
-import org.jetbrains.anko.*
+import org.jetbrains.anko.alert
+import org.jetbrains.anko.indeterminateProgressDialog
+import org.jetbrains.anko.toast
 import org.json.JSONObject
 import uk.me.hardill.volley.multipart.MultipartRequest
 import java.io.ByteArrayOutputStream
@@ -277,11 +279,11 @@ class AuthService(var context: Context) {
                             saveUserPrefs(user, defaultUser!!.email, pictureUrl, subToDate, subType)
                             if (!checkIfUserIsSubscribed())
                                 context.alert {
-                                    yesButton {
+                                    positiveButton("Upgrage Account") {
                                         title = "Upgrade Account"
                                         context.startActivity(Intent(context, EditSubscriptionProfile::class.java))
                                     }
-                                    noButton { title = "Not Now" }
+                                    negativeButton("Not Now") {}
                                     title = "Upgrade Account?"
                                     message = "You are not a premium user! The functionality of this app will be heavily limited" +
                                             " - only twenty questions per category. Upgrade your account to gain full functionality" +
