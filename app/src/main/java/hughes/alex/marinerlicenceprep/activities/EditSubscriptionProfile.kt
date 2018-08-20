@@ -1,6 +1,5 @@
 package hughes.alex.marinerlicenceprep.activities
 
-
 import android.app.Activity
 import android.content.ContentResolver
 import android.content.Intent
@@ -18,6 +17,7 @@ import android.widget.ImageView
 import com.squareup.picasso.Picasso
 import hughes.alex.marinerlicenceprep.AuthService
 import hughes.alex.marinerlicenceprep.MyApp
+import hughes.alex.marinerlicenceprep.MyApp.Companion.defaultUser
 import hughes.alex.marinerlicenceprep.R
 import hughes.alex.marinerlicenceprep.entity.UserEntity
 import kotlinx.android.synthetic.main.activity_edit_subscription_profile.*
@@ -38,19 +38,20 @@ class EditSubscriptionProfile : AppCompatActivity() {
             alreadySubscribed = false
         } else {
             subType.text = "Expiration: " +
-                    SimpleDateFormat("MM/dd/yyyy").format(SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(MyApp.defaultUser?.subscriptionEndDate))
-            alreadySubscribed = true
-            oneMonth.background.setColorFilter(resources.getColor(android.R.color.darker_gray), PorterDuff.Mode.SRC)
-            threeMonths.background.setColorFilter(resources.getColor(android.R.color.darker_gray), PorterDuff.Mode.SRC)
-            setBlur()
+                    SimpleDateFormat("MM/dd/yyyy").format(SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(defaultUser?.subscriptionEndDate))
+            if (!defaultUser?.subscriptionName!!.contains("Trial")) {
+                alreadySubscribed = true
+                oneMonth.background.setColorFilter(resources.getColor(android.R.color.darker_gray), PorterDuff.Mode.SRC)
+                threeMonths.background.setColorFilter(resources.getColor(android.R.color.darker_gray), PorterDuff.Mode.SRC)
+                setBlur()
+            }
         }
-        if (MyApp.defaultUser?.subscriptionName!!.contains("1"))
+        if (defaultUser?.subscriptionName!!.contains("1"))
             oneMonthCheck.visibility = View.VISIBLE
-        else if (MyApp.defaultUser?.subscriptionName!!.contains("3"))
+        else if (defaultUser?.subscriptionName!!.contains("3"))
             threeMonthCheck.visibility = View.VISIBLE
-
-        Picasso.get().load("https://marinerlicenseprep.com/" + MyApp.defaultUser?.profileImageURL).into(profilePictureImageView)
-        editProfileUsername.text = (MyApp.defaultUser as UserEntity).username
+        Picasso.get().load("https://marinerlicenseprep.com/" + defaultUser?.profileImageURL).into(profilePictureImageView)
+        editProfileUsername.text = (defaultUser as UserEntity).username
 
         cancel.setOnClickListener { finish() }
     }
@@ -140,7 +141,7 @@ class EditSubscriptionProfile : AppCompatActivity() {
                 onSelectFromGalleryResult(imageReturnedIntent!!)
             }
         }
-        AuthService(this).uploadPhoto(this, profilePictureBitmap, MyApp.USER_ACCOUNT_EMAIL, MyApp.defaultUser!!.username)
+        AuthService(this).uploadPhoto(this, profilePictureBitmap, MyApp.USER_ACCOUNT_EMAIL, defaultUser!!.username)
     }
 
     private fun onSelectFromGalleryResult(data: Intent) {

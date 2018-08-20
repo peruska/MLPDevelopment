@@ -20,6 +20,7 @@ import kotlinx.android.synthetic.main.stripe.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.indeterminateProgressDialog
 import org.jetbrains.anko.toast
+import org.json.JSONObject
 import java.io.IOException
 import java.lang.Exception
 
@@ -46,13 +47,13 @@ class Payment : AppCompatActivity() {
     }
 
     fun onClk(view: View) {
-        with(card_input_widget){
+        with(card_input_widget) {
             try {
-                if(!card!!.validateCard()){
+                if (!card!!.validateCard()) {
                     toast("Invalid card!")
                     requestFocus()
                 }
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 toast("Invalid card!")
                 requestFocus()
                 return
@@ -111,7 +112,6 @@ class Payment : AppCompatActivity() {
                 doAsync {
                     runOnUiThread {
                         try {
-
                             postData(name, token!!.id, amount.toString())
                             println("Thread start")
                             dialog.dismiss()
@@ -134,20 +134,26 @@ class Payment : AppCompatActivity() {
         try {
             println("Post method started")
             val stringRequest = object : StringRequest(Request.Method.POST, "https://marinerlicenseprep.com/api/Charge", Response.Listener { s ->
-                // Your success code here
+                val response = JSONObject(s)
+                if (response.getString("response") == "Success")
+                    toast(response.getString("message"))
+                else {
+                    toast("Failed to purchase subscription")
+                }
                 println("Success POST")
             }, Response.ErrorListener { e ->
-                // Your error code here
+                toast("Failed to purchase subscription, check your internet connection!")
                 println("Error POST")
             }) {
                 override fun getParams(): Map<String, String> {
+                    val email = MyApp.defaultUser?.email
                     val params = HashMap<String, String>()
                     params["method"] = "charge"
                     params["description"] = description
                     params["source"] = token
                     params["amount"] = amount
                     params["currency"] = "usd"
-
+                    params["email"] = email.toString()
                     return params
                 }
             }

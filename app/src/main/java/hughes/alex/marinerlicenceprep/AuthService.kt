@@ -144,6 +144,7 @@ class AuthService(var context: Context) {
                                 } catch (e: Exception) {
                                     "NONE"
                                 }
+                        defaultUser = UserEntity(username, email, pictureUrl, subToDate, subType)
                         saveUserPrefs(username, email, pictureUrl, subToDate, subType)
                         //If the upload occurred on login activity show select rating screen
                         (context as? LoginActivity)?.startActivity(Intent(context, License::class.java))
