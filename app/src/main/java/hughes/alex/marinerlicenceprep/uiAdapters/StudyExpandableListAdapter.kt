@@ -48,7 +48,7 @@ class StudyExpandableListAdapter(val context: Context?, val listOfGroups: ArrayL
         val view = inflater.inflate(R.layout.study_list_group, parent, false)
         view.groupName.text = listOfGroups[groupPosition].groupName
         if (groupPosition != 0) {
-            view.groupImage.setImageResource(R.mipmap.list_view_right_arrow)
+            view.groupImage.setImageResource(R.drawable.list_view_right_arrow)
         }
         return view
     }

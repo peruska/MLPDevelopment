@@ -52,7 +52,7 @@
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.Toolbar>
 
-    <it.sephiroth.android.library.imagezoom.ImageViewTouch
+    <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/illustrationImageView"
         android:layout_width="match_parent"
         android:layout_height="0dp"

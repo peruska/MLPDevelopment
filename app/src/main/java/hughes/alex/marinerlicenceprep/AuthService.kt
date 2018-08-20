@@ -12,15 +12,15 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import hughes.alex.marinerlicenceprep.MyApp.Companion.BASE_URL
 import hughes.alex.marinerlicenceprep.MyApp.Companion.USER_LICENSE_DATA_VALUES
+import hughes.alex.marinerlicenceprep.MyApp.Companion.checkIfUserIsSubscribed
 import hughes.alex.marinerlicenceprep.MyApp.Companion.defaultUser
-import hughes.alex.marinerlicenceprep.activities.Home
 import hughes.alex.marinerlicenceprep.NetworkSingleton.Companion.getNetworkSingletonInstance
 import hughes.alex.marinerlicenceprep.activities.EditSubscriptionProfile
+import hughes.alex.marinerlicenceprep.activities.Home
 import hughes.alex.marinerlicenceprep.activities.License
 import hughes.alex.marinerlicenceprep.activities.LoginActivity
 import hughes.alex.marinerlicenceprep.entity.UserEntity
-import org.jetbrains.anko.indeterminateProgressDialog
-import org.jetbrains.anko.toast
+import org.jetbrains.anko.*
 import org.json.JSONObject
 import uk.me.hardill.volley.multipart.MultipartRequest
 import java.io.ByteArrayOutputStream
@@ -50,9 +50,9 @@ class AuthService(var context: Context) {
                             val dataFromResponse = JSONObject(responseAsJson.getString("data"))
                             val user = dataFromResponse.getString("username")
                             val pictureUrl = dataFromResponse.getString("url")
-                            defaultUser = UserEntity(user, email, pictureUrl)
+                            val subToDate = dataFromResponse.getString("sub_to_date")
+                            defaultUser = UserEntity(user, email, pictureUrl, subToDate)
                             saveUserPrefs(user, email, pictureUrl)
-                            retrieveUserInfo()
                             val prefs = context.getSharedPreferences(MyApp.USER_LICENSE_DATA_VALUES, 0)
                             if (prefs.getString(USER_LICENSE_DATA_VALUES, "").isBlank())
                                 context.startActivity(Intent(context, License::class.java))
@@ -111,18 +111,13 @@ class AuthService(var context: Context) {
     }
 
     fun uploadPhoto(context: Context, profilePictureBitmap: Bitmap, email: String, username: String) {
-        val pictureUrl = MyApp.BASE_URL + "Upload_Avatar"
-        val request = MultipartRequest(pictureUrl, null,
+        val url = MyApp.BASE_URL + "Upload_Avatar"
+        val pictureUrl = "${username}_${MyApp.uuid}.jpg"
+        val request = MultipartRequest(url, null,
                 Response.Listener<NetworkResponse> { response ->
                     val responseAsJson = JSONObject(String(response.data))
                     if (responseAsJson.getBoolean("success")) {
-                        val prefs = context.getSharedPreferences(MyApp.USER_ACCOUNT_PREFERENCES, 0)
-                        val editor = prefs.edit()
-                        editor.putString(MyApp.USER_ACCOUNT_USERNAME, username)
-                        editor.putString(MyApp.USER_ACCOUNT_EMAIL, email)
-                        editor.putString(MyApp.USER_ACCOUNT_PROFILE_PICTURE_URL, "")
-                        editor.commit()
-                        retrieveUserInfo()
+                        saveUserPrefs(username, email, pictureUrl)
                         //If the upload occurred on login activity show select rating screen
                         (context as? LoginActivity)?.startActivity(Intent(context, License::class.java))
                         (context as? LoginActivity)?.finish()
@@ -138,7 +133,7 @@ class AuthService(var context: Context) {
         request.addPart(MultipartRequest.FilePart(
                 "data",
                 "image/jpg",
-                "${username}_${MyApp.uuid}.jpg",
+                pictureUrl,
                 byteArray))
         getNetworkSingletonInstance(context).addToRequestQueue(request)
     }
@@ -176,14 +171,12 @@ class AuthService(var context: Context) {
             val signInRequest = object : StringRequest(POST, url,
                     Response.Listener { response ->
                         val responseAsJson = JSONObject(response)
-                        if(responseAsJson.getBoolean("success"))
-                        {
+                        if (responseAsJson.getBoolean("success")) {
                             val editor = context.getSharedPreferences(MyApp.USER_ACCOUNT_PREFERENCES, 0).edit()
                             editor.putString(MyApp.USER_ACCOUNT_EMAIL, newEmail)
                             editor.apply()
                             defaultUser?.email = newEmail
-                        }
-                        else
+                        } else
                             context.toast(responseAsJson.getString("msg"))
                     },
                     Response.ErrorListener { error ->
@@ -209,11 +202,9 @@ class AuthService(var context: Context) {
             val signInRequest = object : StringRequest(POST, url,
                     Response.Listener { response ->
                         val responseAsJson = JSONObject(response)
-                        if(responseAsJson.getBoolean("success"))
-                        {
+                        if (responseAsJson.getBoolean("success")) {
                             context.toast("Password successfully changed")
-                        }
-                        else
+                        } else
                             context.toast(responseAsJson.getString("msg"))
                     },
                     Response.ErrorListener { error ->
@@ -238,6 +229,27 @@ class AuthService(var context: Context) {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
             val signInRequest = object : StringRequest(POST, url,
                     Response.Listener { response ->
+                        println(response)
+                        val responseAsJson = JSONObject(response)
+
+                        if (responseAsJson.getBoolean("success")) {
+                            val dataFromResponse = JSONObject(responseAsJson.getString("data"))
+                            val user = dataFromResponse.getString("username")
+                            val pictureUrl = dataFromResponse.getString("url")
+                            val subToDate = dataFromResponse.getString("sub_to_date")
+                            defaultUser = UserEntity(user, defaultUser!!.email, pictureUrl, subToDate)
+                            saveUserPrefs(user, defaultUser!!.email, pictureUrl)
+                            if (!checkIfUserIsSubscribed())
+                                context.alert {
+                                    yesButton{ title = "Upgrade Account"
+                                            context.startActivity(Intent(context, EditSubscriptionProfile::class.java)) }
+                                    noButton { title = "Not Now" }
+                                    title = "Upgrade Account?"
+                                    message = "You are not a premium user! The functionality of this app will be heavily limited" +
+                                            " - only twenty questions per category. Upgrade your account to gain full functionality" +
+                                            " of this App and MarinerLicensePrep.com"
+                                }.show()
+                        }
                         println(JSONObject(response))
                     },
                     Response.ErrorListener { error -> }) {
@@ -301,6 +313,6 @@ class AuthService(var context: Context) {
 
     fun logOut() {
         saveUserPrefs("", "", "")
-        defaultUser = UserEntity("", "", "")
+        defaultUser = UserEntity("", "", "", "")
     }
 }

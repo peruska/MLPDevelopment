@@ -35,8 +35,10 @@ import hughes.alex.marinerlicenceprep.entity.UserEntity
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.login_scene.*
 import kotlinx.android.synthetic.main.sign_in_scene.*
-import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
+import org.jetbrains.anko.alert
+import org.jetbrains.anko.customView
+import org.jetbrains.anko.editText
+import org.jetbrains.anko.toast
 import java.io.File
 import java.util.*
 
@@ -100,7 +102,8 @@ class LoginActivity : AppCompatActivity() {
         val username = prefs.getString(MyApp.USER_ACCOUNT_USERNAME, "")
         val email = prefs.getString(MyApp.USER_ACCOUNT_EMAIL, "")
         val profilePictureURL = prefs.getString(MyApp.USER_ACCOUNT_PROFILE_PICTURE_URL, "")
-        MyApp.defaultUser = UserEntity(username, email, profilePictureURL)
+        val subToDate = prefs.getString(MyApp.USER_ACCOUNT_SUB_TO_DATE, "")
+        MyApp.defaultUser = UserEntity(username, email, profilePictureURL, subToDate)
     }
 
     private fun alreadyLoggedIn(): Boolean {
@@ -246,7 +249,7 @@ class LoginActivity : AppCompatActivity() {
         if (emailSignUp.text.isNullOrEmpty()) return 2
         if (!isEmailValid(emailSignUp.text.toString())) return 3
         if (paswordSignUp.text.isNullOrEmpty()) return 4
-        if (confirmPasswordSignUp.text.isNullOrEmpty()) return 5
+        if (confirmPasswordSignUp.text.isEmpty()) return 5
         if (confirmPasswordSignUp.text.toString() != paswordSignUp.text.toString()) return 6
         if (!::profilePictureBitmap.isInitialized) return 7
         if (paswordSignUp.text.length < 8) return 7

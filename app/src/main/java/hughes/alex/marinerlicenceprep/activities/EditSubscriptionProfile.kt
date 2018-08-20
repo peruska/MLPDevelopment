@@ -20,7 +20,6 @@ import android.widget.ImageView
 import com.squareup.picasso.Picasso
 import hughes.alex.marinerlicenceprep.AuthService
 import hughes.alex.marinerlicenceprep.MyApp
-import hughes.alex.marinerlicenceprep.MyApp.Companion.BASE_URL
 import hughes.alex.marinerlicenceprep.R
 import hughes.alex.marinerlicenceprep.entity.UserEntity
 import kotlinx.android.synthetic.main.activity_edit_subscription_profile.*
@@ -36,12 +35,14 @@ class EditSubscriptionProfile : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_subscription_profile)
 
-        Picasso.get().load(BASE_URL+MyApp.defaultUser!!.profileImageURL).into(profilePictureImageView)
+        Picasso.get().load("https://marinerlicenseprep.com/"+MyApp.defaultUser!!.profileImageURL).into(profilePictureImageView)
         editProfileUsername.text =(MyApp.defaultUser as UserEntity).username
 
         cancel.setOnClickListener { finish() }
     }
-
+    fun moveToStripe(view: View){
+        startActivity(Intent(this, Payment::class.java))
+    }
     fun changeProfilePicture(view: View){
         photo = createTemporaryFile("picture", ".jpg")
         photo.delete()
