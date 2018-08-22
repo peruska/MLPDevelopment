@@ -22,6 +22,7 @@ import hughes.alex.marinerlicenceprep.activities.LoginActivity
 import hughes.alex.marinerlicenceprep.entity.UserEntity
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.indeterminateProgressDialog
+import org.jetbrains.anko.okButton
 import org.jetbrains.anko.toast
 import org.json.JSONObject
 import uk.me.hardill.volley.multipart.MultipartRequest
@@ -173,9 +174,15 @@ class AuthService(var context: Context) {
                     Response.Listener { response ->
                         val responseAsJson = JSONObject(response)
                         if (responseAsJson.getBoolean("success"))
-                            context.toast("Successful password reset, please check your email.")
+                            context.alert {
+                                title = "Successful password reset, please check your email."
+                                okButton { }
+                            }.show()
                         else
-                            context.toast(responseAsJson.getString("msg"))
+                            context.alert {
+                                title = responseAsJson.getString("msg")
+                                okButton { }
+                            }.show()
 
                     },
                     Response.ErrorListener { error ->
@@ -204,8 +211,15 @@ class AuthService(var context: Context) {
                             editor.putString(MyApp.USER_ACCOUNT_EMAIL, newEmail)
                             editor.apply()
                             defaultUser?.email = newEmail
+                            context.alert {
+                                title = "You have successfully changed your email!"
+                                okButton { }
+                            }.show()
                         } else
-                            context.toast(responseAsJson.getString("msg"))
+                            context.alert {
+                                title = responseAsJson.getString("msg")
+                                okButton { }
+                            }.show()
                     },
                     Response.ErrorListener { error ->
                         context.toast("Unsuccessful email change attempt. Please check your internet connection.")
@@ -231,9 +245,15 @@ class AuthService(var context: Context) {
                     Response.Listener { response ->
                         val responseAsJson = JSONObject(response)
                         if (responseAsJson.getBoolean("success")) {
-                            context.toast("Password successfully changed")
+                            context.alert {
+                                title = "Password successfully changed"
+                                okButton { }
+                            }.show()
                         } else
-                            context.toast(responseAsJson.getString("msg"))
+                            context.alert {
+                                title = responseAsJson.getString("msg")
+                                okButton { }
+                            }.show()
                     },
                     Response.ErrorListener { error ->
                         context.toast("Unsuccessful password change attempt. Please check your internet connection.")
