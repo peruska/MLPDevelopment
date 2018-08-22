@@ -17,6 +17,7 @@ import com.stripe.android.model.Token
 import hughes.alex.marinerlicenceprep.MyApp
 import hughes.alex.marinerlicenceprep.R
 import kotlinx.android.synthetic.main.stripe.*
+import org.jetbrains.anko.alert
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.indeterminateProgressDialog
 import org.jetbrains.anko.toast
@@ -136,7 +137,10 @@ class Payment : AppCompatActivity() {
             val stringRequest = object : StringRequest(Request.Method.POST, "https://marinerlicenseprep.com/api/Charge", Response.Listener { s ->
                 val response = JSONObject(s)
                 if (response.getString("response") == "Success")
-                    toast(response.getString("message"))
+                    alert {
+                        title = "You have successfully purchased subscription!"
+                        positiveButton("OK") { finish() }
+                    }.show()
                 else {
                     toast("Failed to purchase subscription")
                 }
