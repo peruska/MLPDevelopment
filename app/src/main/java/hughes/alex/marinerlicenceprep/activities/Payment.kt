@@ -15,6 +15,7 @@ import com.stripe.android.TokenCallback
 import com.stripe.android.exception.AuthenticationException
 import com.stripe.android.model.Card
 import com.stripe.android.model.Token
+import hughes.alex.marinerlicenceprep.AuthService
 import hughes.alex.marinerlicenceprep.MyApp
 import hughes.alex.marinerlicenceprep.R
 import kotlinx.android.synthetic.main.stripe.*
@@ -138,15 +139,16 @@ class Payment : AppCompatActivity() {
             val stringRequest = object : StringRequest(Request.Method.POST, "https://marinerlicenseprep.com/api/Charge", Response.Listener { s ->
                 val response = JSONObject(s)
                 dialog.dismiss()
-                if (response.getString("response") == "Success")
+                if (response.getString("response") == "Success") {
+                    AuthService(this).retrieveUserInfo()
                     alert {
                         title = "You have successfully purchased subscription!"
                         positiveButton("OK") {
-                            startActivity(Intent(this@Payment, Home::class.java))
+                            startActivity(Intent(this@Payment, EditSubscriptionProfile::class.java))
                             finish()
                         }
                     }.show()
-                else {
+                } else {
                     dialog.dismiss()
                     toast("Failed to purchase subscription")
                 }

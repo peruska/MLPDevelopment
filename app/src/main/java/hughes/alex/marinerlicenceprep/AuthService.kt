@@ -15,10 +15,7 @@ import hughes.alex.marinerlicenceprep.MyApp.Companion.USER_LICENSE_DATA_VALUES
 import hughes.alex.marinerlicenceprep.MyApp.Companion.checkIfUserIsSubscribed
 import hughes.alex.marinerlicenceprep.MyApp.Companion.defaultUser
 import hughes.alex.marinerlicenceprep.NetworkSingleton.Companion.getNetworkSingletonInstance
-import hughes.alex.marinerlicenceprep.activities.EditSubscriptionProfile
-import hughes.alex.marinerlicenceprep.activities.Home
-import hughes.alex.marinerlicenceprep.activities.License
-import hughes.alex.marinerlicenceprep.activities.LoginActivity
+import hughes.alex.marinerlicenceprep.activities.*
 import hughes.alex.marinerlicenceprep.entity.UserEntity
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.indeterminateProgressDialog
@@ -298,7 +295,8 @@ class AuthService(var context: Context) {
                                     }
                             defaultUser = UserEntity(user, defaultUser!!.email, pictureUrl, subToDate, subType)
                             saveUserPrefs(user, defaultUser!!.email, pictureUrl, subToDate, subType)
-                            if (!checkIfUserIsSubscribed())
+
+                            if (!checkIfUserIsSubscribed() && context !is Payment)
                                 context.alert {
                                     positiveButton("Upgrage Account") {
                                         title = "Upgrade Account"
