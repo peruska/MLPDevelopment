@@ -1,6 +1,7 @@
 package hughes.alex.marinerlicenceprep.activities
 
 import android.app.ProgressDialog
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -139,7 +140,7 @@ class Payment : AppCompatActivity() {
                 if (response.getString("response") == "Success")
                     alert {
                         title = "You have successfully purchased subscription!"
-                        positiveButton("OK") { finish() }
+                        positiveButton("OK") { startActivity(Intent(this@Payment, EditSubscriptionProfile::class.java)) }
                     }.show()
                 else {
                     toast("Failed to purchase subscription")

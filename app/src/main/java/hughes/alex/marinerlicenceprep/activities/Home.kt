@@ -46,9 +46,11 @@ class Home : FragmentActivity() {
                     activeFragment = SettingsFragment()
                 }
             }
+
             val transactionToFragment = supportFragmentManager.beginTransaction()
+            transactionToFragment.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
             transactionToFragment.replace(R.id.fragmentPlaceholder, activeFragment)
-            transactionToFragment.commit()
+            transactionToFragment.commitNowAllowingStateLoss()
             return@setOnNavigationItemSelectedListener true
         }
 

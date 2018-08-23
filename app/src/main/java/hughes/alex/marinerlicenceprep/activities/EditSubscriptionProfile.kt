@@ -78,6 +78,7 @@ class EditSubscriptionProfile : AppCompatActivity() {
         val paymentIntent = Intent(this, Payment::class.java)
         paymentIntent.putExtra("duration", if (view.id == R.id.oneMonth) "oneMonth" else "threeMonths")
         startActivity(paymentIntent)
+        finish()
     }
 
     fun changeProfilePicture(view: View) {
