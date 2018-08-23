@@ -17,6 +17,7 @@ import org.jetbrains.anko.doAsync
 
 class Home : FragmentActivity() {
     var activeFragment: Fragment? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
@@ -27,28 +28,42 @@ class Home : FragmentActivity() {
         firstTransition.replace(R.id.fragmentPlaceholder, activeFragment)
         firstTransition.commit()
         navigationView.setOnNavigationItemSelectedListener { item ->
-            fragmentPlaceholder.removeAllViews()
-            supportFragmentManager.popBackStack()
             when (item.itemId) {
                 R.id.menu_home -> {
-                    activeFragment = HomeFragment()
+                    if (activeFragment is HomeFragment)
+                        return@setOnNavigationItemSelectedListener true
+                    else
+                        activeFragment = HomeFragment()
                 }
                 R.id.menu_study -> {
-                    activeFragment = StudyFragment()
+                    if (activeFragment is StudyFragment)
+                        return@setOnNavigationItemSelectedListener true
+                    else
+                        activeFragment = StudyFragment()
                 }
                 R.id.menu_search -> {
-                    activeFragment = SearchFragment()
+                    if (activeFragment is SearchFragment)
+                        return@setOnNavigationItemSelectedListener true
+                    else
+                        activeFragment = SearchFragment()
                 }
                 R.id.menu_bookmarked -> {
-                    activeFragment = BookmarkedFragment()
+                    if (activeFragment is BookmarkedFragment)
+                        return@setOnNavigationItemSelectedListener true
+                    else
+                        activeFragment = BookmarkedFragment()
                 }
                 R.id.menu_settings -> {
-                    activeFragment = SettingsFragment()
+                    if (activeFragment is SettingsFragment)
+                        return@setOnNavigationItemSelectedListener true
+                    else
+                        activeFragment = SettingsFragment()
                 }
             }
 
+            fragmentPlaceholder.removeAllViews()
+            supportFragmentManager.popBackStack()
             val transactionToFragment = supportFragmentManager.beginTransaction()
-            transactionToFragment.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
             transactionToFragment.replace(R.id.fragmentPlaceholder, activeFragment)
             transactionToFragment.commitNowAllowingStateLoss()
             return@setOnNavigationItemSelectedListener true

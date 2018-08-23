@@ -116,16 +116,16 @@ class Payment : AppCompatActivity() {
                         try {
                             postData(name, token!!.id, amount.toString())
                             println("Thread start")
-                            dialog.dismiss()
                         } catch (e: Exception) {
-                            println(e.message)
                             dialog.dismiss()
+                            println(e.message)
                         }
                     }
                 }
             }
 
             override fun onError(error: Exception?) {
+                dialog.dismiss()
                 Log.d("Stripe", error?.localizedMessage)
             }
 
@@ -137,16 +137,22 @@ class Payment : AppCompatActivity() {
             println("Post method started")
             val stringRequest = object : StringRequest(Request.Method.POST, "https://marinerlicenseprep.com/api/Charge", Response.Listener { s ->
                 val response = JSONObject(s)
+                dialog.dismiss()
                 if (response.getString("response") == "Success")
                     alert {
                         title = "You have successfully purchased subscription!"
-                        positiveButton("OK") { startActivity(Intent(this@Payment, EditSubscriptionProfile::class.java)) }
+                        positiveButton("OK") {
+                            startActivity(Intent(this@Payment, Home::class.java))
+                            finish()
+                        }
                     }.show()
                 else {
+                    dialog.dismiss()
                     toast("Failed to purchase subscription")
                 }
                 println("Success POST")
             }, Response.ErrorListener { e ->
+                dialog.dismiss()
                 toast("Failed to purchase subscription, check your internet connection!")
                 println("Error POST")
             }) {
