@@ -99,7 +99,8 @@ object Queries {
     }
 
     fun getBooksWithSubcategories(context: Context, bookCategory: Int, licenceNumber: Int): List<StudyExpandableListItem> {
-        val getQuestionsForSubcategoryAndLicence = "SELECT ${Questions.COLUMN_QUESTIONS_ID} FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_SUBCATEGORY_ID} = ? AND ZDL" + licenceNumber + " = 1"
+        val getQuestionsForSubcategoryAndLicence = "SELECT ${Questions.COLUMN_QUESTIONS_ID} FROM ${Questions.TABLE} WHERE ${Questions.COLUMN_SUBCATEGORY_ID} = ? AND ZDL" + licenceNumber + " = 1" +
+                " AND ${Questions.COLUMN_BOOK_ID} = ?"
 
         val listOfGroups = ArrayList<StudyExpandableListItem>()
         val databaseAccess = DatabaseAccess.getInstance(context)
@@ -118,8 +119,8 @@ object Queries {
             while (cursor2.moveToNext()) {
                 val subcategoryName = cursor2.getString(0)
                 val subcategoryID = cursor2.getString(1)
-                val cursorCheck = databaseAccess.executeRawQuery(getQuestionsForSubcategoryAndLicence, arrayOf(subcategoryID))
-                if (cursorCheck.count > 0) {
+                val cursorCheck = databaseAccess.executeRawQuery(getQuestionsForSubcategoryAndLicence, arrayOf(subcategoryID, bookID))
+                if (cursorCheck.count > 0 ) {
                     subcategories.add(Subcategory(subcategoryName, subcategoryID))
                 }
                 cursorCheck.close()
