@@ -27,9 +27,16 @@ class Illustration : AppCompatActivity() {
 
         //If try fails try to open jpg with image name
         catch (e: Exception){
-            val ims = assets.open("Illustrations/$illustrationName.imageset/$illustrationName.jpg")
-            val d = Drawable.createFromStream(ims, null)
-            illustrationImageView.setImageDrawable(d)
+            try {
+                val ims = assets.open("Illustrations/$illustrationName.imageset/$illustrationName.jpg")
+                val d = Drawable.createFromStream(ims, null)
+                illustrationImageView.setImageDrawable(d)
+
+            }catch (e: Exception){
+                val ims = assets.open("Illustrations/DefualtImage.imageset/EL-78.jpg")
+                val d = Drawable.createFromStream(ims, null)
+                illustrationImageView.setImageDrawable(d)
+            }
         }
 
     }

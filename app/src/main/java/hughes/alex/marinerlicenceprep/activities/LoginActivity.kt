@@ -103,7 +103,8 @@ class LoginActivity : AppCompatActivity() {
         val email = prefs.getString(MyApp.USER_ACCOUNT_EMAIL, "")
         val profilePictureURL = prefs.getString(MyApp.USER_ACCOUNT_PROFILE_PICTURE_URL, "")
         val subToDate = prefs.getString(MyApp.USER_ACCOUNT_SUB_TO_DATE, "")
-        MyApp.defaultUser = UserEntity(username, email, profilePictureURL, subToDate)
+        val subType = prefs.getString(MyApp.USER_ACCOUNT_SUB_TYPE, "")
+        MyApp.defaultUser = UserEntity(username, email, profilePictureURL, subToDate, subType)
     }
 
     private fun alreadyLoggedIn(): Boolean {
@@ -113,10 +114,8 @@ class LoginActivity : AppCompatActivity() {
 
     fun transitionToSignUp(view: View) {
         TransitionManager.go(signUpScene, transition)
-
         confirmPasswordSignUp.onSubmit {
             submitSignUpRequest(confirmPasswordSignUp)
-
             //Hide soft keyboard
             val view = this.currentFocus
             if (view != null) {
@@ -199,6 +198,9 @@ class LoginActivity : AppCompatActivity() {
 
 
     fun submitSignUpRequest(view: View) {
+        val usernameInput = findViewById<EditText>(R.id.usernameSignUp)
+        val emailInput = findViewById<EditText>(R.id.emailSignUp)
+        val passwordInput = findViewById<EditText>(R.id.paswordSignUp)
         val value = inputsAreInvalid()
         if (value != 0)
             showErrorInInputs(value)
@@ -206,27 +208,29 @@ class LoginActivity : AppCompatActivity() {
             AuthService(this).signUp(
                     this,
                     profilePictureBitmap,
-                    emailSignUp.text.toString(),
-                    usernameSignUp.text.toString(),
-                    paswordSignUp.text.toString())
+                    emailInput.text.toString(),
+                    usernameInput.text.toString(),
+                    passwordInput.text.toString())
     }
 
     fun submitLogInRequest(view: View) {
-        if (emailLogin.text.toString().isEmpty()) {
+        val passwordInput = findViewById<EditText>(R.id.passwordLogin)
+        val emailInput = findViewById<EditText>(R.id.emailLogin)
+        if (emailInput.text.toString().isBlank()) {
             toast("You didn't enter email.")
             return
         }
-        if (passwordLogin.text.toString().isEmpty()) {
-            toast("You didn't enter password.")
+        if (passwordInput.text.toString().isBlank()) {
+            toast("You didn't enter password." + passwordLogin.text.toString())
             return
         }
-        if (!isEmailValid(emailLogin.text.toString())) {
+        if (!isEmailValid(emailInput.text.toString())) {
             toast("Wrong email form.")
             return
         }
         AuthService(this).signIn(
-                emailLogin.text.toString().trim(),
-                passwordLogin.text.toString()
+                emailInput.text.toString().trim(),
+                passwordInput.text.toString()
         )
     }
 
@@ -245,14 +249,18 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun inputsAreInvalid(): Int {
-        if (usernameSignUp.text.isNullOrEmpty()) return 1
-        if (emailSignUp.text.isNullOrEmpty()) return 2
-        if (!isEmailValid(emailSignUp.text.toString())) return 3
-        if (paswordSignUp.text.isNullOrEmpty()) return 4
-        if (confirmPasswordSignUp.text.isEmpty()) return 5
-        if (confirmPasswordSignUp.text.toString() != paswordSignUp.text.toString()) return 6
+        val usernameInput = findViewById<EditText>(R.id.usernameSignUp)
+        val emailInput = findViewById<EditText>(R.id.emailSignUp)
+        val passwordInput = findViewById<EditText>(R.id.paswordSignUp)
+        val confirmPasswordInput = findViewById<EditText>(R.id.confirmPasswordSignUp)
+        if (usernameInput.text.isBlank()) return 1
+        if (emailInput.text.isBlank()) return 2
+        if (!isEmailValid(emailInput.text.toString())) return 3
+        if (passwordInput.text.isBlank()) return 4
+        if (confirmPasswordInput.text.isBlank()) return 5
+        if (confirmPasswordInput.text.toString() != passwordInput.text.toString()) return 6
         if (!::profilePictureBitmap.isInitialized) return 7
-        if (paswordSignUp.text.length < 8) return 7
+        if (passwordInput.text.length < 8) return 7
         return 0
     }
 

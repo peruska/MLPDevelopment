@@ -1,12 +1,9 @@
 package hughes.alex.marinerlicenceprep.activities
 
-
 import android.app.Activity
 import android.content.ContentResolver
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Color
+import android.graphics.*
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
@@ -20,30 +17,71 @@ import android.widget.ImageView
 import com.squareup.picasso.Picasso
 import hughes.alex.marinerlicenceprep.AuthService
 import hughes.alex.marinerlicenceprep.MyApp
+import hughes.alex.marinerlicenceprep.MyApp.Companion.defaultUser
 import hughes.alex.marinerlicenceprep.R
 import hughes.alex.marinerlicenceprep.entity.UserEntity
 import kotlinx.android.synthetic.main.activity_edit_subscription_profile.*
 import java.io.File
+import java.text.SimpleDateFormat
 
 class EditSubscriptionProfile : AppCompatActivity() {
 
     private lateinit var photo: File
     private lateinit var mImageUri: Uri
     private lateinit var profilePictureBitmap: Bitmap
-
+    private var alreadySubscribed: Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_subscription_profile)
-
-        Picasso.get().load("https://marinerlicenseprep.com/"+MyApp.defaultUser!!.profileImageURL).into(profilePictureImageView)
-        editProfileUsername.text =(MyApp.defaultUser as UserEntity).username
+        if (!MyApp.checkIfUserIsSubscribed()) {
+            subType.text = "Subscription: NONE"
+            alreadySubscribed = false
+        } else {
+            subType.text = "Expiration: " +
+                    SimpleDateFormat("MM/dd/yyyy").format(SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(defaultUser?.subscriptionEndDate))
+            if (!defaultUser?.subscriptionName!!.contains("Trial")) {
+                alreadySubscribed = true
+                oneMonth.background.setColorFilter(resources.getColor(android.R.color.darker_gray), PorterDuff.Mode.SRC)
+                threeMonths.background.setColorFilter(resources.getColor(android.R.color.darker_gray), PorterDuff.Mode.SRC)
+                setBlur()
+            }
+        }
+        if (defaultUser?.subscriptionName!!.contains("1"))
+            oneMonthCheck.visibility = View.VISIBLE
+        else if (defaultUser?.subscriptionName!!.contains("3"))
+            threeMonthCheck.visibility = View.VISIBLE
+        Picasso.get().load("https://marinerlicenseprep.com/" + defaultUser?.profileImageURL).into(profilePictureImageView)
+        editProfileUsername.text = (defaultUser as UserEntity).username
 
         cancel.setOnClickListener { finish() }
     }
-    fun moveToStripe(view: View){
-        startActivity(Intent(this, Payment::class.java))
+
+    private fun setBlur() {
+        val radius = textView.textSize / 10
+        val filter = BlurMaskFilter(radius, BlurMaskFilter.Blur.NORMAL)
+        textView.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        textView.paint.maskFilter = filter
+        textView2.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        textView2.paint.maskFilter = filter
+        textView3.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        textView3.paint.maskFilter = filter
+        textView4.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        textView4.paint.maskFilter = filter
+        textView5.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        textView5.paint.maskFilter = filter
+        textView6.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        textView6.paint.maskFilter = filter
     }
-    fun changeProfilePicture(view: View){
+
+    fun moveToStripe(view: View) {
+        if (alreadySubscribed) return
+        val paymentIntent = Intent(this, Payment::class.java)
+        paymentIntent.putExtra("duration", if (view.id == R.id.oneMonth) "oneMonth" else "threeMonths")
+        startActivity(paymentIntent)
+        finish()
+    }
+
+    fun changeProfilePicture(view: View) {
         photo = createTemporaryFile("picture", ".jpg")
         photo.delete()
         val items = arrayOf<CharSequence>("Take Photo", "Choose from Library", "Cancel")
@@ -72,6 +110,7 @@ class EditSubscriptionProfile : AppCompatActivity() {
         listView.overscrollFooter = ColorDrawable(Color.TRANSPARENT)
         dialog.show()
     }
+
     private fun createTemporaryFile(part: String, ext: String): File {
         var tempDir = Environment.getExternalStorageDirectory()
         tempDir = File(tempDir.absolutePath + "/.temp/")
@@ -103,7 +142,7 @@ class EditSubscriptionProfile : AppCompatActivity() {
                 onSelectFromGalleryResult(imageReturnedIntent!!)
             }
         }
-        AuthService(this).uploadPhoto(this, profilePictureBitmap, MyApp.USER_ACCOUNT_EMAIL, MyApp.defaultUser!!.username)
+        AuthService(this).uploadPhoto(this, profilePictureBitmap, MyApp.USER_ACCOUNT_EMAIL, defaultUser!!.username)
     }
 
     private fun onSelectFromGalleryResult(data: Intent) {
